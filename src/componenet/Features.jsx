@@ -22,12 +22,11 @@ const Features = () => {
       {
         data.map((item,index)=>(
           <div key={index}
-            className="relative flex items-center justify-center rounded-full border-2 border-gray-500 cursor-pointer
-                      text-white font-bold text-5xl z-10 -m-2 
+            className="relative flex items-center justify-center h-96 w-96 rounded-full border-2 border-gray-500 cursor-pointer
+                      font-bold text-5xl z-10 -m-2 
                        xl:h-[435px] xl:w-[435px]
                        lg:h-[486px] lg:w-[486px]
-                       md:h-[389px] md:w-[389px]
-                       sm:h-[800px] sm:w-[850px]">
+                       md:h-[389px] md:w-[389px]">
             <span>{item.name}</span>
             <img src={item.image} alt={item.name} 
                 className="absolute inset-0 w-full h-full object-fill opacity-0 hover:opacity-100 hover:scale-110 transition-transform duration-300 ease-in-out"/>
