@@ -6,7 +6,7 @@ import Footer from "./componenet/Contact"
 
 function App() {
   return (
-    <div>
+    <div className="h-full w-full">
       <BrowserRouter>
         <ThemeProvider>
           <Navbar></Navbar>

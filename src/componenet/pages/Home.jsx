@@ -1,12 +1,13 @@
 import Features from "../Features";
 
-
 const HomePage = () => {
-    return (
-        <div className="">
-            <Features></Features>
-        </div>
-    );
+  return (
+    <div>
+      <div className="pt-36">
+        <Features></Features>
+      </div>
+    </div>
+  );
 };
 
 export default HomePage;
