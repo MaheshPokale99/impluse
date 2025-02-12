@@ -1,23 +1,25 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import HomePage from "./componenet/pages/Home";
+import HomePage from "./pages/Home";
 import ThemeProvider from "./context/ThemeContext";
-import Navbar from "./componenet/Navbar";
-import Footer from "./componenet/Contact"
+import Navbar from "./component/Navbar";
+// import Footer from "./component/Footer";
+
 
 function App() {
   return (
-    <div className="h-full w-full">
+    <ThemeProvider>
       <BrowserRouter>
-        <ThemeProvider>
-          <Navbar></Navbar>
+      <div className="w-full min-h-screen">
+      <Navbar />
           <Routes>
             <Route path="/" element={<HomePage />} />
           </Routes>
-          <Footer></Footer>
-        </ThemeProvider>
+          {/* <Footer /> */}
+        </div>
       </BrowserRouter>
-    </div>
+    </ThemeProvider>
   );
 }
+
 
 export default App;
