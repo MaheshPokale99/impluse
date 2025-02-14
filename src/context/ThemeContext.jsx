@@ -4,23 +4,26 @@ export const ThemeContext = createContext();
 
 const ThemeProvider = ({ children }) => {
   const systemTheme =
-    typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches
+    typeof window !== "undefined" &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches
       ? "dark"
       : "light";
 
-  const [theme, setTheme] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("theme") || systemTheme;
-    }
-    return "light";
-  });
+  const [theme, setTheme] = useState("light");
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") || systemTheme;
+    setTheme(savedTheme);
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
-    
+
     if (theme === "dark") {
+      root.setAttribute("data-theme", "dark");
       root.classList.add("dark");
     } else {
+      root.setAttribute("data-theme", "light");
       root.classList.remove("dark");
     }
 

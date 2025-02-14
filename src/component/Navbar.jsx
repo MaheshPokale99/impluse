@@ -13,7 +13,7 @@ export const Navbar = () => {
   }, [navigate]);
 
   return (
-    <nav className="manrope-regular fixed top-0 left-0 w-full z-50 shadow-md transition-all duration-300 bg-zinc-900 h-16 md:h-20 mt-7 border-y border-blue-500">
+    <nav className="manrope-regular fixed top-0 left-0 w-full z-50 shadow-md transition-all duration-300 bg-zinc-900 h-16 md:h-20 mt-7 border-y border-blue-500 rounded-lg">
 
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto">
 
@@ -47,15 +47,15 @@ export const Navbar = () => {
 
         {isLoggedIn && (
           <div className="hidden md:flex items-center justify-between w-full md:w-auto md:order-1">
-            <ul className="flex flex-col md:flex-row font-medium p-4 md:p-0 mt-4 md:mt-0 md:space-x-8 text-lg md:text-xl mb-4 md:mb-0">
+            <ul className="flex flex-col md:flex-row font-normal p-4 md:p-0 mt-4 md:mt-0 md:space-x-8 text-lg md:text-xl mb-4 md:mb-0">
               {['Home', 'Explore Mentors', 'Success Stories'].map((item) => (
                 <li key={item}>
                   <NavLink
                     to={`/${item.toLowerCase().replace(/\s+/g, '-')}`}
                     className={({ isActive }) =>
                       `block py-2 px-3 md:p-0 transition-colors duration-300 ${isActive
-                        ? "dark:hover:text-blue-400 text-blue-400"
-                        : "text-gray-200 dark:text-gray-100 hover:text-blue-400"
+                        ? "hover:text-blue-400 text-blue-400"
+                        : "text-gray-200 hover:text-blue-400"
                       }`
                     }
                     aria-current={item === "Home" ? "page" : undefined}

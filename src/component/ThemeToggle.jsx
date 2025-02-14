@@ -10,7 +10,7 @@ const ThemeToggle = () => {
     <button
       onClick={toggleTheme}
       className="flex justify-center items-center text-2xl transition-transform duration-500 transform dark:bg-gray-700 dark:hover:bg-gray-600 
-      rounded-full h-10 w-10 shadow-md dark:shadow-lg border border-gray-400 dark:border-none
+      rounded-full h-10 w-10 shadow-md dark:shadow-lg border border-blue-400
       focus:outline-none active:scale-90 mb-4 md:mb-0"    
     >
       {theme === "light" ? (

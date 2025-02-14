@@ -31,9 +31,9 @@ const Sidebar = () => {
       </div>
 
       <nav
-        className={`bg-white dark:bg-[#15171c] w-72 h-screen fixed top-0 right-0 transition-transform duration-300 z-50 sidebar ${
+        className={`bg-white dark:bg-[#15171c] w-72 h-screen fixed top-0 right-0 transition-transform duration-300 z-50 sidebar bg-gradient-to-b from-sky-100 to-sky-50 dark:from-zinc-900 ${
           sidebar ? 'translate-x-0' : 'translate-x-full'
-        }`}
+          }`}
       >
         <div className="w-full">
           <Link to="#" className="flex justify-start items-center h-20 text-3xl ml-8">
