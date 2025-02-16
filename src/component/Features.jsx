@@ -59,7 +59,6 @@ const Box = ({ heading, para, icon }) => {
       ref={boxRef}
       className="relative bg-white dark:bg-zinc-900 shadow-lg rounded-xl p-6 md:p-8 flex flex-col justify-start overflow-hidden group transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]"
     >
-      {/* Border Animation - Now 2px Thick */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Left Border */}
         <div
@@ -90,12 +89,10 @@ const Box = ({ heading, para, icon }) => {
         ></div>
       </div>
 
-      {/* Icon */}
       <span className="text-left text-indigo-600 dark:text-pink-400 text-3xl transition-transform duration-500 group-hover:scale-110">
         {icon}
       </span>
 
-      {/* Content */}
       <div className="text-zinc-900 dark:text-white flex flex-col text-left gap-2 mt-6">
         <h1 className="font-semibold text-xl">{heading}</h1>
         <p className="text-lg text-zinc-700 dark:text-zinc-300">{para}</p>
