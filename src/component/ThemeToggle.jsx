@@ -2,23 +2,41 @@ import { useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
 import { GoSun } from "react-icons/go";
 import { FaRegMoon } from "react-icons/fa";
+import { motion } from "framer-motion";
 
 const ThemeToggle = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
 
   return (
-    <button
+    <motion.button
       onClick={toggleTheme}
-      className="flex justify-center items-center text-2xl transition-transform duration-500 transform dark:bg-gray-700 dark:hover:bg-gray-600 
-      rounded-full h-10 w-10 shadow-md dark:shadow-lg border border-blue-400
-      focus:outline-none active:scale-90 mb-4 md:mb-0"    
+      className="flex justify-center items-center text-2xl bg-white/10 dark:bg-black/20 backdrop-blur-md 
+      rounded-full h-10 w-10 shadow-lg border border-blue-400 dark:border-yellow-400 
+      transition-all duration-300 transform hover:scale-110 active:scale-90 mb-5 md:mb-0"
+      whileTap={{ scale: 0.85 }}
     >
       {theme === "light" ? (
-        <FaRegMoon className="text-center text-slate-200 font-bold transition-colors duration-500" />
+        <motion.span
+          key="moon"
+          initial={{ opacity: 0, rotate: -180 }}
+          animate={{ opacity: 1, rotate: 0 }}
+          exit={{ opacity: 0, rotate: 180 }}
+          transition={{ duration: 0.4 }}
+        >
+          <FaRegMoon className="text-blue-500 dark:text-gray-200 transition-colors duration-300" />
+        </motion.span>
       ) : (
-        <GoSun className="text-center text-yellow-400 font-bold transition-colors duration-500"/>
+        <motion.span
+          key="sun"
+          initial={{ opacity: 0, rotate: 180 }}
+          animate={{ opacity: 1, rotate: 0 }}
+          exit={{ opacity: 0, rotate: -180 }}
+          transition={{ duration: 0.4 }}
+        >
+          <GoSun className="text-yellow-500 transition-colors duration-300" />
+        </motion.span>
       )}
-    </button>
+    </motion.button>
   );
 };
 

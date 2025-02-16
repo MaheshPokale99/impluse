@@ -26,7 +26,7 @@ const Sidebar = () => {
       <IconContext.Provider value={{ color: '' }}>
       <div className="h-20 flex items-center justify-start">
         <Link to="#" className="ml-8 text-3xl flex items-center sidebar-toggle">
-          <FaIcons.FaBars onClick={showSidebar}  className='text-zinc-200 mb-4 md:mb-0'/>
+          <FaIcons.FaBars onClick={showSidebar}  className='text-zinc-800 dark:text-zinc-200 mb-4 md:mb-0'/>
         </Link>
       </div>
 
