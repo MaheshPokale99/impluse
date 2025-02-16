@@ -62,34 +62,34 @@ const Box = ({ heading, para, icon }) => {
       <div className="absolute inset-0 pointer-events-none">
         {/* Left Border */}
         <div
-          className={`absolute left-0 top-0 w-[2px] bg-gradient-to-b from-[#4f46e5] to-[#ec4899] transition-all duration-[1.5s] ease-out ${
+          className={`absolute left-0 top-0 w-[1.5px] bg-gradient-to-b from-[#4f46e5] to-[#ec4899] transition-all duration-[1.5s] ease-out ${
             isVisible ? "h-full" : "h-0"
           }`}
         ></div>
 
         {/* Top Border */}
         <div
-          className={`absolute top-0 left-0 h-[2px] bg-gradient-to-r from-[#4f46e5] to-[#ec4899] transition-all duration-[1.5s] ease-out delay-200 ${
+          className={`absolute top-0 left-0 h-[1.5px] bg-gradient-to-r from-[#4f46e5] to-[#ec4899] transition-all duration-[1.5s] ease-out delay-200 ${
             isVisible ? "w-full" : "w-0"
           }`}
         ></div>
 
         {/* Right Border */}
         <div
-          className={`absolute right-0 bottom-0 w-[2px] bg-gradient-to-b from-[#4f46e5] to-[#ec4899] transition-all duration-[1.5s] ease-out delay-400 ${
+          className={`absolute right-0 bottom-0 w-[1.5px] bg-gradient-to-b from-[#4f46e5] to-[#ec4899] transition-all duration-[1.5s] ease-out delay-400 ${
             isVisible ? "h-full" : "h-0"
           }`}
         ></div>
 
         {/* Bottom Border */}
         <div
-          className={`absolute bottom-0 right-0 h-[2px] bg-gradient-to-r from-[#4f46e5] to-[#ec4899] transition-all duration-[1.5s] ease-out delay-600 ${
+          className={`absolute bottom-0 right-0 h-[1.5px] bg-gradient-to-r from-[#4f46e5] to-[#ec4899] transition-all duration-[1.5s] ease-out delay-600 ${
             isVisible ? "w-full" : "w-0"
           }`}
         ></div>
       </div>
 
-      <span className="text-left text-indigo-600 dark:text-pink-400 text-3xl transition-transform duration-500 group-hover:scale-110">
+      <span className="text-left text-indigo-600 dark:text-pink-400 text-3xl transition-transform duration-500 group-hover:scale-105 lg:group-hover:scale-110:">
         {icon}
       </span>
 
