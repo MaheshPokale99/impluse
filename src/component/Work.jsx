@@ -7,14 +7,10 @@ const Work = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const updateThreshold = () => {
-      return window.innerWidth < 768 ? 0.2 : 0.3;
-    };
+    const updateThreshold = () => (window.innerWidth < 768 ? 0.2 : 0.3);
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting);
-      },
+      ([entry]) => setIsVisible(entry.isIntersecting),
       { threshold: updateThreshold() }
     );
 
@@ -40,8 +36,8 @@ const Work = () => {
             key={index}
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={isVisible ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0 }}
-            transition={{ duration: 0.6, delay: index * 0.2 }}
-            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 0.8, ease: "easeInOut", delay: index * 0.2 }}
+            whileHover={{ scale: 1.08, transition: { duration: 0.4, ease: "easeOut" } }}
             className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-r from-blue-500/30 to-purple-500/30 p-1"
           >
             {isVisible && (
@@ -55,7 +51,7 @@ const Work = () => {
                   opacity: 1,
                 }}
                 transition={{
-                  duration: 2,
+                  duration: 3,
                   repeat: Infinity,
                   repeatType: "mirror",
                   ease: "linear",
@@ -68,13 +64,15 @@ const Work = () => {
                 src={image}
                 alt="Project"
                 className="w-full h-80 object-cover rounded-3xl transition-transform duration-500 ease-in-out"
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.04, transition: { duration: 0.5, ease: "easeInOut" } }}
               />
 
+              {/* Smooth Overlay Effect */}
               <motion.div
-                className="absolute inset-0 bg-black/50 dark:bg-gray-900/60 opacity-0 flex flex-col items-center justify-center transition-all duration-500"
-                whileHover={{ opacity: 1 }}
-              ></motion.div>
+                className="absolute inset-0 bg-black/50 dark:bg-gray-900/60 flex flex-col items-center justify-center transition-all duration-500"
+                initial={{ opacity: 1 }}
+                whileHover={{ opacity: 0, transition: { duration: 0.5, ease: "easeInOut" } }}
+              />
             </div>
           </motion.div>
         ))}
