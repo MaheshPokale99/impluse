@@ -24,9 +24,9 @@ const Work = () => {
   return (
     <div
       ref={boxRef}
-      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-zinc-200/5 to-white dark:from-zinc-950/5 transition-all duration-500 p-10"
+      className="flex flex-col items-center justify-center transition-all duration-500 p-10"
     >
-      <h2 className="text-5xl font-extrabold text-gray-900 dark:text-white mb-12 text-center">
+      <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-12 text-center">
         Our <span className="text-blue-500">Creative Work</span>
       </h2>
 
