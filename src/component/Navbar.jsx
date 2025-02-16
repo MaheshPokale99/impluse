@@ -14,9 +14,9 @@ export const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 backdrop-blur-lg bg-white/50 dark:bg-black/30 shadow-lg 
-      border-b border-gray-300 dark:border-gray-700 transition-all duration-300 h-16 md:h-20 rounded-b-lg">
+      border-y border-gray-600 dark:border-gray-500 transition-all duration-300 h-16 md:h-20 rounded-lg mt-4">
       
-      <div className="max-w-screen-xl mx-auto flex items-center justify-between px-6 md:px-12">
+      <div className="max-w-screen-xl mx-auto flex items-center justify-between px-6 md:px-12 lg:mt-2">
         
         {/* Logo */}
         <NavLink to="/home" className="hover:opacity-85 transition-opacity duration-200">

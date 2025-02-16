@@ -12,7 +12,7 @@ const ThemeToggle = () => {
       onClick={toggleTheme}
       className="flex justify-center items-center text-2xl bg-white/10 dark:bg-black/20 backdrop-blur-md 
       rounded-full h-10 w-10 shadow-lg border border-blue-400 dark:border-yellow-400 
-      transition-all duration-300 transform hover:scale-110 active:scale-90"
+      transition-all duration-300 transform hover:scale-110 active:scale-90 lg:mt-2"
       whileTap={{ scale: 0.85 }}
     >
       {theme === "light" ? (
