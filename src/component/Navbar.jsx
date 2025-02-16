@@ -21,7 +21,7 @@ export const Navbar = () => {
         {/* Logo */}
         <NavLink to="/home" className="hover:opacity-85 transition-opacity duration-200">
           <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-700 to-blue-400 
-            bg-clip-text text-transparent mb-5 md:mb-0">
+            bg-clip-text text-transparent">
             Impulse
           </h1>
         </NavLink>
