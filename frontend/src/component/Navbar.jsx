@@ -9,7 +9,7 @@ export const Navbar = () => {
 
   useEffect(() => {
     const user = localStorage.getItem("token");
-    setIsLoggedIn(true);
+    setIsLoggedIn(!false);
   }, []);
 
   return (
@@ -53,10 +53,7 @@ export const Navbar = () => {
 
           {!isLoggedIn ? (
             <button
-              className="px-5 py-2 text-white bg-gradient-to-r from-orange-500 to-red-500 
-              hover:from-orange-600 hover:to-red-600 dark:from-orange-700 dark:to-red-700 
-              dark:hover:from-orange-800 dark:hover:to-red-800 rounded-xl shadow-md 
-              transition-transform duration-300 transform hover:scale-105 active:scale-95"
+              className="custom-button h-12 w-36 mt-2 md:mt-4 lg:mt-1 lg:h-14"
               onClick={() => navigate("/login")}
             >
               Login

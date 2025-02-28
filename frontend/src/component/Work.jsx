@@ -1,12 +1,27 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { assets } from "../assets/assets";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Work = () => {
   const imageRefs = useRef([]);
   const [visibleIndexes, setVisibleIndexes] = useState(new Set());
+  const [images, setImages] = useState([]);
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const navigate = useNavigate();
 
   useEffect(() => {
+    const fetchImages = async () => {
+      try {
+        const response = await axios.get(`${backendUrl}/api/images/image`);
+        setImages(response.data.images);
+      } catch (error) {
+        console.error("Error fetching images:", error);
+      }
+    };
+
+    fetchImages();
+
     const observer = new IntersectionObserver(
       (entries) => {
         setVisibleIndexes((prev) => {
@@ -37,9 +52,9 @@ const Work = () => {
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
-        {[assets.work1, assets.work2, assets.work3].map((image, index) => (
+        {images.map((image, index) => (
           <motion.div
-            key={index}
+            key={image._id}
             ref={(el) => (imageRefs.current[index] = el)}
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -66,8 +81,8 @@ const Work = () => {
 
             <div className="relative bg-white dark:bg-gray-900 rounded-3xl overflow-hidden">
               <motion.img
-                src={image}
-                alt="Project"
+                src={image.url}
+                alt={image.title}
                 className="w-full h-80 object-cover rounded-3xl transition-transform duration-500 ease-in-out"
                 whileHover={{
                   scale: 1.04,
@@ -90,6 +105,15 @@ const Work = () => {
           </motion.div>
         ))}
       </div>
+
+      {images.length > 2 && (
+        <button
+          onClick={() => navigate("/gallery")}
+          className="custom-button w-[90%] md:w-[30%] h-14 mt-8"
+        >
+          See More
+        </button>
+      )}
     </div>
   );
 };
