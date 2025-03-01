@@ -6,6 +6,7 @@ import Footer from "./component/Footer";
 import ImageUpload from "./pages/UploadImage";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import ImageGallery from "./pages/ImageGallery"
 
 
 function App() {
@@ -17,10 +18,12 @@ function App() {
           <div className="flex-1 overflow-auto">
             <Routes>
               <Route path="/" element={<HomePage />} />
+              <Route path="/home" element={<HomePage />} />
               <Route path="/signup" element={<Signup></Signup>}></Route>
               <Route path="/login" element={<Login></Login>}></Route>
               <Route path="/image" element={<ImageUpload></ImageUpload>}></Route>
               <Route path="/upload" element={<ImageUpload></ImageUpload>}></Route>
+              <Route path="/image-gallery" element={<ImageGallery></ImageGallery>}></Route>
             </Routes>
           </div>
           <Footer />

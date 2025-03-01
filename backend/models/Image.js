@@ -2,7 +2,14 @@ const mongoose = require("mongoose");
 
 
 const imageSchema = new mongoose.Schema({
-    url: String,
+    url:{
+        type: String,
+        required: true,
+    },
+    public_id: {
+        type: String,
+        required: true,
+    },
     uploadedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"

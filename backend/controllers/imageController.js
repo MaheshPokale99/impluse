@@ -35,16 +35,22 @@ exports.uploadImages = async (req, res) => {
             if (applySameMetadata === "true") {
                 imageTitle = title || "Untitled";
                 imageDescription = description || "No description";
-                imageTags = tags ? tags.split(",") : [];
-            } else {
+                imageTags = tags 
+                    ? (Array.isArray(tags) ? tags : JSON.parse(tags)) 
+                    : [];
+            } 
+            else {
                 const imageMetadata = metadata ? JSON.parse(metadata)[i] : {};
                 imageTitle = imageMetadata.title || "Untitled";
                 imageDescription = imageMetadata.description || "No description";
-                imageTags = imageMetadata.tags ? imageMetadata.tags.split(",") : [];
+                imageTags = imageMetadata.tags 
+                    ? (Array.isArray(imageMetadata.tags) ? imageMetadata.tags : JSON.parse(imageMetadata.tags)) 
+                    : [];
             }
 
             const newImage = await Image.create({
                 url: result.secure_url,
+                public_id: result.public_id,
                 uploadedBy: req.user?._id,
                 title: imageTitle,
                 description: imageDescription,
@@ -59,9 +65,13 @@ exports.uploadImages = async (req, res) => {
             images: uploadedImages,
         });
     } catch (error) {
-        res.status(500).json({ error: "Server Error", details: error.message });
+        res.status(500).json({ 
+            error: "Server Error", 
+            details: error.message 
+        });
     }
 };
+
 
 // Get all images
 exports.getImages = async (req, res) => {
@@ -74,6 +84,54 @@ exports.getImages = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             message: "Failed to fetch images",
+            error: error.message,
+        });
+    }
+};
+
+// Delete images
+exports.deleteImages = async (req, res) => {
+    try {
+        const { imageIds } = req.body;
+        if (!Array.isArray(imageIds) || imageIds.length === 0) {
+            return res.status(400).json({
+                error: "No image selected"
+            });
+        }
+
+        const deletedImages = [];
+        for (let i = 0; i < imageIds.length; i++) {
+            const imageId = imageIds[i];
+
+            // Find image in the database by public_id
+            const image = await Image.findOne({ public_id: imageId });
+            if (!image) {
+                return res.status(404).json({
+                    error: `Image with public_id ${imageId} not found`
+                });
+            }
+
+            const result = await cloudinary.uploader.destroy(image.public_id);
+
+            // Handle Cloudinary deletion result
+            if (result.result !== "ok") {
+                return res.status(500).json({
+                    error: `Failed to delete image with public_id ${imageId}. Cloudinary response: ${result.error || 'Unknown error'}`,
+                });
+            }
+
+            // Delete the image
+            await Image.findOneAndDelete({ public_id: imageId });
+            deletedImages.push(imageId);
+        }
+
+        res.status(200).json({
+            message: "Images deleted successfully",
+            deletedImages,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Server Error",
             error: error.message,
         });
     }

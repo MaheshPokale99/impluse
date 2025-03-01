@@ -10,6 +10,7 @@ import User from "./users.svg"
 import work1 from "./sarvesh1 (1).jpg"
 import work2 from "./sarvesh1 (2).jpg"
 import work3 from "./sarvesh1 (3).jpg"
+import image from "./image.svg"
 
 export const assets = {
     dropdown,
@@ -22,4 +23,5 @@ export const assets = {
     Gmail,
     User,
     work1,work2,work3,
+    image,
 }

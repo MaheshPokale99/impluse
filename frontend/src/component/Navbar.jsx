@@ -29,7 +29,7 @@ export const Navbar = () => {
         {/* Navigation Links */}
         {isLoggedIn && (
           <ul className="hidden md:flex space-x-6 text-lg font-medium">
-            {["Home", "Explore Mentors", "Success Stories"].map((item) => (
+            {["Home", "Explore Mentors", "Success Stories","Image Gallery"].map((item) => (
               <li key={item}>
                 <NavLink
                   to={`/${item.toLowerCase().replace(/\s+/g, "-")}`}

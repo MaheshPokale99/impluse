@@ -14,7 +14,7 @@ const Work = () => {
     const fetchImages = async () => {
       try {
         const response = await axios.get(`${backendUrl}/api/images/image`);
-        setImages(response.data.images);
+        setImages(response.data.images.slice(0, 3));
       } catch (error) {
         console.error("Error fetching images:", error);
       }
@@ -106,9 +106,9 @@ const Work = () => {
         ))}
       </div>
 
-      {images.length > 2 && (
+      {images.length > 0 && (
         <button
-          onClick={() => navigate("/gallery")}
+          onClick={() => navigate("/image-gallery")}
           className="custom-button w-[90%] md:w-[30%] h-14 mt-8"
         >
           See More

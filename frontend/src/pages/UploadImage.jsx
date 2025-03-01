@@ -3,12 +3,15 @@ import axios from "axios";
 import TextInput from "../component/TextInput";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { MdFolderDelete } from "react-icons/md";
+
 
 const ImageUpload = () => {
     const [files, setFiles] = useState([]);
     const [applySameMetadata, setApplySameMetadata] = useState(true);
     const [commonMetadata, setCommonMetadata] = useState({ title: "", description: "", tags: "" });
     const [individualMetadata, setIndividualMetadata] = useState([]);
+    const [loading, setLoading] = useState(false);
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
     const handleFileChange = (e) => {
@@ -34,13 +37,14 @@ const ImageUpload = () => {
         newMetadata[index][field] = value;
         setIndividualMetadata(newMetadata);
     };
-    
+
     const handleUpload = async () => {
         if (files.length === 0) {
             toast.error("No files selected!");
             return;
         }
 
+        setLoading(true);
         const formData = new FormData();
         files.forEach((file) => formData.append("images", file));
         formData.append("applySameMetadata", applySameMetadata);
@@ -49,7 +53,8 @@ const ImageUpload = () => {
             formData.append("title", commonMetadata.title);
             formData.append("description", commonMetadata.description);
             formData.append("tags", JSON.stringify(commonMetadata.tags.split(",")));
-        } else {
+        }
+        else {
             formData.append(
                 "metadata",
                 JSON.stringify(
@@ -73,16 +78,26 @@ const ImageUpload = () => {
             setFiles([]);
             setCommonMetadata({ title: "", description: "", tags: "" });
             setIndividualMetadata([]);
-        } catch (error) {
+        }
+        catch (error) {
             console.error("Upload Error:", error.response?.data || error.message);
             toast.error(error.response?.data?.message || "Upload failed. Please try again.");
+        }
+        finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen">
-             <ToastContainer />
-            <div className="max-w-lg w-full mt-36 mx-auto p-6 bg-white dark:bg-zinc-900 shadow-xl rounded-lg">
+        <div className="flex items-center justify-center min-h-screen pt-32">
+            <ToastContainer />
+            {loading && (
+                <div className="absolute inset-0 flex items-center justify-center z-50">
+                    <div className="loader"></div>
+                </div>
+            )}
+
+            <div className="max-w-lg w-full mx-auto p-6 bg-white dark:bg-zinc-900 shadow-xl rounded-lg">
                 <label className="block w-full cursor-pointer">
                     <span className="block text-gray-700 dark:text-gray-300 font-medium mb-2">Upload Images</span>
                     <input
@@ -105,14 +120,14 @@ const ImageUpload = () => {
                                 <img
                                     src={URL.createObjectURL(file)}
                                     alt="preview"
-                                    className="h-24 w-24 object-cover rounded-lg"
-                                />
-                                <button
+                                    className="h-24 w-24 object-cover rounded-lg cursor-pointer mx-auto"
                                     onClick={() => removeFile(index)}
-                                    className="absolute top-0 bg-red-500 text-white rounded-full p-1 text-base"
-                                >
-                                    ✕
-                                </button>
+                                />
+                                
+                                <MdFolderDelete 
+                                    className="absolute top-0 text-red-500 hover:text-red-600 text-3xl cursor-pointer ml-5"
+                                    onClick={() => removeFile(index)}
+                                />
                             </div>
                         ))}
                     </div>
@@ -153,7 +168,12 @@ const ImageUpload = () => {
                     <div className="mt-4 p-3 border rounded-lg dark:border-gray-700 overflow-y-auto max-h-72">
                         {files.map((file, index) => (
                             <div key={index} className="mb-4 p-3 border rounded-lg dark:border-gray-600 bg-gray-50 dark:bg-zinc-800">
-                                <p className="text-gray-700 dark:text-gray-300 font-medium mb-3">{file.name}</p>
+                                <p className="text-gray-700 dark:text-gray-300 font-medium mb-3">{file.name}
+                                    <MdFolderDelete 
+                                        className="text-red-500 hover:text-red-600 text-3xl cursor-pointer"
+                                        onClick={() => removeFile(index)}
+                                    />
+                                </p>
                                 <TextInput
                                     type="text"
                                     placeholder="Title"
@@ -177,12 +197,12 @@ const ImageUpload = () => {
                     </div>
                 )}
 
-                <button
-                    onClick={handleUpload}
-                    disabled={files.length === 0}
+                <button 
+                    onClick={handleUpload} 
+                    disabled={files.length === 0 || loading} 
                     className="mt-4 w-full p-3 bg-blue-500 dark:bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 transition-all disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
-                    Upload
+                    {loading ? "Uploading..." : "Upload"}
                 </button>
             </div>
         </div>
