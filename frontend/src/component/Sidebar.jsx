@@ -1,13 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
 import { SidebarData } from "./SidebarData";
 import SubMenu from "./SubMenu";
 import { IconContext } from "react-icons/lib";
+import { AuthContext } from "../context/AuthContext";
 
 const Sidebar = () => {
   const [sidebar, setSidebar] = useState(false);
+  const { user } = useContext(AuthContext);
 
   const showSidebar = () => setSidebar(!sidebar);
 
@@ -21,6 +23,8 @@ const Sidebar = () => {
     document.addEventListener("mousedown", closeSidebar);
     return () => document.removeEventListener("mousedown", closeSidebar);
   }, []);
+
+  useEffect(() => {}, [user]);
 
   return (
     <>

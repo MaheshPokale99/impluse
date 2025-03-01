@@ -3,7 +3,8 @@ const {
     registerUser,
     loginUser,
     getProfile, 
-    getAllUsers
+    getAllUsers,
+    getCurrentUser,
 } = require("../controllers/userController");
 const { protect, isAdmin } = require("../middleware/authMiddleware");
 
@@ -17,6 +18,9 @@ router.post("/login", loginUser);
 
 router.get("/profile",protect,getProfile);
 router.get("/users",protect,isAdmin,getAllUsers);
+router.get("/me",protect,getCurrentUser);
+
+
 
 module.exports = router;
 

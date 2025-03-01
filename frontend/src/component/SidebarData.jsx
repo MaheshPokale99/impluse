@@ -12,6 +12,11 @@ export const SidebarData = [
     icon: <img src={assets.profile} alt="Profile" className="w-6 h-6" />,
   },
   {
+      title: 'Upload Image',
+      path: '/upload',
+      icon: <img src={assets.upload} alt="Profile" className="w-6 h-6" />,
+  },
+  {
     title: 'Gallery',
     path: '/image-gallery',
     icon: <img src={assets.image} alt="Profile" className="w-6 h-6" />,
@@ -30,6 +35,11 @@ export const SidebarData = [
     title: 'About',
     path: '/about',
     icon: <img src={assets.about} alt="About" className="w-6 h-6 text-white" />,
+  },
+  {
+    title: 'Login',
+    path: '/login',
+    icon: <img src={assets.logout} alt="Logout" className="w-6 h-6 text-white" />,
   },
   {
     title: 'Logout',
