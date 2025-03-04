@@ -57,7 +57,7 @@ const Box = ({ heading, para, icon }) => {
   return (
     <div
       ref={boxRef}
-      className="relative bg-white dark:bg-zinc-900 shadow-lg rounded-xl p-6 md:p-8 flex flex-col justify-start overflow-hidden group transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]"
+      className="card relative bg-white dark:bg-zinc-900 shadow-lg rounded-xl p-6 md:p-8 flex flex-col justify-start overflow-hidden group transition-all duration-700 ease-[cubic-bezier(0.19,1,0.22,1)]"
     >
       <div className="absolute inset-0 pointer-events-none">
         {/* Left Border */}

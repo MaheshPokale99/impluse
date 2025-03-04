@@ -68,7 +68,7 @@ const HomePage = () => {
         />
       </motion.div>
 
-
+       {/* Featurs section */}
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -86,7 +86,7 @@ const HomePage = () => {
         variants={fadeIn}
         className="w-full md:w-[90%] mx-auto mt-12"
       >
-        <Work/>
+        <Work />
       </motion.div>
 
       {/* Query Section */}
@@ -106,7 +106,7 @@ const HomePage = () => {
 const FeatureItem = ({ icon, text }) => (
   <motion.div
     whileHover={{ scale: 1.05 }}
-    className="flex items-center gap-3 p-1 bg-white dark:bg-zinc-800 shadow-md rounded-lg transition-all duration-300"
+    className="card flex items-center gap-3 p-1 bg-white dark:bg-zinc-800 shadow-md rounded-lg transition-all duration-300"
   >
     <div className="w-10 h-10 flex justify-center items-center">{icon}</div>
     <span className="text-gray-700 dark:text-gray-300 text-base lg:text-lg">{text}</span>

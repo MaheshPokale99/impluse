@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+
+/* loader */
 .loader {
   width: 50px;
   aspect-ratio: 1;
@@ -38,6 +40,8 @@
   }
 }
 
+
+/* button */
 .custom-button {
     position: relative;
     display: flex;
@@ -178,4 +182,44 @@
     100% {
       left: 100%;
     }
+}
+
+
+/* card Image */
+
+.card {
+  --border-color: rgba(99, 102, 241, 0.2);
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --hover-border-color: rgba(99, 102, 241, 0.4);
+  --hover-shadow-color-light: rgba(73, 67, 197, 0.4); /* #4f46e5 with 20% opacity */
+  --hover-shadow-color-dark: rgba(71, 84, 219, 0.5); /* indigo-300 with 15% opacity */
+  
+  position: relative;
+  background: inherit;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 4px var(--shadow-color);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  outline: 1px solid transparent;
+  outline-offset: 0.5px;
+}
+
+.card:hover {
+  border-color: var(--hover-border-color);
+  box-shadow: 0 4px 8px var(--hover-shadow-color-light);
+  outline-color: rgba(99, 102, 241, 0.1);
+  transform: translateY(-2px);
+}
+
+@media (prefers-color-scheme: dark) {
+  .card {
+    --border-color: rgba(165, 180, 252, 0.1);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --hover-border-color: rgba(165, 180, 252, 0.3);
+  }
+  
+  .card:hover {
+    box-shadow: 0 4px 8px var(--hover-shadow-color-dark);
+  }
 }
