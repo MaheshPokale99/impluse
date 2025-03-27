@@ -307,7 +307,7 @@ const sendAdminEmail = async (name, adminEmails, testTitle, userEmail, submissio
         
                     <ul>
                         <li><strong>User Email:</strong> ${userEmail}</li>
-                        <li><strong>User Email:</strong> ${name}</li>
+                        <li><strong>User Name:</strong> ${name}</li>
                         <li><strong>Test Title:</strong> ${testTitle}</li>
                         <li><strong>Submission Time:</strong> ${new Date().toLocaleString()}</li>
                     </ul>
