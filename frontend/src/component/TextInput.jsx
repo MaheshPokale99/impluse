@@ -1,12 +1,11 @@
 import PropTypes from "prop-types";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 
-
-const TextInput = ({ type, name, placeholder, value, onChange, showPassword, togglePassword }) => {
+const TextInput = ({ type, name, placeholder, value, onChange, showPassword, togglePassword, className }) => {
   return (
-    <div className="mb-4 relative">
+    <div className="relative w-full">
       <input
-        className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-transparent dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none pr-12"
+        className={`w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-transparent dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none pr-12 ${className}`}
         type={type === "password" && showPassword !== undefined ? (showPassword ? "text" : "password") : type}
         name={name}
         placeholder={placeholder}
@@ -29,12 +28,13 @@ const TextInput = ({ type, name, placeholder, value, onChange, showPassword, tog
 
 TextInput.propTypes = {
   type: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   placeholder: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   showPassword: PropTypes.bool,
   togglePassword: PropTypes.func,
+  className: PropTypes.string,
 };
 
 export default TextInput;

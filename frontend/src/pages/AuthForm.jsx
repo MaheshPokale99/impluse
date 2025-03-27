@@ -1,10 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
 import { NavLink, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import TextInput from "../component/TextInput";
-import "react-toastify/dist/ReactToastify.css";
+import toast, { Toaster } from "react-hot-toast";
 import PropTypes from "prop-types";
+import TextInput from "../component/TextInput";
 
 const AuthForm = ({
   title,
@@ -30,15 +29,13 @@ const AuthForm = ({
     try {
       const { data } = await axios.post(`${backendUrl}${endpoint}`, user);
       localStorage.setItem("token", data.token);
-      toast.success(`${title} Successful!`, { position: "top-center" });
+      toast.success(`${title} Successful!`);
 
       setTimeout(() => {
         navigate(redirectPath);
       }, 1500);
     } catch (error) {
-      toast.error(error.response?.data?.message || `${title} Failed!`, {
-        position: "top-center",
-      });
+      toast.error(error.response?.data?.message || "Server error");
     } finally {
       setUser({ name: "", email: "", password: "" });
     }
@@ -46,9 +43,9 @@ const AuthForm = ({
 
   return (
     <div className="flex items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8 transition-colors duration-500">
-      <ToastContainer />
+      <Toaster position="top-right" reverseOrder={false} />
       <form
-        className="w-full max-w-sm sm:max-w-md lg:max-w-lg xl:max-w-xl p-6 sm:p-8 bg-white dark:bg-zinc-900 shadow-xl rounded-2xl border border-gray-200 dark:border-gray-700 transition-all"
+        className="flex flex-col  space-y-4 w-full max-w-sm sm:max-w-md lg:max-w-lg xl:max-w-xl p-6 sm:p-8 bg-white dark:bg-zinc-900 shadow-xl rounded-2xl border border-gray-200 dark:border-gray-700 transition-all"
         onSubmit={handleSubmit}
       >
         <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 dark:text-white text-center mb-6">
@@ -84,7 +81,7 @@ const AuthForm = ({
         />
 
         {title === "Welcome To Impluse" && (
-          <div className="text-right mb-4">
+          <div className="text-right -translate-y-2">
             <NavLink
               to="/forgot-password"
               className="text-blue-500 dark:text-blue-400 text-sm hover:underline"

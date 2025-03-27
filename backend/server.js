@@ -4,6 +4,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
 const imageRoutes = require("./routes/imageRoutes");
+const testRoutes=require("./routes/testRoutes")
 
 // Load environment variables
 dotenv.config();
@@ -21,6 +22,7 @@ app.use(cors());
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/images", imageRoutes);
+app.use("/api/test",testRoutes);
 
 // Server Listen
 const PORT = process.env.PORT || 5000;

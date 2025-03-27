@@ -9,19 +9,20 @@ import { motion } from "framer-motion";
 import Work from "../component/Work";
 
 const fadeIn = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
 
 const HomePage = () => {
   return (
-    <div className="min-h-screen w-full flex flex-col bg-gradient-to-b from-sky-100 to-white dark:from-zinc-900 dark:to-black">
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={fadeIn}
-        className="w-full px-6 sm:px-12 py-16 flex flex-col items-center text-center"
-      >
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={fadeIn}
+      className="min-h-screen w-full flex flex-col bg-gradient-to-b from-sky-100 to-white dark:from-zinc-900 dark:to-black overflow-x-hidden"
+    >
+      {/* Hero Section */}
+      <div className="w-full px-6 sm:px-12 py-16 flex flex-col items-center text-center mx-auto">
         <div className="mt-20 md:mt-36 space-y-4">
           <h1 className="text-black dark:text-white font-bold text-3xl sm:text-4xl md:text-6xl leading-tight">
             Supercharge Your Career with
@@ -38,22 +39,17 @@ const HomePage = () => {
               Start Now
               <span className="shine-effect"></span>
             </button>
-            <button className="custom-button w-[90%] md:w-[35%] h-14">
+            <button className="custom-button w-[90%] md:w-[35%] h-14 flex items-center justify-center">
               <span>Find your Mentor</span>
               <FaArrowRightLong className="ml-2 mt-1" />
               <span className="shine-effect"></span>
             </button>
           </div>
         </div>
-      </motion.div>
+      </div>
 
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={fadeIn}
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10 px-6 sm:px-12 w-full max-w-7xl mx-auto"
-      >
+      {/* Features Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10 px-6 sm:px-12 w-full max-w-7xl mx-auto">
         <FeatureItem
           icon={<RiLightbulbFlashLine className="text-[#FFD700] text-3xl" />}
           text="Unlock Your Potential with Mentorship"
@@ -66,9 +62,9 @@ const HomePage = () => {
           icon={<IoIosFlash className="text-[#007BFF] text-3xl" />}
           text="Empowering Students, Transforming Careers"
         />
-      </motion.div>
+      </div>
 
-       {/* Featurs section */}
+      {/* Features Section */}
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -79,6 +75,7 @@ const HomePage = () => {
         <Features />
       </motion.div>
 
+      {/* Work Section */}
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -99,13 +96,18 @@ const HomePage = () => {
       >
         <QuerySection />
       </motion.div>
-    </div>
+
+
+    </motion.div>
+
+
   );
 };
 
 const FeatureItem = ({ icon, text }) => (
   <motion.div
-    whileHover={{ scale: 1.05 }}
+    whileHover={{ scale: 1.02 }}
+    transition={{ duration: 0.2 }}
     className="card flex items-center gap-3 p-1 bg-white dark:bg-zinc-800 shadow-md rounded-lg transition-all duration-300"
   >
     <div className="w-10 h-10 flex justify-center items-center">{icon}</div>

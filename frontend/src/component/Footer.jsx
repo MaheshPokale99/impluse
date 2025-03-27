@@ -6,11 +6,11 @@ const Footer = () => {
     return (
         <footer className="manrope-regular w-full mt-32 bg-white dark:bg-zinc-900 border-t-2 dark:border-zinc-700 text-zinc-900 dark:text-white">
             <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 py-12 px-6 text-center md:text-left">
-                
+
                 {/* Logo Section */}
-                <motion.div 
-                    initial={{ opacity: 0, y: 30 }} 
-                    animate={{ opacity: 1, y: 0 }} 
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, ease: "easeOut" }}
                     className="flex flex-col items-center md:items-start gap-y-3"
                 >
@@ -25,22 +25,22 @@ const Footer = () => {
                 </motion.div>
 
                 {/* Quick Links */}
-                <motion.div 
-                    initial={{ opacity: 0, y: 30 }} 
-                    animate={{ opacity: 1, y: 0 }} 
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, ease: "easeOut" }}
                     className="flex flex-col items-center md:items-start gap-y-3"
                 >
                     <h1 className="font-semibold text-lg">Quick Links</h1>
                     <nav className="text-zinc-500 dark:text-zinc-400 flex flex-col space-y-1">
-                        <NavLink 
-                            to="/home" 
+                        <NavLink
+                            to="/home"
                             className="hover:text-blue-500 transition-all duration-300"
                         >
                             Home
                         </NavLink>
-                        <NavLink 
-                            to="/about" 
+                        <NavLink
+                            to="/about"
                             className="hover:text-blue-500 transition-all duration-300"
                         >
                             About Us
@@ -48,21 +48,26 @@ const Footer = () => {
                     </nav>
                 </motion.div>
 
-                <motion.div 
-                    initial={{ opacity: 0, y: 30 }} 
-                    animate={{ opacity: 1, y: 0 }} 
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
                     className="flex flex-col items-center md:items-start gap-y-3"
                 >
                     <h1 className="font-semibold text-lg">Get in Touch</h1>
                     <div className="flex items-center gap-3 text-zinc-500 dark:text-zinc-400">
                         <IoMail className="w-5 h-5 text-blue-500" />
-                        <a 
-                            href="mailto:impulse@gmail.com" 
+                        <a
+                            href="https://mail.google.com/mail/?view=cm&fs=1&to=implusehelp@gmail.com&su=Support%20Request&body=Hello,%20I%20need%20help%20with..."
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="text-blue-500 hover:underline transition-all duration-300"
                         >
-                            impulse@gmail.com
+                            implusehelp@gmail.com
                         </a>
+
+
+
                     </div>
                 </motion.div>
             </div>

@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast, { Toaster } from "react-hot-toast";
 import { AuthContext } from "../context/AuthContext";
 
 const ImageGallery = () => {
@@ -77,7 +76,7 @@ const ImageGallery = () => {
 
   return (
     <div className="relative container mx-auto p-8 pt-28">
-      <ToastContainer />
+      
       <h2 className="text-3xl font-semibold mb-6 text-center">Image Gallery</h2>
 
       {/* Loader */}
@@ -181,6 +180,7 @@ const ImageGallery = () => {
           </div>
         )}
       </div>
+      <Toaster position="top-right" reverseOrder={false} />
     </div>
   );
 };

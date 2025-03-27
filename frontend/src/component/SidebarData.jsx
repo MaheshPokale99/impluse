@@ -12,6 +12,11 @@ export const SidebarData = [
     icon: <img src={assets.profile} alt="Profile" className="w-6 h-6" />,
   },
   {
+      title: 'Test',
+      path: '/tests',
+      icon: <img src={assets.upload} alt="Test" className="w-6 h-6" />,
+  },
+  {
       title: 'Upload Image',
       path: '/upload',
       icon: <img src={assets.upload} alt="Profile" className="w-6 h-6" />,

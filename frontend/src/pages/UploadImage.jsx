@@ -1,9 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
 import TextInput from "../component/TextInput";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast, { Toaster } from "react-hot-toast";
 import { MdFolderDelete } from "react-icons/md";
+import { LuUpload } from "react-icons/lu";
 
 
 const ImageUpload = () => {
@@ -90,7 +90,7 @@ const ImageUpload = () => {
 
     return (
         <div className="flex items-center justify-center min-h-screen pt-32">
-            <ToastContainer />
+            <Toaster position="top-right" reverseOrder={false} />
             {loading && (
                 <div className="absolute inset-0 flex items-center justify-center z-50">
                     <div className="loader"></div>
@@ -107,9 +107,10 @@ const ImageUpload = () => {
                         accept="image/*"
                         className="hidden"
                     />
-                    <div className="w-full p-4 border-2 border-dashed border-blue-400 rounded-md text-center text-gray-500 dark:text-gray-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer">
-                        Click to upload images
+                    <div className="w-full flex items-center justify-center p-4 border-2 border-dashed border-blue-400 rounded-md text-center hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer">
+                        <LuUpload className="text-2xl" />
                     </div>
+
                 </label>
 
                 {/* Preview Section */}
@@ -123,8 +124,8 @@ const ImageUpload = () => {
                                     className="h-24 w-24 object-cover rounded-lg cursor-pointer mx-auto"
                                     onClick={() => removeFile(index)}
                                 />
-                                
-                                <MdFolderDelete 
+
+                                <MdFolderDelete
                                     className="absolute top-0 text-red-500 hover:text-red-600 text-3xl cursor-pointer ml-5"
                                     onClick={() => removeFile(index)}
                                 />
@@ -169,7 +170,7 @@ const ImageUpload = () => {
                         {files.map((file, index) => (
                             <div key={index} className="mb-4 p-3 border rounded-lg dark:border-gray-600 bg-gray-50 dark:bg-zinc-800">
                                 <p className="text-gray-700 dark:text-gray-300 font-medium mb-3">{file.name}
-                                    <MdFolderDelete 
+                                    <MdFolderDelete
                                         className="text-red-500 hover:text-red-600 text-3xl cursor-pointer"
                                         onClick={() => removeFile(index)}
                                     />
@@ -197,9 +198,9 @@ const ImageUpload = () => {
                     </div>
                 )}
 
-                <button 
-                    onClick={handleUpload} 
-                    disabled={files.length === 0 || loading} 
+                <button
+                    onClick={handleUpload}
+                    disabled={files.length === 0 || loading}
                     className="mt-4 w-full p-3 bg-blue-500 dark:bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 transition-all disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
                     {loading ? "Uploading..." : "Upload"}
