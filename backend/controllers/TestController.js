@@ -145,8 +145,8 @@ exports.submitTest = async (req, res) => {
         const submissionLink = `${process.env.Frontend_URI}/test-submission/${submission._id}`;
         const adminEmails = process.env.Admin_Email ? process.env.Admin_Email.split(",") : [];
 
-        await sendCompletionEmail(userEmail, test.title, submissionLink);
-        await sendAdminEmail(adminEmails, test.title, userEmail, submissionLink);
+        await sendCompletionEmail(user?.name,userEmail, test.title, submissionLink);
+        await sendAdminEmail(user?.name, adminEmails, test.title, userEmail, submissionLink);
 
 
         res.status(200).json({
@@ -244,7 +244,7 @@ exports.deleteTestSubmission = async (req, res) => {
 
 
 // send mail to user
-const sendCompletionEmail = async (email, testTitle, submissionLink) => {
+const sendCompletionEmail = async (name, email, testTitle, submissionLink) => {
     try {
         const transporter = nodemailer.createTransport({
             service: "gmail",
@@ -254,12 +254,31 @@ const sendCompletionEmail = async (email, testTitle, submissionLink) => {
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
-            subject: "Test Completed Successfully",
-            html: `<p>Hello,</p>
-                   <p>You have successfully completed the test: <strong>${testTitle}</strong>.</p>
-                   <p>You can view your test submission here: <a href="${submissionLink}">View Test Submission</a></p>
-                   <p>Thank you for your participation!</p>`,
+            subject: "🎉 Congratulations! You've Successfully Completed Your Test",
+            html: `
+                <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; padding: 20px; max-width: 600px; border: 1px solid #ddd; border-radius: 8px; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
+                    <h2 style="color: #007bff;">🎉 Congratulations on Completing Your Test!</h2>
+                    <p>Hello <strong>${name}</strong>,</p>
+                    <p>We’re excited to inform you that you have successfully completed the test: <strong>${testTitle}</strong>.</p>
+                    
+                    <p>🔍 You can review your submission by clicking the link below:</p>
+                    <p style="text-align: center; margin: 20px 0;">
+                        <a href="${submissionLink}" style="background-color: #007bff; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; font-weight: bold;">📄 View Test Submission</a>
+                    </p>
+                    
+                    <p>📢 <strong>What’s Next?</strong>
+                    <p>One of our mentors will review your submission and connect with you within the <strong>24 hours</strong> to provide feedback and discuss your performance.</p>
+                    
+                    <p>📩 <strong>Have Questions?</strong> Feel free to reach out to us if you need any assistance.</p>
+                    
+                    <p>Thank you for your participation, and we look forward to helping you on your learning journey! 🚀</p>
+                    
+                    <p>Best Regards,</p>
+                    <p><strong>The Impluse Team</strong></p>
+                </div>
+            `
         };
+        
 
         await transporter.sendMail(mailOptions);
     }
@@ -269,7 +288,7 @@ const sendCompletionEmail = async (email, testTitle, submissionLink) => {
 }
 
 // send mail to admins
-const sendAdminEmail = async (adminEmails, testTitle, userEmail, submissionLink) => {
+const sendAdminEmail = async (name, adminEmails, testTitle, userEmail, submissionLink) => {
     try {
         const transporter = nodemailer.createTransport({
             service: "gmail",
@@ -278,12 +297,34 @@ const sendAdminEmail = async (adminEmails, testTitle, userEmail, submissionLink)
 
         const mailOptions = {
             from: process.env.EMAIL_USER,
-            to: adminEmails.join(","),
-            subject: "New Test Submission",
-            html: `<p>Hello Admin,</p>
-                   <p>User <strong>${userEmail}</strong> has completed the test: <strong>${testTitle}</strong>.</p>
-                   <p>View submission: <a href="${submissionLink}">View Submission</a></p>`
+            to: adminEmails.join(","),  
+            subject: "📢 New Test Submission Alert",
+            html: `
+                <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; padding: 20px; max-width: 600px; border: 1px solid #ddd; border-radius: 8px; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
+                    <h2 style="color: #d9534f;">🚀 New Test Submission</h2>
+                    <p>Hello Mentor,</p>
+                    <p>A user has just completed a test. Here are the details:</p>
+        
+                    <ul>
+                        <li><strong>User Email:</strong> ${userEmail}</li>
+                        <li><strong>User Email:</strong> ${name}</li>
+                        <li><strong>Test Title:</strong> ${testTitle}</li>
+                        <li><strong>Submission Time:</strong> ${new Date().toLocaleString()}</li>
+                    </ul>
+        
+                    <p>📌 You can review the submission using the link below:</p>
+                    <p style="text-align: center; margin: 20px 0;">
+                        <a href="${submissionLink}" style="background-color: #d9534f; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px; font-weight: bold;">📄 View Submission</a>
+                    </p>
+        
+                    <p>📢 Please review the submission at your earliest convenience.</p>
+        
+                    <p>Best Regards,</p>
+                    <p><strong>The Impluse Team</strong></p>
+                </div>
+            `
         };
+        
 
         await transporter.sendMail(mailOptions);
     } catch (error) {
