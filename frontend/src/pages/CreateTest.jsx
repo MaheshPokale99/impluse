@@ -23,7 +23,7 @@ const CreateTest = () => {
   const [tests, setTests] = useState([]);
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-
+// all test
   useEffect(() => {
     const fetchTests = async () => {
       try {
@@ -42,6 +42,7 @@ const CreateTest = () => {
     fetchTests();
   }, [testDone]);
 
+  // delete test
   const deleteTest = async (testId) => {
     try {
       const token = localStorage.getItem("token");
@@ -59,9 +60,15 @@ const CreateTest = () => {
   };
 
 
+  // create test
   const handleSubmit = async () => {
     setLoading(true);
     try {
+
+      if (!title.trim() || !description.trim() || questions.length === 0 || questions.some(q => !q.question.trim() || q.options.length < 2)) {
+        toast.error("Please fill in all fields and provide at least two options per question.");
+        return;
+      }
       const token = localStorage.getItem("token");
       const response = await axios.post(`${backendUrl}/api/test/create`,
         { title, questions, description }, {
@@ -125,6 +132,7 @@ const CreateTest = () => {
       ) :
         (
           <>
+          {/* All test */}
               {(!createTest ) &&
                 <div className="max-w-3xl w-full mx-auto p-6 bg-white dark:bg-zinc-900 shadow-xl rounded-lg">
                   <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">Available Tests</h2>
@@ -180,10 +188,11 @@ const CreateTest = () => {
                 </div>
               }
 
+              {/* cheack role */}
               {(user?.role === 'admin' && !createTest) && (
                 <>
                   <button
-                    className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 w-full sm:w-1/4 mt-7"
+                    className="bg-green-600 text-white px-4 py-2 h-12 rounded-lg hover:bg-green-700 w-full sm:w-1/4 mt-7"
                     onClick={() => setCreateTest(true)}
                   >
                     Create Test
@@ -191,8 +200,8 @@ const CreateTest = () => {
                 </>
               )}
       
+            {/* crete test only admin */}
             {createTest &&
-            
               <div className="max-w-lg w-full mx-auto p-6 bg-white dark:bg-zinc-900 shadow-xl rounded-lg">
                 <div className="flex justify-between items-center mb-10">
                   <h2 className="text-2xl md:text-3xl font-bold">
