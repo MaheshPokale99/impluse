@@ -4,6 +4,7 @@ const Signup = () => {
   return (
     <AuthForm
       title="Create an Account"
+      subtitle="Join us and start your mentorship journey today"
       buttonText="Sign Up"
       endpoint="/api/users/register"
       redirectPath="/login"

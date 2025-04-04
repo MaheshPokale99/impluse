@@ -3,7 +3,8 @@ import AuthForm from "./AuthForm";
 const Login = () => {
   return (
     <AuthForm
-      title="Welcome To Impluse"
+      title="Welcome Back"
+      subtitle="Login to your account to continue your journey"
       buttonText="Login"
       endpoint="/api/users/login"
       redirectPath="/"
