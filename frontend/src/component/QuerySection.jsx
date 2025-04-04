@@ -4,6 +4,7 @@ import { FiChevronDown, FiSend, FiMail, FiPhone, FiMessageSquare, FiCheckCircle 
 import { MdQuestionAnswer } from "react-icons/md";
 import { RiShieldLine } from "react-icons/ri";
 import ChatShow from "./ChatShow";
+import TextInput from "./TextInput"
 
 const QuerySection = () => {
   const [query, setQuery] = useState("");
@@ -143,13 +144,12 @@ const QuerySection = () => {
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <FiMail className="text-gray-400" />
                     </div>
-                    <input
+                    <TextInput
                       type="email"
                       id="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className="pl-10 w-full py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white dark:bg-zinc-700 text-gray-900 dark:text-gray-100"
                       placeholder="your@email.com"
                     />
                   </div>
@@ -164,13 +164,12 @@ const QuerySection = () => {
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <FiPhone className="text-gray-400" />
                     </div>
-                    <input
+                    <TextInput
                       type="tel"
                       id="phone"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className="pl-10 w-full py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white dark:bg-zinc-700 text-gray-900 dark:text-gray-100"
-                      placeholder="+1 (234) 567-8900"
+                      placeholder="+91 1234569870"
                     />
                   </div>
                 </div>
@@ -186,7 +185,7 @@ const QuerySection = () => {
                     onChange={(e) => setQuery(e.target.value)}
                     required
                     rows={5}
-                    className="w-full py-2 px-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white dark:bg-zinc-700 text-gray-900 dark:text-gray-100"
+                    className="w-full py-2 px-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100"
                     placeholder="What would you like to know about your career path?"
                   ></textarea>
                   <div className="mt-1 text-right text-xs text-gray-500 dark:text-gray-400">
