@@ -9,6 +9,10 @@ const testSubmissionSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    name:{
+        type: String,
+        required: true
+    },
     answers: [{
         question: { 
             type: String,  

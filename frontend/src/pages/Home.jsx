@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import Features from "../component/Features";
 import { motion } from "framer-motion";
 import Work from "../component/Work";
+import { useNavigate } from "react-router-dom";
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -24,6 +25,7 @@ const staggerContainer = {
 };
 
 const HomePage = () => {
+  const navigate=useNavigate();
 
 
   return (
@@ -43,7 +45,7 @@ const HomePage = () => {
       >
         {/* Hero Section */}
         <div className="w-full px-6 sm:px-12 py-16 flex flex-col items-center text-center mx-auto">
-          <div className="mt-14 md:mt-24 space-y-6">
+          <div className="mt-12 md:mt-24 space-y-6">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -60,10 +62,10 @@ const HomePage = () => {
               Supercharge Your Career with
             </h1>
             <div className="relative">
-              <h1 className="bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent font-bold text-4xl sm:text-5xl md:text-7xl">
+              <h1 className="bg-gradient-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent font-bold text-4xl sm:text-5xl md:text-6xl">
                 Long-Term Mentorship
               </h1>
-              <svg className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-48 md:w-64 h-6 text-blue-500/30 dark:text-blue-400/20" viewBox="0 0 200 12" fill="currentColor">
+              <svg className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-48 md:w-64 h-6 text-blue-500/30 dark:text-blue-400/20" viewBox="0 0 200 12" fill="currentColor">
                 <path d="M6.68795 11.7806C26.9121 6.98469 72.8549 1.99993 97.1992 1.99994C121.544 1.99994 174.05 6.70895 194.714 11.7806" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
               </svg>
             </div>
@@ -88,6 +90,7 @@ const HomePage = () => {
                 whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(79, 70, 229, 0.3)" }}
                 whileTap={{ scale: 0.95 }}
                 className="custom-button-light w-[90%] md:w-[35%] h-14 group border border-blue-100 dark:border-blue-800/30"
+                onClick={()=>{navigate('/tests')}}
               >
                 <span className="text-zinc-800 dark:text-zinc-100 relative z-10 flex items-center">
                   Start Now
@@ -101,6 +104,7 @@ const HomePage = () => {
                 variants={fadeIn}
                 whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(79, 70, 229, 0.4)" }}
                 whileTap={{ scale: 0.95 }}
+                onClick={()=>{navigate('/tests')}}
                 className="custom-button w-[90%] md:w-[35%] h-14 flex items-center justify-center group"
               >
                 <span className="relative z-10 flex items-center">

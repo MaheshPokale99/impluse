@@ -1,11 +1,9 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { IoMdCloseCircle } from "react-icons/io";
 import { IoMdClose } from "react-icons/io";
 import { IoMdAddCircle } from "react-icons/io";
 import { IoMdAdd } from "react-icons/io";
-import { LuUpload } from "react-icons/lu";
 import { FiEdit3, FiTrash2, FiList, FiPlus, FiFile, FiCheckCircle, FiArrowLeft, FiAward } from "react-icons/fi";
 import { HiOutlineSparkles } from "react-icons/hi";
 import { BiAnalyse } from "react-icons/bi";
@@ -203,6 +201,7 @@ const CreateTest = () => {
               >
                 Test Management
               </motion.h1>
+              { user?.role === 'admin' &&
               <motion.p 
                 className="text-gray-600 dark:text-gray-300 mt-3"
                 initial={{ opacity: 0 }}
@@ -211,6 +210,7 @@ const CreateTest = () => {
               >
                 Create and manage engaging assessment tests for your users
               </motion.p>
+              }
             </header>
             
             <motion.div 

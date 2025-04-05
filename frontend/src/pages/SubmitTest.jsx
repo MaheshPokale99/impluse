@@ -2,10 +2,9 @@ import axios from "axios";
 import { useContext, useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
-import { ThemeContext } from "../context/ThemeContext";
 import { AuthContext } from "../context/AuthContext";
 import { motion } from "framer-motion";
-import { FiArrowLeft, FiCheckCircle, FiClock, FiHelpCircle, FiXCircle, FiAward, FiAlertCircle } from "react-icons/fi";
+import { FiArrowLeft, FiCheckCircle, FiAlertCircle } from "react-icons/fi";
 import { RiTimerFlashLine, RiMedalLine, RiQuestionMark } from "react-icons/ri";
 import confetti from 'canvas-confetti';
 
@@ -26,7 +25,6 @@ const SubmitTest = () => {
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [progress, setProgress] = useState(0);
   const navigate = useNavigate();
-  const { theme } = useContext(ThemeContext);
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [remainingTime, setRemainingTime] = useState(null);
@@ -37,13 +35,10 @@ const SubmitTest = () => {
   const location = useLocation();
   const selectedTest = location.state?.testData;
 
-  // Set a default time limit of 30 minutes
   useEffect(() => {
     if (selectedTest) {
-      const timeLimit = selectedTest.timeLimit || 30 * 60; // 30 minutes in seconds
+      const timeLimit = selectedTest.timeLimit || 30 * 60;
       setRemainingTime(timeLimit);
-      
-      // Update progress based on answered questions
       updateProgress();
     }
   }, [selectedTest]);
@@ -55,8 +50,6 @@ const SubmitTest = () => {
     const timer = setTimeout(() => {
       if (remainingTime > 0) {
         setRemainingTime(remainingTime - 1);
-        
-        // Show warning when 5 minutes remaining
         if (remainingTime === 300) {
           setTimeWarning(true);
           toast.error("5 minutes remaining!", {
@@ -69,7 +62,6 @@ const SubmitTest = () => {
           });
         }
       } else {
-        // Auto-submit when time runs out
         toast.error("Time's up! Submitting your test...");
         handleSubmit();
       }
@@ -78,7 +70,6 @@ const SubmitTest = () => {
     return () => clearTimeout(timer);
   }, [remainingTime]);
 
-  // Format time for display
   const formatTime = (seconds) => {
     if (seconds === null) return "--:--";
     const mins = Math.floor(seconds / 60);
@@ -86,7 +77,6 @@ const SubmitTest = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
   
-  // Calculate and update progress
   const updateProgress = () => {
     if (!selectedTest?.questions) return;
     
@@ -95,7 +85,6 @@ const SubmitTest = () => {
     const percent = Math.round((answeredQuestions / totalQuestions) * 100);
     setProgress(percent);
     
-    // If all questions answered, celebrate!
     if (percent === 100 && Object.keys(selectedAnswers).length === totalQuestions) {
       try {
         confetti({
@@ -109,17 +98,16 @@ const SubmitTest = () => {
     }
   };
 
-  // Get time color based on remaining time
   const getTimeColor = () => {
     if (remainingTime === null) return "text-white";
-    if (remainingTime < 300) return "text-red-400"; // Less than 5 minutes
-    if (remainingTime < 600) return "text-yellow-400"; // Less than 10 minutes
+    if (remainingTime < 300) return "text-red-400"; 
+    if (remainingTime < 600) return "text-yellow-400";
     return "text-white";
   };
 
   // Submit test
   const handleSubmit = async () => {
-    if (submitting) return; // Prevent double submission
+    if (submitting) return; 
     
     try {
       setLoading(true);
@@ -198,7 +186,6 @@ const SubmitTest = () => {
       [questionId]: selectedOption,
     }));
     
-    // Update progress
     setTimeout(updateProgress, 100);
   };
 

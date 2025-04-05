@@ -126,6 +126,7 @@ exports.submitTest = async (req, res) => {
         }
 
         const userEmail = user?.email;
+        const name=user?.name;
 
         const test = await Test.findOne({ title: testName });
         if (!test) {
@@ -138,6 +139,7 @@ exports.submitTest = async (req, res) => {
         const submission = await TestSubmission.create({
             testName,
             userEmail,
+            name,
             userId:req.user?._id,
             answers
         });

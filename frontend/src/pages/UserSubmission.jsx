@@ -76,7 +76,7 @@ const UserSubmission = () => {
   const scoreData = calculateScore();
 
   return (
-    <div className="flex items-center justify-center min-h-screen py-20 px-4 bg-gradient-to-b from-white via-blue-50 to-gray-50 dark:from-zinc-900 dark:via-blue-950/10 dark:to-zinc-950">
+    <div className="flex items-center justify-center min-h-screen py-20 px-4 ">
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-transparent dark:from-blue-900/10 pointer-events-none z-0" />
       
       <Toaster 
@@ -212,7 +212,7 @@ const UserSubmission = () => {
                 
                 <div className="flex-1 text-center md:text-left">
                   <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-1">
-                    {submission?.userName || "Anonymous User"}
+                    {submission?.name || "Anonymous User"}
                   </h3>
                   <p className="text-gray-500 dark:text-gray-400 text-sm flex items-center justify-center md:justify-start mb-2">
                     <FiMail className="mr-1.5 text-blue-500" /> {submission?.userEmail || "No email provided"}

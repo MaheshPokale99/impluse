@@ -16,9 +16,7 @@ const Work = () => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const navigate = useNavigate();
 
-  // Check if browser supports 3D transforms - only run once
   useEffect(() => {
-    // Simple detection for 3D transform support
     try {
       const el = document.createElement('div');
       const has3d = 'WebkitPerspective' in el.style ||
@@ -33,7 +31,6 @@ const Work = () => {
     }
   }, []);
 
-  // Optimized image loading with debounce
   useEffect(() => {
     const controller = new AbortController();
     const { signal } = controller;
@@ -44,8 +41,8 @@ const Work = () => {
         setError(null);
         const response = await axios.get(`${backendUrl}/api/images/image`, {
           signal,
-          timeout: 8000, // Add timeout
-          params: { limit: 6 } // Request only 6 images from server
+          timeout: 8000,
+          params: { limit: 6 }
         });
 
         if (response.data && Array.isArray(response.data.images)) {
@@ -62,15 +59,13 @@ const Work = () => {
       }
     };
 
-    const timer = setTimeout(fetchImages, 100); // Small delay for better perceived performance
+    const timer = setTimeout(fetchImages, 100); 
 
-    // Set up intersection observer for lazy loading
     if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
       const observer = new IntersectionObserver(
         () => {
-          // Just using observer for native lazy loading
         },
-        { threshold: 0.1, rootMargin: "100px" } // Increased rootMargin for earlier loading
+        { threshold: 0.1, rootMargin: "100px" }
       );
 
       // Observe existing elements
@@ -91,7 +86,6 @@ const Work = () => {
     };
   }, [backendUrl]);
 
-  // Optimized mouse tracking with throttling
   useEffect(() => {
     if (!supportsTransform3D || !containerRef.current) return;
 
@@ -146,8 +140,8 @@ const Work = () => {
     const y = mousePosition.y - centerY;
 
     // Smaller rotation for better performance
-    const rotateX = (y / rect.height) * 5; // Max 5 degrees instead of 10
-    const rotateY = -(x / rect.width) * 5; // Max 5 degrees instead of 10
+    const rotateX = (y / rect.height) * 5;
+    const rotateY = -(x / rect.width) * 5;
 
     return {
       rotateX,
@@ -167,7 +161,6 @@ const Work = () => {
   // Determine which images to display
   const displayImages = images.length > 0 ? images : placeholderImages;
 
-  // Memoize image rendering for better performance
   const renderImages = () => {
     return displayImages.map((image, index) => (
       <motion.div
@@ -330,7 +323,7 @@ const Work = () => {
               boxShadow: "0 10px 25px -5px rgba(79, 70, 229, 0.4)"
             }}
             whileTap={{ scale: 0.95 }}
-            className="custom-button relative overflow-hidden flex items-center justify-center gap-2 px-8 py-4"
+            className="custom-button relative overflow-hidden flex items-center justify-center gap-2 px-8 py-4 w-[45%]"
           >
             <span className="relative z-10">Explore Gallery</span>
             <FiArrowRight className="relative z-10 transition-transform duration-300 group-hover:translate-x-1" />
