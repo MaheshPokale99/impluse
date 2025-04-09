@@ -38,13 +38,11 @@ const TextInput = ({
     return "border-gray-200 dark:border-gray-700";
   };
   
-  // Handle custom blur event
   const handleBlur = (e) => {
     setIsFocused(false);
     if (onBlur) onBlur(e);
   };
 
-  // Handle hover state
   const handleMouseEnter = () => {
     if (!disabled) setIsHovered(true);
   };
@@ -60,7 +58,6 @@ const TextInput = ({
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {/* Left Icon (if provided) */}
         {Icon && (
           <div className={`absolute left-3.5 top-1/2 transform -translate-y-1/2 z-10 ${
             disabled ? 'text-gray-400 dark:text-gray-600' : 'text-gray-500 dark:text-gray-400'

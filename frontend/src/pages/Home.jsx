@@ -90,7 +90,7 @@ const HomePage = () => {
                 whileHover={{ scale: 1.05, boxShadow: "0 10px 25px -5px rgba(79, 70, 229, 0.3)" }}
                 whileTap={{ scale: 0.95 }}
                 className="custom-button-light w-[90%] md:w-[35%] h-14 group border border-blue-100 dark:border-blue-800/30"
-                onClick={()=>{navigate('/tests')}}
+                onClick={()=>{navigate('/verify')}}
               >
                 <span className="text-zinc-800 dark:text-zinc-100 relative z-10 flex items-center">
                   Start Now

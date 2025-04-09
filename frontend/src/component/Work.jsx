@@ -33,20 +33,15 @@ const Work = () => {
 
   useEffect(() => {
     const controller = new AbortController();
-    const { signal } = controller;
 
     const fetchImages = async () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await axios.get(`${backendUrl}/api/images/image`, {
-          signal,
-          timeout: 8000,
-          params: { limit: 6 }
-        });
+        const response = await axios.get(`${backendUrl}/api/images/image`);
 
         if (response.data && Array.isArray(response.data.images)) {
-          setImages(response.data.images.slice(0, 6));
+          setImages(response.data.images.slice(0, 3));
         } else {
           throw new Error("Invalid data format received");
         }
@@ -323,7 +318,7 @@ const Work = () => {
               boxShadow: "0 10px 25px -5px rgba(79, 70, 229, 0.4)"
             }}
             whileTap={{ scale: 0.95 }}
-            className="custom-button relative overflow-hidden flex items-center justify-center gap-2 px-8 py-4 w-[45%]"
+            className="custom-button relative overflow-hidden flex items-center justify-center gap-2 px-8 py-4 w-full md:w-[50%]"
           >
             <span className="relative z-10">Explore Gallery</span>
             <FiArrowRight className="relative z-10 transition-transform duration-300 group-hover:translate-x-1" />

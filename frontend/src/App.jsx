@@ -9,8 +9,9 @@ import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import UserSubmission from "./pages/UserSubmission";
-const ImageUpload = lazy(()=>import("./pages/UploadImage"));
-const ImageGallery = lazy(()=>import("./pages/ImageGallery"));
+import Verify from "./pages/Verify";
+const ImageUpload = lazy(() => import("./pages/UploadImage"));
+const ImageGallery = lazy(() => import("./pages/ImageGallery"));
 const CreateTest = lazy(() => import("./pages/CreateTest"));
 const SubmitTest = lazy(() => import("./pages/SubmitTest"));
 
@@ -39,6 +40,7 @@ function App() {
                 <Route path="/tests" element={<CreateTest />} />
                 <Route path="/test/:title" element={<SubmitTest />} />
                 <Route path="/test-submission/:submissionId" element={<UserSubmission />} />
+                <Route path="/verify" element={<Verify />} />
               </Routes>
             </Suspense>
           </div>

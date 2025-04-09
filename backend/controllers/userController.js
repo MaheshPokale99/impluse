@@ -2,6 +2,9 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const zod = require("zod");
+const Otp = require("../models/Otp");
+const nodemailer = require('nodemailer');
+
 
 // Validation schemas using Zod
 const signupSchema = zod.object({
@@ -31,7 +34,13 @@ exports.registerUser = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = await User.create({ name, email, password: hashedPassword });
+        const newUser = await User.create({ 
+            name, 
+            email, 
+            password: hashedPassword,
+            phone: "",  
+            address: ""
+        });
 
         const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, { expiresIn: "30d" });
 
@@ -90,7 +99,7 @@ exports.getProfile = async (req, res) => {
 
         if (!user) {
             return res.status(404).json({
-                 error: "User not found" 
+                error: "User not found"
             });
         }
 
@@ -130,17 +139,124 @@ exports.getAllUsers = async (req, res) => {
 };
 
 //  get current logged user
-exports.getCurrentUser=async(req,res)=>{
+exports.getCurrentUser = async (req, res) => {
     try {
-        const user=await User.findById(req.user.id).select("-password");
+        const user = await User.findById(req.user.id).select("-password");
         res.json({
             user
         });
-    } 
+    }
     catch (error) {
-        res.status(500).json({ 
-            message: "Server error" 
+        res.status(500).json({
+            message: "Server error"
         });
     }
 }
+
+exports.sendOtp = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ message: "Email is required" });
+        }
+
+        const existingUser = await User.findOne({ email });
+        if (!existingUser) {
+            return res.status(404).json({ message: "User not found. Please sign up first." });
+        }
+
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+        await Otp.create({ email, otp });
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
+
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'Your OTP Code',
+            text: `Your OTP code is ${otp}`
+        };
+
+        await transporter.sendMail(mailOptions);
+
+        res.status(200).json({
+            message: "OTP sent to email successfully"
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Failed to send OTP",
+            error: error.message
+        });
+    }
+};
+
+exports.verifyUser = async (req, res) => {
+    try {
+        const { name, email, phone, address, otp } = req.body;
+                
+        if (!otp) {
+            return res.status(400).json({
+                message: "OTP is required"
+            });
+        }
+        
+        let formattedPhone = phone;
+        if (!phone.startsWith('+')) {
+            formattedPhone = `+${phone}`;
+        }
+        
+        const existingotp = await Otp.findOne({ email, otp });
+        
+        if (!existingotp) {
+            return res.status(400).json({
+                message: "Invalid or expired OTP"
+            });
+        }
+
+        await Otp.deleteMany({ email });
+
+        const user = await User.findOne({ email });
+        if (user) {
+            user.name = name;
+            user.email = email;
+            user.address = address;
+            user.phone = formattedPhone;
+            user.isVerified = true;
+
+            await user.save();
+            
+            return res.status(200).json({
+                message: "User verified and updated successfully",
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    address:user.address,
+                    isVerified: user.isVerified
+                }
+            });
+        }
+        else {
+            return res.status(404).json({
+                message: "User not found. Please sign up first."
+            });
+        }
+    }
+    catch (error) {
+        res.status(500).json({ 
+            message: "Internal Server Error",
+            error: error.message
+        });
+    }
+}
+
 

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useCallback } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
@@ -36,21 +36,59 @@ const SubmitTest = () => {
   const selectedTest = location.state?.testData;
 
   useEffect(() => {
+    if (!selectedTest) {
+      toast.error("No test selected. Please choose a test first.");
+      navigate("/tests");
+    }
+  }, [selectedTest, navigate]);
+
+  useEffect(() => {
     if (selectedTest) {
-      const timeLimit = selectedTest.timeLimit || 30 * 60;
+      const timeLimit = selectedTest.timeLimit || 30 * 60; 
       setRemainingTime(timeLimit);
       updateProgress();
     }
   }, [selectedTest]);
   
-  // Timer effect
+  // Update progress calculation
+  const updateProgress = useCallback(() => {
+    if (!selectedTest?.questions || !selectedTest.questions.length) return;
+    
+    const totalQuestions = selectedTest.questions.length;
+    const answeredQuestions = Object.keys(selectedAnswers).length;
+    const percent = Math.round((answeredQuestions / totalQuestions) * 100);
+    setProgress(percent);
+    
+    if (percent === 100 && answeredQuestions === totalQuestions) {
+      try {
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      } catch (e) {
+        console.log("Confetti effect failed to run");
+      }
+    }
+  }, [selectedAnswers, selectedTest]);
+  
+  useEffect(() => {
+    updateProgress();
+  }, [selectedAnswers, updateProgress]);
+  
   useEffect(() => {
     if (remainingTime === null) return;
     
-    const timer = setTimeout(() => {
-      if (remainingTime > 0) {
-        setRemainingTime(remainingTime - 1);
-        if (remainingTime === 300) {
+    const timer = setInterval(() => {
+      setRemainingTime(prev => {
+        if (prev <= 0) {
+          clearInterval(timer);
+          toast.error("Time's up! Submitting your test...");
+          handleSubmit();
+          return 0;
+        }
+        
+        if (prev === 300) {
           setTimeWarning(true);
           toast.error("5 minutes remaining!", {
             icon: <FiAlertCircle />,
@@ -61,13 +99,12 @@ const SubmitTest = () => {
             }
           });
         }
-      } else {
-        toast.error("Time's up! Submitting your test...");
-        handleSubmit();
-      }
+        
+        return prev - 1;
+      });
     }, 1000);
     
-    return () => clearTimeout(timer);
+    return () => clearInterval(timer);
   }, [remainingTime]);
 
   const formatTime = (seconds) => {
@@ -75,27 +112,6 @@ const SubmitTest = () => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
-  
-  const updateProgress = () => {
-    if (!selectedTest?.questions) return;
-    
-    const totalQuestions = selectedTest.questions.length;
-    const answeredQuestions = Object.keys(selectedAnswers).length;
-    const percent = Math.round((answeredQuestions / totalQuestions) * 100);
-    setProgress(percent);
-    
-    if (percent === 100 && Object.keys(selectedAnswers).length === totalQuestions) {
-      try {
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 }
-        });
-      } catch (e) {
-        // Confetti is optional, no worries if it fails
-      }
-    }
   };
 
   const getTimeColor = () => {
@@ -113,6 +129,18 @@ const SubmitTest = () => {
       setLoading(true);
       setSubmitting(true);
       const token = localStorage.getItem("token");
+      
+      if (!token) {
+        toast.error("You need to be logged in to submit a test");
+        navigate("/login");
+        return;
+      }
+
+      if (!selectedTest) {
+        toast.error("Test data not found");
+        navigate("/tests");
+        return;
+      }
 
       if (Object.keys(selectedAnswers).length === 0) {
         toast.error("Please answer at least one question before submitting", {
@@ -127,11 +155,14 @@ const SubmitTest = () => {
         return;
       }
 
+      // Format answers for submission
       const answers = selectedTest.questions.map((question) => ({
         question: question.question,
-        answer: Array.isArray(selectedAnswers[question._id])
-          ? selectedAnswers[question._id]
-          : [selectedAnswers[question._id] || "Not Answered"]
+        answer: selectedAnswers[question._id] 
+          ? (Array.isArray(selectedAnswers[question._id])
+              ? selectedAnswers[question._id]
+              : [selectedAnswers[question._id]])
+          : ["Not Answered"]
       }));
 
       const payload = {
@@ -160,12 +191,18 @@ const SubmitTest = () => {
           origin: { y: 0.6 }
         });
       } catch (e) {
-        // Confetti is optional
+        console.log("Confetti effect failed to run");
       }
       
       setSelectedAnswers({});
-      navigate(`/test-submission/${response.data?.submissionId}`);
+      
+      if (response.data?.submissionId) {
+        navigate(`/test-submission/${response.data.submissionId}`);
+      } else {
+        navigate("/tests");
+      }
     } catch (error) {
+      console.error("Error submitting test:", error);
       toast.error(error.response?.data?.message || "Failed to submit test.", {
         style: {
           borderRadius: '10px',
@@ -185,9 +222,22 @@ const SubmitTest = () => {
       ...prev,
       [questionId]: selectedOption,
     }));
-    
-    setTimeout(updateProgress, 100);
   };
+
+  const handleBackButton = () => {
+    if (Object.keys(selectedAnswers).length > 0) {
+      const confirmed = window.confirm("Are you sure you want to leave? Your progress will be lost.");
+      if (confirmed) {
+        navigate("/tests");
+      }
+    } else {
+      navigate("/tests");
+    }
+  };
+
+  if (!selectedTest) {
+    return null; 
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen py-20 px-4 bg-gradient-to-b from-white via-blue-50 to-gray-50 dark:from-zinc-900 dark:via-blue-950/10 dark:to-zinc-950">
@@ -248,7 +298,7 @@ const SubmitTest = () => {
               <motion.button
                 whileHover={{ scale: 1.05, x: -3 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => navigate("/tests")}
+                onClick={handleBackButton}
                 className="p-2.5 bg-white/20 hover:bg-white/30 text-white rounded-lg transition-all flex items-center"
               >
                 <FiArrowLeft className="mr-1.5" /> Back
@@ -298,7 +348,7 @@ const SubmitTest = () => {
             className="p-6 md:p-8"
             variants={stagger}
           >
-            {selectedTest?.questions.map((q, qIdx) => (
+            {selectedTest?.questions?.map((q, qIdx) => (
               <motion.div
                 key={q._id}
                 className="mb-8 bg-white dark:bg-zinc-800 rounded-xl shadow-md hover:shadow-lg border border-gray-100 dark:border-zinc-700 overflow-hidden transition-all duration-300"
@@ -333,7 +383,7 @@ const SubmitTest = () => {
                 
                 <div className="p-6">
                   <div className="space-y-3">
-                    {q.options.map((option, optIdx) => (
+                    {q.options?.map((option, optIdx) => (
                       <motion.label
                         key={optIdx}
                         className={`flex items-center p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer ${
@@ -407,7 +457,7 @@ const SubmitTest = () => {
                 disabled={submitting}
                 className={`px-8 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center ${
                   progress === 100 ? 'animate-pulse' : ''
-                }`}
+                } ${submitting ? 'opacity-80 cursor-not-allowed' : ''}`}
               >
                 {submitting ? (
                   <>

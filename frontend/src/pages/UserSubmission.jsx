@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FiArrowLeft, FiUser, FiMail, FiCheckCircle, FiFileText, FiAward, FiClock } from "react-icons/fi";
-import { RiMedalLine, RiTimerFlashLine, RiEmotionHappyLine } from "react-icons/ri";
+import { FiArrowLeft, FiUser, FiMail, FiCheckCircle, FiFileText, FiClock } from "react-icons/fi";
+import { RiEmotionHappyLine } from "react-icons/ri";
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -40,16 +40,6 @@ const UserSubmission = () => {
       minute: '2-digit'
     }).format(date);
   };
-  
-  // Calculate score (placeholder - replace with actual logic)
-  const calculateScore = () => {
-    if (!submission) return { score: 0, total: 0, percentage: 0 };
-    const total = submission.answers.length;
-    // This is a placeholder - you should implement real scoring logic
-    const score = Math.floor(Math.random() * (total + 1));
-    const percentage = Math.round((score / total) * 100);
-    return { score, total, percentage };
-  };
 
   useEffect(() => {
     const fetchSubmittedTest = async () => {
@@ -72,8 +62,6 @@ const UserSubmission = () => {
 
     fetchSubmittedTest();
   }, [submissionId, backendUrl]);
-
-  const scoreData = calculateScore();
 
   return (
     <div className="flex items-center justify-center min-h-screen py-20 px-4 ">
@@ -166,7 +154,7 @@ const UserSubmission = () => {
                   </motion.p>
                 )}
                 
-                {/* Score display */}
+                {/* Info display instead of score */}
                 <motion.div 
                   className="mt-6 flex flex-wrap justify-center gap-4"
                   initial={{ opacity: 0, y: 20 }}
@@ -174,23 +162,16 @@ const UserSubmission = () => {
                   transition={{ delay: 0.5 }}
                 >
                   <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg flex items-center">
-                    <RiMedalLine className="text-yellow-300 mr-2" />
-                    <span className="text-white font-medium">
-                      Score: {scoreData.percentage}%
-                    </span>
-                  </div>
-                  
-                  <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg flex items-center">
                     <FiCheckCircle className="text-green-300 mr-2" />
                     <span className="text-white font-medium">
-                      {scoreData.score}/{scoreData.total} Questions
+                      {submission?.answers?.length || 0} Questions Answered
                     </span>
                   </div>
                   
                   <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg flex items-center">
-                    <RiTimerFlashLine className="text-blue-300 mr-2" />
+                    <RiEmotionHappyLine className="text-blue-300 mr-2" />
                     <span className="text-white font-medium">
-                      Fast Completion
+                      Awaiting Feedback
                     </span>
                   </div>
                 </motion.div>
@@ -220,44 +201,12 @@ const UserSubmission = () => {
                   
                   <div className="flex flex-wrap gap-2 justify-center md:justify-start">
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
-                      <FiAward className="mr-1" /> Test Taker
+                      <FiCheckCircle className="mr-1" /> Submission Complete
                     </span>
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
-                      <RiEmotionHappyLine className="mr-1" /> {scoreData.percentage >= 70 ? "Excellent" : "Completed"}
+                      <RiEmotionHappyLine className="mr-1" /> Feedback Pending
                     </span>
                   </div>
-                </div>
-                
-                <div className="hidden md:block w-24 h-24 relative">
-                  <svg viewBox="0 0 36 36" className="w-full h-full">
-                    <path
-                      className="text-gray-200 dark:text-gray-700"
-            
-                      fill="none"
-                      d="M18 2.0845
-                        a 15.9155 15.9155 0 0 1 0 31.831
-                        a 15.9155 15.9155 0 0 1 0 -31.831"
-                    />
-                    <path
-                      className={`${
-                        scoreData.percentage >= 70 
-                          ? "text-green-500" 
-                          : scoreData.percentage >= 40 
-                            ? "text-yellow-500" 
-                            : "text-red-500"
-                      }`}
-                      strokeWidth="2"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeDasharray={`${scoreData.percentage}, 100`}
-                      d="M18 2.0845
-                        a 15.9155 15.9155 0 0 1 0 31.831
-                        a 15.9155 15.9155 0 0 1 0 -31.831"
-                    />
-                    <text x="18" y="20.35" className="text-lg font-semibold fill-gray-800 dark:fill-white text-center" textAnchor="middle">
-                      {scoreData.percentage}%
-                    </text>
-                  </svg>
                 </div>
               </motion.div>
             </div>
@@ -301,20 +250,13 @@ const UserSubmission = () => {
                           
                           <div className="mt-3 bg-gray-50 dark:bg-zinc-700/50 p-4 rounded-lg border border-gray-200 dark:border-zinc-600">
                             <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1 flex items-center">
-                              <FiCheckCircle className="mr-1.5 text-green-500 dark:text-green-400" />
+                              <FiCheckCircle className="mr-1.5 text-blue-500 dark:text-blue-400" />
                               Your Answer:
                             </p>
                             <p className="text-gray-900 dark:text-gray-100 font-medium px-3 py-2 bg-white/80 dark:bg-zinc-800/80 rounded-md border border-gray-200 dark:border-zinc-600">
                               {Array.isArray(answer.answer) ? answer.answer.join(", ") : answer.answer}
                             </p>
                           </div>
-                          
-                          {/* This is a placeholder - add correct answer display if available */}
-                          {Math.random() > 0.5 && (
-                            <div className="mt-2 text-xs text-green-600 dark:text-green-400 flex items-center">
-                              <FiAward className="mr-1" /> Correct answer
-                            </div>
-                          )}
                         </div>
                       </div>
                     </motion.div>
@@ -322,7 +264,7 @@ const UserSubmission = () => {
                 )}
               </div>
               
-              {/* Retake button */}
+              {/* Back to tests button */}
               {submission && (
                 <motion.div
                   className="mt-8 flex justify-center"
