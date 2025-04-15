@@ -459,4 +459,3 @@ const sendUserMentorshipConfirmationEmail = async (name, email) => {
         return false;
     }
 };
-
