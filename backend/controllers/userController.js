@@ -153,6 +153,7 @@ exports.getCurrentUser = async (req, res) => {
     }
 }
 
+// send otp for user
 exports.sendOtp = async (req, res) => {
     try {
         const { email } = req.body;
