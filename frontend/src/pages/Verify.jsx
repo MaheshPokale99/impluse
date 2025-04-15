@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { FiUser, FiPhone, FiMail, FiMapPin, FiLock } from "react-icons/fi";
 import { IoIosFlash } from "react-icons/io";
 import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from 'react-router-dom';
+
 
 const fadeIn = {
     hidden: { opacity: 0, y: 20 },
@@ -43,6 +45,7 @@ const Verify = () => {
     const [otp, setOtp] = useState("");
     const [loading, setLoading] = useState(false);
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    const navigate=useNavigate();
 
     const inputFields = [
         { key: "name", placeholder: "Name", icon: FiUser },
@@ -127,6 +130,10 @@ const Verify = () => {
                 Auth
             );
             toast.success(response?.data?.message || "Verification completed successfully!");
+            setTimeout(() => {
+                navigate('/');
+            }, 2500);
+            
         }
         catch (error) {
             toast.error(error.response?.data?.message || "Invalid OTP. Please try again.");
@@ -265,9 +272,11 @@ const Verify = () => {
                                     value={otp}
                                     onChange={handleOtpChange}
                                     icon={FiLock}
-                                    className="pl-10 py-3.5 text-center"
                                 />
                             </motion.div>
+                            <div className="flex justify-end -translate-y-10 cursor-pointer">
+                                <p className="text-blue-500 hover:text-blue-600 transition-colors duration-500 text-sm" onClick={handlegetOtp}>Resend OTP</p>
+                            </div>
 
                             <motion.button
                                 variants={fadeIn}

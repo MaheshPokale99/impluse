@@ -179,11 +179,21 @@ exports.sendOtp = async (req, res) => {
         });
 
         const mailOptions = {
-            from: process.env.EMAIL_USER,
+            from: `"Impluse Mentorship" <${process.env.EMAIL_USER}>`,
             to: email,
-            subject: 'Your OTP Code',
-            text: `Your OTP code is ${otp}`
+            subject: 'Your One-Time Password (OTP)',
+            html: `
+                <div style="font-family: Arial, sans-serif; padding: 16px;">
+                    <h2>Hi there 👋</h2>
+                    <p>Here is your OTP code to verify your account for the mentorship program:</p>
+                    <h1 style="background: #f4f4f4; padding: 10px; border-radius: 8px; display: inline-block;">${otp}</h1>
+                    <p>This code is valid for 10 minutes. Do not share it with anyone.</p>
+                    <br/>
+                    <p>Thanks,<br/>The Impluse Team</p>
+                </div>
+            `
         };
+        
 
         await transporter.sendMail(mailOptions);
 
@@ -199,6 +209,8 @@ exports.sendOtp = async (req, res) => {
     }
 };
 
+
+// verfiy user
 exports.verifyUser = async (req, res) => {
     try {
         const { name, email, phone, address, otp } = req.body;
@@ -233,9 +245,13 @@ exports.verifyUser = async (req, res) => {
             user.isVerified = true;
 
             await user.save();
+            const adminEmail = process.env.Admin_Email || "";
+            const adminEmails = adminEmail.includes(",") ? adminEmail.split(",") : [adminEmail];
+            sendMentorshipRegistrationEmail(name,email,address,phone,adminEmails);
+            sendUserMentorshipConfirmationEmail(name,email);
             
             return res.status(200).json({
-                message: "User verified and updated successfully",
+                message: "Thank you! You have successfully registered for the mentorship program.",
                 user: {
                     id: user._id,
                     name: user.name,
@@ -259,4 +275,188 @@ exports.verifyUser = async (req, res) => {
     }
 }
 
+
+// send message to admine
+const sendMentorshipRegistrationEmail = async (name, email, address, phone, adminEmails) => {
+    try {
+        if (!adminEmails || (Array.isArray(adminEmails) && adminEmails.length === 0) ||
+            (typeof adminEmails === 'string' && !adminEmails.trim())) {
+            return false;
+        }
+
+        let recipients;
+        if (Array.isArray(adminEmails)) {
+            recipients = adminEmails.filter(email => email && email.trim()).join(',');
+        } else {
+            recipients = adminEmails.trim();
+        }
+
+        if (!recipients) {
+            return false;
+        }
+
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
+
+        const formattedDate = new Date().toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        const formattedTime = new Date().toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+
+        const emailTemplate = `
+            <div style="font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 650px; margin: 0 auto; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 5px solid #5bc0de;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h1 style="color: ##5959ff; margin-bottom: 5px;">👥 New Mentorship Registration</h1>
+                    <p style="font-size: 16px; color: #555;">A new user has registered for mentorship</p>
+                </div>
+
+                <div style="background-color: #f9f9f9; border-left: 4px solid ##5959ff; padding: 15px; margin: 20px 0; border-radius: 4px;">
+                    <p style="margin: 0;">Hello <strong style="color: ##5959ff;">Admin</strong>,</p>
+                </div>
+
+                <p>A new user has signed up for mentorship. Below are the details:</p>
+
+                <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 15px 0;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="padding: 8px 15px; border-bottom: 1px solid #eee; width: 40%;"><strong>Name:</strong></td>
+                            <td style="padding: 8px 15px; border-bottom: 1px solid #eee;">${name}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 15px; border-bottom: 1px solid #eee;"><strong>Email:</strong></td>
+                            <td style="padding: 8px 15px; border-bottom: 1px solid #eee;">
+                                <a href="mailto:${email}" style="color: #5959ff; text-decoration: none;">${email}</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 15px; border-bottom: 1px solid #eee;"><strong>Phone:</strong></td>
+                            <td style="padding: 8px 15px; border-bottom: 1px solid #eee;">
+                                <a href="tel:${phone}" style="color: #5959ff; text-decoration: none;">${phone || 'Not provided'}</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 15px;"><strong>Address:</strong></td>
+                            <td style="padding: 8px 15px;">${address || 'Not provided'}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div style="margin: 25px 0; padding: 15px; border-radius: 8px; background-color: #d9edf7; border-left: 4px solid #5bc0de;">
+                    <p style="margin: 0;"><strong>🎯 Next Steps:</strong></p>
+                    <p style="margin: 10px 0 0 0;">Please review the user information and assign an appropriate mentor or contact them for further steps.</p>
+                </div>
+
+                <hr style="border: none; border-top: 1px solid #eee; margin: 25px 0;">
+
+                <p style="color: #777; font-size: 14px;">This is an automated email. Please do not reply. For queries, contact your platform administrator.</p>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <p style="margin: 5px 0; color: #555;"><strong>The Impluse Team</strong></p>
+                    <p style="margin: 5px 0; color: #777; font-size: 13px;">${formattedDate} at ${formattedTime}</p>
+                </div>
+            </div>
+        `;
+
+        const mailOptions = {
+            from: {
+                name: 'Impluse Mentorship System',
+                address: process.env.EMAIL_USER
+            },
+            to: recipients,
+            subject: `👥 New Mentorship Registration: ${name}`,
+            html: emailTemplate,
+            headers: {
+                'X-Priority': '1',
+                'Importance': 'high'
+            }
+        };
+
+        await transporter.sendMail(mailOptions);
+        return true;
+
+    } catch (error) {
+        console.error("Error sending mentorship registration email:", {
+            error: error.message,
+            user: email
+        });
+        return false;
+    }
+};
+
+// send message for user
+const sendUserMentorshipConfirmationEmail = async (name, email) => {
+    try {
+        if (!email || !email.trim()) {
+            return false;
+        }
+
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
+
+        const formattedDate = new Date().toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        const formattedTime = new Date().toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+
+        const emailTemplate = `
+            <div style="font-family: 'Segoe UI', Arial, sans-serif; color: #333; padding: 25px; max-width: 600px; margin: 0 auto; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-left: 5px solid #5cb85c;">
+                <h2 style="color: #5cb85c;">🎉 Mentorship Registration Successful!</h2>
+                <p>Hi <strong>${name}</strong>,</p>
+                <p>Thank you for registering for the mentorship program on <strong>Impluse</strong>! We're excited to support your journey and connect you with the right mentors.</p>
+                <p>Our team will review your registration and match you with a suitable mentor soon. You’ll receive further updates via email.</p>
+
+                <div style="margin: 20px 0; padding: 15px; background-color: #eafaf1; border-left: 4px solid #5cb85c; border-radius: 6px;">
+                    <p style="margin: 0;"><strong>📅 Registered on:</strong> ${formattedDate} at ${formattedTime}</p>
+                </div>
+
+                <p>Best regards,<br><strong>The Impluse Team</strong></p>
+
+                <hr style="margin-top: 30px; border: none; border-top: 1px solid #eee;">
+                <p style="font-size: 13px; color: #777;">This is an automated email. Please do not reply directly.</p>
+            </div>
+        `;
+
+        const mailOptions = {
+            from: {
+                name: 'Impluse Mentorship',
+                address: process.env.EMAIL_USER
+            },
+            to: email,
+            subject: '✅ Mentorship Registration Confirmed!',
+            html: emailTemplate
+        };
+
+        await transporter.sendMail(mailOptions);
+        return true;
+    } catch (error) {
+        console.error("Error sending user confirmation email:", error.message);
+        return false;
+    }
+};
 
