@@ -1,4 +1,4 @@
-# Impulse - Modern Learning Management Platform
+# Impulse
 
 A comprehensive full-stack web application built with React.js and Node.js, designed to provide an interactive learning experience with real-time features, user authentication, and mentorship capabilities.
 
