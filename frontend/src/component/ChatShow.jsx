@@ -1,6 +1,6 @@
 import { useState, memo } from "react";
 import { motion } from "framer-motion";
-import { FiClock, FiThumbsUp, FiMessageSquare, FiUser, FiChevronDown } from "react-icons/fi";
+import { FiMessageSquare, FiUser, FiChevronDown } from "react-icons/fi";
 import PropTypes from "prop-types";
 
 const fadeInUp = {
@@ -34,15 +34,14 @@ export const ChatShow = ({ question: customQuestion }) => {
   );
 };
 
-const ChatCard = memo(({ name, time, question, answer, expanded, setExpanded }) => {
-  // Only show "See More" if the text is longer than a certain length
+const ChatCard = memo(({ name, question, answer, expanded, setExpanded }) => {
   const isLongText = answer.length > 200;
   const displayedText = isLongText && !expanded ? answer.slice(0, 200) + "..." : answer;
 
   return (
     <motion.div
       variants={fadeInUp}
-      className="p-6 sm:p-8 rounded-xl bg-white/80 dark:bg-zinc-800/70 shadow-lg border border-gray-100/80 dark:border-zinc-700/80 hover:shadow-2xl transition-all duration-300 backdrop-blur-sm"
+      className="sm:p-8 rounded-xl bg-white/80 dark:bg-zinc-800/70 shadow-lg sm:border border-gray-100/80 dark:border-zinc-700/80 hover:shadow-2xl transition-all duration-300 backdrop-blur-sm"
       style={{ transformStyle: "preserve-3d" }}
       whileHover={{ y: -5, transition: { duration: 0.3 } }}
     >
@@ -59,24 +58,8 @@ const ChatCard = memo(({ name, time, question, answer, expanded, setExpanded }) 
           <div>
             <h3 className="font-bold text-zinc-800 dark:text-gray-100 flex items-center text-lg">
               {name}
-              <span className="inline-flex items-center ml-3 text-xs text-gray-500 dark:text-gray-400 bg-gray-100/80 dark:bg-zinc-700/80 py-1 px-2 rounded-full">
-                <FiClock className="mr-1 w-3 h-3" /> {time}
-              </span>
             </h3>
           </div>
-        </div>
-        
-        <div className="flex items-center gap-2">
-          <motion.button 
-            whileHover={{ scale: 1.1, backgroundColor: "#dbeafe", color: "#3b82f6" }} 
-            whileTap={{ scale: 0.95 }}
-            className="p-2 rounded-full bg-gray-100/80 dark:bg-zinc-700/80 text-gray-600 dark:text-gray-300 
-              transition-colors shadow-sm"
-            aria-label="Like"
-            style={{ transform: "translateZ(20px)" }}
-          >
-            <FiThumbsUp className="w-4 h-4" />
-          </motion.button>
         </div>
       </div>
 
