@@ -167,15 +167,16 @@ A comprehensive full-stack web application built with React.js and Node.js, desi
 4. Configure your environment variables in `.env`:
    ```env
    PORT=5000
-   MONGO_URI=your_mongodb_uri
-   JWT_SECRET=your_jwt_secret
-   CLOUDINARY_CLOUD_NAME=your_cloudinary_name
-   CLOUDINARY_API_KEY=your_cloudinary_key
-   CLOUDINARY_API_SECRET=your_cloudinary_secret
-   SMTP_HOST=your_smtp_host
-   SMTP_PORT=your_smtp_port
-   SMTP_USER=your_smtp_user
-   SMTP_PASS=your_smtp_password
+   MONGO_URI=mongodb+srv://<your_mongodb_connection_string>
+   JWT_SECRET=your_jwt_secret_key
+   CLOUD_NAME=<your_cloudinary_cloud_name>
+   CLOUD_API_KEY=<your_cloudinary_api_key>
+   CLOUD_API_SECRET=<your_cloudinary_api_secret>
+
+   EMAIL_USER=
+   EMAIL_PASS=
+   Admin_Email=
+
    ```
 
 5. Start the server:
