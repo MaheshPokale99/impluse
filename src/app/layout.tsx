@@ -26,7 +26,7 @@ export const metadata:Metadata={
     siteName,
     title:"ImpuseViday | Academic & Career Guidance for Students",
     description:siteDescription,
-    images:[{url:socialImagePath,alt:"A mentor talking through study choices with students"}],
+    images:[{url:socialImagePath,width:1536,height:1024,alt:"A mentor talking through study choices with students"}],
   },
   twitter:{
     card:"summary_large_image",
@@ -40,4 +40,4 @@ export const metadata:Metadata={
     googleBot:{index:true,follow:true,"max-video-preview":-1,"max-image-preview":"large","max-snippet":-1},
   },
 };
-export default function RootLayout({children}:{children:React.ReactNode}) {return <html lang="en" className={`${inter.variable} ${manrope.variable}`}><body><SiteShell>{children}</SiteShell></body></html>;}
+export default function RootLayout({children}:{children:React.ReactNode}) {return <html lang="en-IN" className={`${inter.variable} ${manrope.variable}`}><body><SiteShell>{children}</SiteShell></body></html>;}
