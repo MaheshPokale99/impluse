@@ -4,11 +4,11 @@ import { siteUrl } from "@/lib/site";
 export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return [
-    {
-      url: siteUrl.toString(),
-      changeFrequency: "monthly",
-      priority: 1,
-    },
-  ];
+    return [
+        {
+            url: siteUrl.toString(),
+            changeFrequency: "monthly",
+            priority: 1,
+        },
+    ];
 }
