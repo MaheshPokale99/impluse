@@ -933,68 +933,130 @@ body { background: var(--iv-bg); color: var(--dn-ink); }
   .dn-resource-image { transition-duration: .01ms !important; }
 }
 
-/* Use the restrained lift and soft shadow from the extracted Dynarock UI. */
-.dn-button { transition: transform .3s var(--dn-ease), box-shadow .3s, background-color .3s, border-color .3s, color .3s; }
+/* Dynarock-style tactile lift: a fine lower edge plus a soft, broad contact shadow. */
+.dn-button {
+  transition: transform .3s var(--dn-ease), box-shadow .3s var(--dn-ease), background-color .3s, border-color .3s, color .3s;
+}
 .dn-button:hover { transform: translateY(-3px); }
-.dn-button svg { transition: transform .3s; }
-.dn-button:hover svg { transform: translate(3px, 0) scale(1.08); }
+.dn-button svg { transition: transform .3s var(--dn-ease); }
+.dn-button:hover svg { transform: translate(3px, 0) scale(1.06); }
+.dn-button-dark {
+  box-shadow: 0 3px 0 #9d3918, 0 9px 19px #00000042, 0 3px 9px #f26b3420, inset 0 1px 0 #ffffff24;
+}
+.dn-button-dark:hover {
+  box-shadow: 0 3px 0 #9d3918, 0 15px 25px #00000052, 0 6px 16px #f26b3430, inset 0 1px 0 #ffffff30;
+}
+.dn-button-light {
+  box-shadow: 0 3px 0 #101114, 0 9px 19px #0000003d, inset 0 1px 0 #ffffff10;
+}
+.dn-button-light:hover {
+  box-shadow: 0 3px 0 #101114, 0 15px 25px #0000004d, inset 0 1px 0 #ffffff16;
+}
 .dn-button:active,
 .dn-button-dark:active,
-.dn-button-light:active { transform: translateY(0) scale(.98); }
-.dn-button-dark { box-shadow: 0 8px 20px #f26b3428; }
-.dn-button-dark:hover { box-shadow: 0 11px 24px #f26b3436; }
-.dn-button-light { box-shadow: 0 4px 12px #00000020; }
-.dn-button-light:hover { box-shadow: 0 8px 18px #00000028; }
+.dn-button-light:active {
+  transform: translateY(2px) scale(.99);
+  box-shadow: 0 1px 0 #101114, 0 3px 7px #00000038;
+}
+.dn-button:focus-visible { outline: 2px solid #ff925e; outline-offset: 4px; }
 
 .dn-product-grid .dn-product-card,
 .dn-modules-section .dn-product-grid .dn-product-card {
-  box-shadow: 0 5px 20px var(--iv-depth-shadow), inset 0 1px 0 var(--iv-depth-highlight);
-  transition: transform .3s var(--dn-ease), color .25s, background-color .28s, border-color .28s, box-shadow .3s var(--dn-ease);
+  box-shadow: 0 2px 0 #101114, 0 12px 24px #0000004a, inset 0 1px 0 #ffffff0b;
+  transition: transform .34s var(--dn-ease), color .25s, background-color .28s, border-color .28s, box-shadow .34s var(--dn-ease);
 }
 .dn-product-grid .dn-product-card:hover,
 .dn-product-grid .dn-product-card:focus-visible,
 .dn-modules-section .dn-product-grid .dn-product-card:hover,
 .dn-modules-section .dn-product-grid .dn-product-card:focus-visible {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 28px var(--iv-depth-shadow-hover), inset 0 1px 0 var(--iv-depth-highlight);
+  transform: translateY(-4px);
+  box-shadow: 0 3px 0 #101114, 0 20px 32px #00000060, inset 0 1px 0 #ffffff10;
 }
-.dn-product-grid .dn-feature-icon { box-shadow: 0 5px 12px #00000022, inset 0 1px 0 #ffffff0b; }
+.dn-product-grid .dn-feature-icon {
+  box-shadow: 0 2px 0 #101114, 0 7px 13px #00000032, inset 0 1px 0 #ffffff0b;
+  transition: transform .3s var(--dn-ease), color .22s, background-color .22s, border-color .22s, box-shadow .3s var(--dn-ease);
+}
 .dn-product-grid .dn-product-card:hover .dn-feature-icon,
-.dn-product-grid .dn-product-card:focus-visible .dn-feature-icon { transform: translateY(-2px) rotate(-4deg) scale(1.06); }
+.dn-product-grid .dn-product-card:focus-visible .dn-feature-icon { transform: translateY(-2px) rotate(-3deg); }
+
 .dn-outcome-main,
 .dn-outcome-cards .dn-outcome-card,
 .dn-faq-item,
 .dn-role-panel,
-.dn-cta-inner { box-shadow: 0 10px 28px var(--iv-depth-shadow), inset 0 1px 0 var(--iv-depth-highlight); }
+.dn-cta-inner {
+  box-shadow: 0 3px 0 #101114, 0 14px 27px #00000045, inset 0 1px 0 #ffffff0c;
+  transition: transform .32s var(--dn-ease), border-color .25s, box-shadow .32s var(--dn-ease), background-color .25s;
+}
+.dn-outcome-main,
+.dn-outcome-cards .dn-outcome-card,
+.dn-faq-item { box-shadow: 0 2px 0 #101114, 0 11px 22px #0000003e, inset 0 1px 0 #ffffff0b; }
 .dn-outcome-main:hover,
 .dn-outcome-cards .dn-outcome-card:hover,
 .dn-faq-item:hover,
-.dn-faq-item:focus-within { transform: translateY(-3px); box-shadow: 0 14px 30px var(--iv-depth-shadow-hover), inset 0 1px 0 var(--iv-depth-highlight); }
-.dn-role-photo-label { box-shadow: 0 12px 26px #00000038, inset 0 1px 0 #ffffff18; }
+.dn-faq-item:focus-within {
+  transform: translateY(-3px);
+  box-shadow: 0 3px 0 #101114, 0 18px 29px #00000055, inset 0 1px 0 #ffffff10;
+}
+.dn-role-photo-label { box-shadow: 0 3px 0 #101114, 0 12px 23px #00000045, inset 0 1px 0 #ffffff18; }
 .dn-resource-card:hover .dn-resource-image,
-.dn-resource-card:focus-visible .dn-resource-image { transform: translateY(-3px); box-shadow: 0 10px 22px var(--iv-depth-shadow-hover); }
-.dn-theme-toggle { box-shadow: 0 6px 16px #00000030, inset 0 1px 0 #ffffff0c; }
-.dn-theme-toggle:hover { box-shadow: 0 10px 22px #0000003d, 0 0 15px #ff743612, inset 0 1px 0 #ffffff12; }
+.dn-resource-card:focus-visible .dn-resource-image { transform: translateY(-3px); box-shadow: 0 3px 0 #101114, 0 14px 23px #00000048; }
+.dn-theme-toggle { box-shadow: 0 2px 0 #101114, 0 7px 14px #00000038, inset 0 1px 0 #ffffff0c; }
+.dn-theme-toggle:hover { box-shadow: 0 3px 0 #101114, 0 12px 19px #00000048, inset 0 1px 0 #ffffff12; }
+.dn-theme-toggle:active { transform: translateY(1px) scale(.97); box-shadow: 0 1px 0 #101114, 0 3px 7px #00000030; }
 
-:root[data-theme="light"] .dn-button-dark { box-shadow: 0 8px 20px #a7472524; }
-:root[data-theme="light"] .dn-button-dark:hover { box-shadow: 0 11px 24px #a7472532; }
-:root[data-theme="light"] .dn-button-light { box-shadow: 0 4px 12px #47321d12; }
-:root[data-theme="light"] .dn-button-light:hover { box-shadow: 0 8px 18px #47321d1b; }
-:root[data-theme="light"] .dn-product-grid .dn-feature-icon { box-shadow: 0 5px 12px #47321d12, inset 0 1px 0 #ffffff; }
-:root[data-theme="light"] .dn-modules-section .dn-product-grid .dn-product-card { box-shadow: 0 5px 20px #47321d12, inset 0 1px 0 #ffffff; }
+:root[data-theme="light"] .dn-button-dark {
+  box-shadow: 0 3px 0 #ae401c, 0 9px 18px #71341d25, 0 3px 8px #e95f2c1c, inset 0 1px 0 #ffffff40;
+}
+:root[data-theme="light"] .dn-button-dark:hover {
+  box-shadow: 0 3px 0 #a83c18, 0 15px 24px #71341d30, 0 6px 15px #e95f2c2b, inset 0 1px 0 #ffffff48;
+}
+:root[data-theme="light"] .dn-button-light {
+  box-shadow: 0 3px 0 #e1d8cf, 0 9px 18px #47321d16, inset 0 1px 0 #ffffff;
+}
+:root[data-theme="light"] .dn-button-light:hover {
+  box-shadow: 0 3px 0 #ddd2c7, 0 15px 24px #47321d1e, inset 0 1px 0 #ffffff;
+}
+:root[data-theme="light"] .dn-button-dark:active,
+:root[data-theme="light"] .dn-button-light:active { box-shadow: 0 1px 0 #d0c4b9, 0 3px 7px #47321d14; }
+:root[data-theme="light"] .dn-theme-toggle { box-shadow: 0 2px 0 #e1d8cf, 0 7px 14px #47321d15, inset 0 1px 0 #ffffff; }
+:root[data-theme="light"] .dn-theme-toggle:hover { box-shadow: 0 3px 0 #e1d8cf, 0 12px 19px #47321d1d, inset 0 1px 0 #ffffff; }
+:root[data-theme="light"] .dn-theme-toggle:active { box-shadow: 0 1px 0 #d0c4b9, 0 3px 7px #47321d10; }
+:root[data-theme="light"] .dn-product-grid .dn-feature-icon { box-shadow: 0 2px 0 #e4dacf, 0 7px 13px #47321d14, inset 0 1px 0 #ffffff; }
+:root[data-theme="light"] .dn-modules-section .dn-product-grid .dn-product-card,
+:root[data-theme="light"] .dn-product-grid .dn-product-card {
+  box-shadow: 0 2px 0 #e1d8cf, 0 12px 24px #47321d19, inset 0 1px 0 #ffffff;
+}
 :root[data-theme="light"] .dn-modules-section .dn-product-grid .dn-product-card:hover,
-:root[data-theme="light"] .dn-modules-section .dn-product-grid .dn-product-card:focus-visible { box-shadow: 0 12px 28px #47321d1d, inset 0 1px 0 #ffffff; }
-:root[data-theme="light"] .dn-modules-section .dn-feature-icon { box-shadow: 0 5px 12px #47321d12, inset 0 1px 0 #ffffff; }
-:root[data-theme="light"] .dn-outcome-grid { box-shadow: 0 14px 32px #47321d12; }
-:root[data-theme="light"] .dn-outcome-main { box-shadow: 0 10px 28px #47321d12, inset 0 1px 0 #ffffff; }
-:root[data-theme="light"] .dn-outcome-cards .dn-outcome-card { box-shadow: 0 10px 28px #47321d10, inset 0 1px 0 #ffffff; }
-:root[data-theme="light"] .dn-outcome-cards .dn-outcome-card:hover { box-shadow: 0 14px 30px #47321d18, inset 0 1px 0 #ffffff; }
-:root[data-theme="light"] .dn-faq-item,
-:root[data-theme="light"] .dn-faq-item.is-open { box-shadow: 0 10px 28px #47321d10, inset 0 1px 0 #ffffff; }
-:root[data-theme="light"] .dn-cta-inner { box-shadow: 0 16px 36px #47321d14, inset 0 1px 0 #ffffff; }
-:root[data-theme="light"] .dn-role-photo-label { box-shadow: 0 12px 26px #47321d22, inset 0 1px 0 #ffffff24; }
-:root[data-theme="light"] .dn-theme-toggle { box-shadow: 0 6px 16px #47321d14, inset 0 1px 0 #ffffffd9; }
-:root[data-theme="light"] .dn-theme-toggle:hover { box-shadow: 0 10px 22px #47321d20, 0 0 14px #e95f2c10, inset 0 1px 0 #fff; }
+:root[data-theme="light"] .dn-modules-section .dn-product-grid .dn-product-card:focus-visible,
+:root[data-theme="light"] .dn-product-grid .dn-product-card:hover,
+:root[data-theme="light"] .dn-product-grid .dn-product-card:focus-visible {
+  box-shadow: 0 3px 0 #dfd4c9, 0 20px 32px #47321d22, inset 0 1px 0 #ffffff;
+}
+:root[data-theme="light"] .dn-outcome-main,
+:root[data-theme="light"] .dn-outcome-cards .dn-outcome-card,
+:root[data-theme="light"] .dn-faq-item { box-shadow: 0 2px 0 #e1d8cf, 0 11px 22px #47321d15, inset 0 1px 0 #ffffff; }
+:root[data-theme="light"] .dn-outcome-main:hover,
+:root[data-theme="light"] .dn-outcome-cards .dn-outcome-card:hover,
+:root[data-theme="light"] .dn-faq-item:hover,
+:root[data-theme="light"] .dn-faq-item:focus-within { box-shadow: 0 3px 0 #dfd4c9, 0 18px 29px #47321d20, inset 0 1px 0 #ffffff; }
+:root[data-theme="light"] .dn-role-panel,
+:root[data-theme="light"] .dn-cta-inner { box-shadow: 0 3px 0 #e1d8cf, 0 14px 27px #47321d19, inset 0 1px 0 #ffffff; }
+:root[data-theme="light"] .dn-role-photo-label { box-shadow: 0 3px 0 #d9cfc5, 0 12px 23px #47321d20, inset 0 1px 0 #ffffff30; }
+:root[data-theme="light"] .dn-resource-card:hover .dn-resource-image,
+:root[data-theme="light"] .dn-resource-card:focus-visible .dn-resource-image { box-shadow: 0 3px 0 #e1d8cf, 0 14px 23px #47321d1d; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dn-button,
+  .dn-button svg,
+  .dn-product-grid .dn-product-card,
+  .dn-product-grid .dn-feature-icon,
+  .dn-outcome-main,
+  .dn-outcome-cards .dn-outcome-card,
+  .dn-faq-item,
+  .dn-role-panel,
+  .dn-cta-inner,
+  .dn-theme-toggle { transition-duration: .01ms !important; }
+}
 
 .dn-plan-image-panel {
   min-height: clamp(360px, 38vw, 480px);
