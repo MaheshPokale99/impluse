@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 import { Inter, Manrope } from "next/font/google";
 import "lenis/dist/lenis.css";
-import "./dynarock.css";
-import "./impuse-overrides.css";
-import { SiteShell } from "@/components/dynarock/shell";
+import "./impulsevidya.css";
+import "./impulsevidya-overrides.css";
+import { SiteShell } from "@/components/impulsevidya/shell";
 import { siteDescription, siteName, siteUrl, socialImagePath } from "@/lib/site";
 const inter=Inter({variable:"--font-inter",subsets:["latin"],display:"swap"});
 const manrope=Manrope({variable:"--font-manrope",subsets:["latin"],display:"swap"});
 export const metadata:Metadata={
   metadataBase:siteUrl,
-  title:{default:"ImpuseViday | Academic & Career Guidance for Students",template:"%s | ImpuseViday"},
+  title:{default:"ImpulseVidya | Academic & Career Guidance for Students",template:"%s | ImpulseVidya"},
   description:siteDescription,
   applicationName:siteName,
   category:"education",
@@ -24,13 +24,13 @@ export const metadata:Metadata={
     locale:"en_IN",
     url:"/",
     siteName,
-    title:"ImpuseViday | Academic & Career Guidance for Students",
+    title:"ImpulseVidya | Academic & Career Guidance for Students",
     description:siteDescription,
     images:[{url:socialImagePath,width:1536,height:1024,alt:"A mentor talking through study choices with students"}],
   },
   twitter:{
     card:"summary_large_image",
-    title:"ImpuseViday | Academic & Career Guidance for Students",
+    title:"ImpulseVidya | Academic & Career Guidance for Students",
     description:siteDescription,
     images:[socialImagePath],
   },

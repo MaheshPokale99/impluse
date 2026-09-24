@@ -51,7 +51,7 @@ export function MotionProvider({ children }: { children: ReactNode }) {
 
       const tracked = clicked.closest<HTMLElement>("[data-track]");
       if (tracked) {
-        window.dispatchEvent(new CustomEvent("impuseviday:conversion", {
+        window.dispatchEvent(new CustomEvent("impulsevidya:conversion", {
           detail: { action: tracked.dataset.track, href: tracked.getAttribute("href") },
         }));
       }

@@ -67,9 +67,9 @@ export function Icon({
 
 export function Brand({ small = false }: { small?: boolean }) {
   return (
-    <span className={`dn-brand ${small ? "dn-brand-small" : ""}`}>
-      <span className="dn-brand-mark"><BookOpen aria-hidden="true" /></span>
-      <span>IMPUSE<span className="dn-brand-dot">VIDAY.</span></span>
+    <span className={`iv-brand ${small ? "iv-brand-small" : ""}`}>
+      <span className="iv-brand-mark"><BookOpen aria-hidden="true" /></span>
+      <span>IMPULSE<span className="iv-brand-dot">VIDYA.</span></span>
     </span>
   );
 }
@@ -122,16 +122,16 @@ export function Dashboard({
   const reduced = useReducedMotion();
   const detail = tabDetails[tab];
   return (
-    <div className={`dn-dashboard ${compact ? "is-compact" : ""}`}>
-      <aside className="dn-dash-sidebar">
+    <div className={`iv-dashboard ${compact ? "is-compact" : ""}`}>
+      <aside className="iv-dash-sidebar">
         <Brand small />
-        <div className="dn-campus-selector">
+        <div className="iv-campus-selector">
           <span><GraduationCap size={15} /></span>
           <div><strong>Student workspace</strong><small>Your goals and next steps</small></div>
           <ChevronDown size={12} />
         </div>
-        <small className="dn-dash-label">YOUR JOURNEY</small>
-        <div className="dn-dash-tabs" role="tablist" aria-label="Explore the student plan preview">
+        <small className="iv-dash-label">YOUR JOURNEY</small>
+        <div className="iv-dash-tabs" role="tablist" aria-label="Explore the student plan preview">
           {dashboardTabs.map((name, index) => (
             <button
               type="button"
@@ -148,34 +148,34 @@ export function Dashboard({
             </button>
           ))}
         </div>
-        <div className="dn-dash-help">
+        <div className="iv-dash-help">
           <span><Sparkles size={16} /></span>
           <strong>Clarity beats pressure.</strong>
           <p>Start with one next step.</p>
           <div>Guidance, at your pace <ArrowUpRight size={11} /></div>
         </div>
-        <div className="dn-dash-user">
+        <div className="iv-dash-user">
           <span>ST</span><div><strong>Student view</strong><small>Example workspace</small></div><Search size={14} />
         </div>
       </aside>
-      <div className="dn-dash-main">
-        <div className="dn-dash-topbar">
+      <div className="iv-dash-main">
+        <div className="iv-dash-topbar">
           <span>{tab}</span>
-          <div><span className="dn-demo-tag">Interactive preview</span><CircleHelp size={15} /><span className="dn-avatar">S</span></div>
+          <div><span className="iv-demo-tag">Interactive preview</span><CircleHelp size={15} /><span className="iv-avatar">S</span></div>
         </div>
-        <div className="dn-dash-content">
-          <div className="dn-dash-greeting">
-            <div><h3>A good day to move forward<span className="dn-greeting-spark"> ✦</span></h3><p>A practical learning plan shaped around your goals.</p></div>
-            <span className="dn-dash-date"><CalendarDays size={12} /> Your learning journey</span>
+        <div className="iv-dash-content">
+          <div className="iv-dash-greeting">
+            <div><h3>A good day to move forward<span className="iv-greeting-spark"> ✦</span></h3><p>A practical learning plan shaped around your goals.</p></div>
+            <span className="iv-dash-date"><CalendarDays size={12} /> Your learning journey</span>
           </div>
-          <div className="dn-stat-grid">
+          <div className="iv-stat-grid">
             {[
               { label: "Current focus", value: "JEE Main", icon: "exams" as IconName, note: "Example goal" },
               { label: "Next milestone", value: "Practice", icon: "assignments" as IconName, note: "One step at a time" },
               { label: "Plan check-in", value: "Weekly", icon: "calendar" as IconName, note: "Review and adjust" },
             ].map((stat, index) => (
-              <div className="dn-stat" key={stat.label}>
-                <div><span>{stat.label}</span><span className={`dn-stat-icon tone-${index}`}><Icon name={stat.icon} size={15} /></span></div>
+              <div className="iv-stat" key={stat.label}>
+                <div><span>{stat.label}</span><span className={`iv-stat-icon tone-${index}`}><Icon name={stat.icon} size={15} /></span></div>
                 <strong>{stat.value}</strong><small>{stat.note}</small>
               </div>
             ))}
@@ -190,36 +190,36 @@ export function Dashboard({
               exit={{ opacity: 0, y: -4 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="dn-chart-grid dn-guidance-chart-grid">
-                <div className="dn-chart-card dn-guidance-plan">
-                  <div className="dn-card-top"><h4>{detail.title}</h4><span>This week <ChevronDown size={11} /></span></div>
-                  <p className="dn-guidance-subtitle">{detail.subtitle}</p>
-                  <div className="dn-guidance-steps">
+              <div className="iv-chart-grid iv-guidance-chart-grid">
+                <div className="iv-chart-card iv-guidance-plan">
+                  <div className="iv-card-top"><h4>{detail.title}</h4><span>This week <ChevronDown size={11} /></span></div>
+                  <p className="iv-guidance-subtitle">{detail.subtitle}</p>
+                  <div className="iv-guidance-steps">
                     {detail.items.map((item, index) => (
-                      <div className="dn-guidance-step" key={item}>
+                      <div className="iv-guidance-step" key={item}>
                         <span className={index === 0 ? "is-current" : ""}>{index === 0 ? <ArrowRight size={12} /> : index + 1}</span>
                         <p>{item}</p><small>{index === 0 ? "Next up" : "Planned"}</small>
                       </div>
                     ))}
                   </div>
                 </div>
-                <div className="dn-chart-card dn-performance dn-guidance-progress">
-                  <div className="dn-card-top"><h4>A plan you can follow</h4><span><ShieldCheck size={14} /></span></div>
-                  <div className="dn-donut dn-guidance-donut">
+                <div className="iv-chart-card iv-performance iv-guidance-progress">
+                  <div className="iv-card-top"><h4>A plan you can follow</h4><span><ShieldCheck size={14} /></span></div>
+                  <div className="iv-donut iv-guidance-donut">
                     <svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="49" fill="none" stroke="#edf0f1" strokeWidth="11" /><circle cx="60" cy="60" r="49" fill="none" stroke="#c87643" strokeWidth="11" strokeDasharray="252 308" strokeLinecap="round" transform="rotate(-90 60 60)" /></svg>
                     <div><strong>3<span>/4</span></strong><small>steps mapped</small></div>
                   </div>
-                  <div className="dn-donut-legend"><span><i /> Clear next steps <b>3</b></span><span><i /> Room to adjust <b>1</b></span></div>
-                  <p className="dn-guidance-footnote">Illustrative plan only. Your path is personal.</p>
+                  <div className="iv-donut-legend"><span><i /> Clear next steps <b>3</b></span><span><i /> Room to adjust <b>1</b></span></div>
+                  <p className="iv-guidance-footnote">Illustrative plan only. Your path is personal.</p>
                 </div>
               </div>
-              <div className="dn-activity-list dn-guidance-activity">
-                <div className="dn-card-top"><h4>A note to come back to</h4><MessageSquare size={15} /></div>
-                <div className="dn-activity-row"><span className="dn-activity-icon"><Sparkles size={15} /></span><div><strong>Keep the plan realistic</strong><p>Make time for practice, rest, and the parts of life outside your goals.</p></div><small>Mentor note</small></div>
+              <div className="iv-activity-list iv-guidance-activity">
+                <div className="iv-card-top"><h4>A note to come back to</h4><MessageSquare size={15} /></div>
+                <div className="iv-activity-row"><span className="iv-activity-icon"><Sparkles size={15} /></span><div><strong>Keep the plan realistic</strong><p>Make time for practice, rest, and the parts of life outside your goals.</p></div><small>Mentor note</small></div>
               </div>
             </motion.div>
           </AnimatePresence>
-          <div className="dn-dash-caption"><ShieldCheck size={11} /><span>Illustrative workspace · Example data</span><span>Make the next step yours.</span></div>
+          <div className="iv-dash-caption"><ShieldCheck size={11} /><span>Illustrative workspace · Example data</span><span>Make the next step yours.</span></div>
         </div>
       </div>
     </div>
@@ -245,12 +245,12 @@ export function ModuleOrbit() {
     "M375 280H320Q300 280 300 260V195Q300 175 280 175H225",
   ];
   return (
-    <div className="dn-orbit dn-network" aria-label="A connected student guidance plan across exams, learning, careers and mentorship">
-      <svg className="dn-network-lines" viewBox="0 0 450 350" fill="none" aria-hidden="true">
+    <div className="iv-orbit iv-network" aria-label="A connected student guidance plan across exams, learning, careers and mentorship">
+      <svg className="iv-network-lines" viewBox="0 0 450 350" fill="none" aria-hidden="true">
         {paths.map((path, index) => <g key={path}><path d={path} stroke="#dededb" strokeWidth="1.5" /><motion.path d={path} stroke="#c87643" strokeWidth="1.5" initial={{ pathLength: reduced ? 1 : 0, opacity: 0.4 }} whileInView={{ pathLength: 1, opacity: 0.65 }} viewport={{ once: true }} transition={{ duration: 1.6, delay: index * 0.12, ease: "easeInOut" }} /></g>)}
       </svg>
-      <div className="dn-orbit-center"><Brand small /><span>Your next step</span></div>
-      {items.map((item, index) => <motion.div key={item.label} className={`dn-orbit-node node-${index}`} initial={{ opacity: reduced ? 1 : 0, scale: reduced ? 1 : 0.9 }} whileInView={{ opacity: 1, scale: 1 }} whileHover={reduced ? undefined : { y: -3, scale: 1.035 }} whileTap={reduced ? undefined : { scale: 0.98 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: index * 0.09 }}><Icon name={item.icon} size={28} /><span>{item.label}</span></motion.div>)}
+      <div className="iv-orbit-center"><Brand small /><span>Your next step</span></div>
+      {items.map((item, index) => <motion.div key={item.label} className={`iv-orbit-node node-${index}`} initial={{ opacity: reduced ? 1 : 0, scale: reduced ? 1 : 0.9 }} whileInView={{ opacity: 1, scale: 1 }} whileHover={reduced ? undefined : { y: -3, scale: 1.035 }} whileTap={reduced ? undefined : { scale: 0.98 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: index * 0.09 }}><Icon name={item.icon} size={28} /><span>{item.label}</span></motion.div>)}
     </div>
   );
 }
@@ -272,18 +272,18 @@ export function CampusArtwork({
     ["heart", "Mentor check-ins"],
   ];
   return (
-    <div className={`dn-original-art dn-art-${variant}`} role="img" aria-label={label}>
-      <span className="dn-art-orb orb-one" /><span className="dn-art-orb orb-two" />
-      <svg className="dn-art-lines" viewBox="0 0 520 320" fill="none" aria-hidden="true"><path d="M35 220h105l34-44h160l38 50h113M104 70h95l48 50h118l54-40h65M60 148h78l32-27h113M345 250h54l40-35h40" stroke="#d9b9a1" strokeWidth="2" strokeDasharray="4 8" strokeLinecap="round" /></svg>
-      <div className="dn-art-campus"><span><Icon name={icon} size={43} /></span><strong>{label}</strong><small>Direction · Practice · Progress</small></div>
-      {tiles.map(([tileIcon, title], index) => <motion.div className={`dn-art-tile tile-${["one", "two", "three", "four"][index]}`} key={title} initial={{ opacity: reduced ? 1 : 0, y: reduced ? 0 : 12, scale: reduced ? 1 : 0.92 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.5, delay: reduced ? 0 : index * 0.08, ease: [0.22, 1, 0.36, 1] }}><Icon name={tileIcon} size={21} /><span>{title}</span></motion.div>)}
+    <div className={`iv-original-art iv-art-${variant}`} role="img" aria-label={label}>
+      <span className="iv-art-orb orb-one" /><span className="iv-art-orb orb-two" />
+      <svg className="iv-art-lines" viewBox="0 0 520 320" fill="none" aria-hidden="true"><path d="M35 220h105l34-44h160l38 50h113M104 70h95l48 50h118l54-40h65M60 148h78l32-27h113M345 250h54l40-35h40" stroke="#d9b9a1" strokeWidth="2" strokeDasharray="4 8" strokeLinecap="round" /></svg>
+      <div className="iv-art-campus"><span><Icon name={icon} size={43} /></span><strong>{label}</strong><small>Direction · Practice · Progress</small></div>
+      {tiles.map(([tileIcon, title], index) => <motion.div className={`iv-art-tile tile-${["one", "two", "three", "four"][index]}`} key={title} initial={{ opacity: reduced ? 1 : 0, y: reduced ? 0 : 12, scale: reduced ? 1 : 0.92 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true, amount: 0.3 }} transition={{ duration: 0.5, delay: reduced ? 0 : index * 0.08, ease: [0.22, 1, 0.36, 1] }}><Icon name={tileIcon} size={21} /><span>{title}</span></motion.div>)}
     </div>
   );
 }
 
 export function ResourceArtwork({ icon, label }: { icon: IconName; label: string }) {
   if (icon === "insights" || icon === "exams") {
-    return <Image className="dn-resource-art-photo" src={siteImages.studyPlanning} alt="" fill sizes="(max-width: 680px) 100vw, (max-width: 1000px) 50vw, 33vw" />;
+    return <Image className="iv-resource-art-photo" src={siteImages.studyPlanning} alt="" fill sizes="(max-width: 680px) 100vw, (max-width: 1000px) 50vw, 33vw" />;
   }
   return <CampusArtwork icon={icon} label={label} />;
 }
@@ -296,10 +296,10 @@ export function MiniWorkflow() {
     { icon: "heart", title: "Review and adjust", text: "Keep moving at a pace that fits." },
   ];
   return (
-    <div className="dn-mini-workflow">
-      <div className="dn-mini-heading"><span><Workflow size={17} /> Your guidance roadmap</span><span className="dn-status">Built around you</span></div>
-      {items.map((item) => <div className="dn-workflow-item" key={item.title}><span className="dn-workflow-icon"><Icon name={item.icon} size={22} /></span><div><strong>{item.title}</strong><p>{item.text}</p></div><span className="dn-workflow-check"><Check size={15} /></span><span className="dn-workflow-line" aria-hidden="true" /></div>)}
-      <div className="dn-workflow-foot"><span>1:1 guidance</span><ArrowRight size={15} /><span>Your pace</span><ArrowRight size={15} /><span>Your next step</span></div>
+    <div className="iv-mini-workflow">
+      <div className="iv-mini-heading"><span><Workflow size={17} /> Your guidance roadmap</span><span className="iv-status">Built around you</span></div>
+      {items.map((item) => <div className="iv-workflow-item" key={item.title}><span className="iv-workflow-icon"><Icon name={item.icon} size={22} /></span><div><strong>{item.title}</strong><p>{item.text}</p></div><span className="iv-workflow-check"><Check size={15} /></span><span className="iv-workflow-line" aria-hidden="true" /></div>)}
+      <div className="iv-workflow-foot"><span>1:1 guidance</span><ArrowRight size={15} /><span>Your pace</span><ArrowRight size={15} /><span>Your next step</span></div>
     </div>
   );
 }

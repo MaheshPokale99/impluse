@@ -1,4 +1,4 @@
-import { HomePage } from "@/components/dynarock/home";
+import { HomePage } from "@/components/impulsevidya/home";
 import { siteDescription, siteName, siteUrl } from "@/lib/site";
 
 const structuredData = {

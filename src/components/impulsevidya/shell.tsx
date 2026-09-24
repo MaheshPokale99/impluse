@@ -58,7 +58,7 @@ function CursorClickFeedback() {
       {click && (
         <motion.span
           key={click.id}
-          className="dn-cursor-click"
+          className="iv-cursor-click"
           aria-hidden="true"
           initial={{ opacity: 0.7, scale: 0.45 }}
           animate={{ opacity: 0.35, scale: 1 }}
@@ -85,8 +85,8 @@ export function SectionHeading({
   align?: "left" | "center";
 }) {
   return (
-    <Reveal className={`dn-section-heading align-${align}`}>
-      {eyebrow && <span className="dn-eyebrow"><span />{eyebrow}</span>}
+    <Reveal className={`iv-section-heading align-${align}`}>
+      {eyebrow && <span className="iv-eyebrow"><span />{eyebrow}</span>}
       <h2>
         {title}
         {highlight && <><br /><span>{highlight}</span></>}
@@ -110,7 +110,7 @@ export function ButtonLink({
   className?: string;
 }) {
   return (
-    <Link className={`dn-button ${secondary ? "dn-button-light" : "dn-button-dark"} ${className}`} href={href}>
+    <Link className={`iv-button ${secondary ? "iv-button-light" : "iv-button-dark"} ${className}`} href={href}>
       {children}
       {arrow && <ArrowUpRight size={17} />}
     </Link>
@@ -124,7 +124,7 @@ const navLinks = [
   ["FAQ", "#faq"],
 ] as const;
 
-const themeChangeEvent = "impusevidya-theme-change";
+const themeChangeEvent = "impulsevidya-theme-change";
 const subscribeToTheme = (callback: () => void) => {
   window.addEventListener(themeChangeEvent, callback);
   return () => window.removeEventListener(themeChangeEvent, callback);
@@ -138,14 +138,20 @@ function Header() {
   const ref = useRef<HTMLElement>(null);
   useEffect(() => {
     let savedTheme: string | null = null;
-    try { savedTheme = window.localStorage.getItem("impusevidya-theme"); } catch { /* Storage can be disabled by the browser. */ }
+    try {
+      savedTheme = window.localStorage.getItem("impulsevidya-theme");
+      if (savedTheme === null) {
+        savedTheme = window.localStorage.getItem("impusevidya-theme");
+        if (savedTheme) window.localStorage.setItem("impulsevidya-theme", savedTheme);
+      }
+    } catch { /* Storage can be disabled by the browser. */ }
     document.documentElement.dataset.theme = savedTheme === "light" ? "light" : "dark";
     window.dispatchEvent(new Event(themeChangeEvent));
   }, []);
   const toggleTheme = () => {
     const nextTheme = theme === "dark" ? "light" : "dark";
     document.documentElement.dataset.theme = nextTheme;
-    try { window.localStorage.setItem("impusevidya-theme", nextTheme); } catch { /* Keep the switch usable without storage. */ }
+    try { window.localStorage.setItem("impulsevidya-theme", nextTheme); } catch { /* Keep the switch usable without storage. */ }
     window.dispatchEvent(new Event(themeChangeEvent));
   };
   useEffect(() => {
@@ -171,16 +177,16 @@ function Header() {
 
   const close = () => setMobile(false);
   return (
-    <header ref={ref} className="dn-header">
-      <div className="dn-header-inner">
-        <Link href="#top" aria-label="ImpuseViday home" onClick={close}><Brand /></Link>
-        <nav className="dn-desktop-nav" aria-label="Main navigation">
+    <header ref={ref} className="iv-header">
+      <div className="iv-header-inner">
+        <Link href="#top" aria-label="ImpulseVidya home" onClick={close}><Brand /></Link>
+        <nav className="iv-desktop-nav" aria-label="Main navigation">
           {navLinks.map(([label, href]) => <Link key={label} href={href}>{label}</Link>)}
         </nav>
-        <div className="dn-header-actions">
+        <div className="iv-header-actions">
           <button
             type="button"
-            className="dn-theme-toggle"
+            className="iv-theme-toggle"
             onClick={toggleTheme}
             aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
             aria-pressed={theme === "light"}
@@ -189,7 +195,7 @@ function Header() {
             <AnimatePresence mode="wait" initial={false}>
               <motion.span
                 key={theme}
-                className="dn-theme-glyph"
+                className="iv-theme-glyph"
                 aria-hidden="true"
                 initial={{ opacity: 0, rotate: -35, scale: 0.72 }}
                 animate={{ opacity: 1, rotate: 0, scale: 1 }}
@@ -203,7 +209,7 @@ function Header() {
           <ButtonLink href="#services" arrow>Explore guidance</ButtonLink>
           <button
             type="button"
-            className="dn-mobile-toggle"
+            className="iv-mobile-toggle"
             onClick={() => setMobile(!mobile)}
             aria-expanded={mobile}
             aria-controls="mobile-menu"
@@ -216,7 +222,7 @@ function Header() {
           {mobile && (
             <motion.nav
               id="mobile-menu"
-              className="dn-mobile-menu"
+              className="iv-mobile-menu"
               aria-label="Mobile navigation"
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
@@ -237,15 +243,15 @@ function Header() {
 export function ClosingCTA() {
   const reduced = useReducedMotion();
   return (
-    <section className="dn-cta dn-container" id="contact">
-      <Reveal className="dn-cta-inner">
-        <motion.span className="dn-cta-float float-left" animate={reduced ? {} : { y: [0, -10, 0], rotate: [-12, -6, -12] }} transition={{ duration: 6, repeat: Infinity }}><BookOpen size={32} /></motion.span>
-        <motion.span className="dn-cta-float float-right" animate={reduced ? {} : { y: [0, 10, 0], rotate: [10, 4, 10] }} transition={{ duration: 5, repeat: Infinity }}><ArrowRight size={32} /></motion.span>
-        <span className="dn-cta-brand"><Brand small /></span>
+    <section className="iv-cta iv-container" id="contact">
+      <Reveal className="iv-cta-inner">
+        <motion.span className="iv-cta-float float-left" animate={reduced ? {} : { y: [0, -10, 0], rotate: [-12, -6, -12] }} transition={{ duration: 6, repeat: Infinity }}><BookOpen size={32} /></motion.span>
+        <motion.span className="iv-cta-float float-right" animate={reduced ? {} : { y: [0, 10, 0], rotate: [10, 4, 10] }} transition={{ duration: 5, repeat: Infinity }}><ArrowRight size={32} /></motion.span>
+        <span className="iv-cta-brand"><Brand small /></span>
         <h2>Your next chapter.<br /><mark>A clearer way forward.</mark></h2>
-        <p>Bring the questions you have today.<br className="dn-desktop-break" /> Leave with a next step you can act on.</p>
+        <p>Bring the questions you have today.<br className="iv-desktop-break" /> Leave with a next step you can act on.</p>
         <ButtonLink href="#about" arrow>Meet your mentor</ButtonLink>
-        <span className="dn-cta-note">Start with your goals. We’ll work through the rest together.</span>
+        <span className="iv-cta-note">Start with your goals. We’ll work through the rest together.</span>
       </Reveal>
     </section>
   );
@@ -258,30 +264,30 @@ function Footer() {
     { title: "Support", items: [["Common questions", "#faq"], ["About your mentor", "#about"], ["Back to top", "#top"]] },
   ];
   return (
-    <footer className="dn-footer">
-      <div className="dn-container">
-        <div className="dn-footer-top">
-          <Link href="#top" aria-label="ImpuseViday home"><Brand /></Link>
+    <footer className="iv-footer">
+      <div className="iv-container">
+        <div className="iv-footer-top">
+          <Link href="#top" aria-label="ImpulseVidya home"><Brand /></Link>
           <p>Learning with direction.<br />Growing with guidance.</p>
-          <Link href="#services" className="dn-footer-talk">Your next step starts here <ArrowUpRight size={21} /></Link>
+          <Link href="#services" className="iv-footer-talk">Your next step starts here <ArrowUpRight size={21} /></Link>
         </div>
-        <div className="dn-footer-columns">
+        <div className="iv-footer-columns">
           {links.map((column) => <div key={column.title}>
             <h3>{column.title}</h3>
             {column.items.map(([label, href]) => <Link key={label} href={href}>{label}</Link>)}
           </div>)}
           <div>
             <h3>Our approach</h3>
-            <span className="dn-footer-plain">Student-first guidance</span>
-            <span className="dn-footer-plain">Practical next steps</span>
-            <span className="dn-footer-plain">Progress at your pace</span>
+            <span className="iv-footer-plain">Student-first guidance</span>
+            <span className="iv-footer-plain">Practical next steps</span>
+            <span className="iv-footer-plain">Progress at your pace</span>
           </div>
         </div>
-        <div className="dn-footer-wordmark" aria-hidden="true">impusevidya<span>.</span></div>
-        <div className="dn-footer-bottom">
-          <span>© {new Date().getFullYear()} ImpuseViday</span>
+        <div className="iv-footer-wordmark" aria-hidden="true">impulsevidya<span>.</span></div>
+        <div className="iv-footer-bottom">
+          <span>© {new Date().getFullYear()} ImpulseVidya</span>
           <span>Guidance for the journey ahead.</span>
-          <button onClick={() => window.dispatchEvent(new Event("impuseviday:top"))}>Back to top <ArrowUpRight size={15} /></button>
+          <button onClick={() => window.dispatchEvent(new Event("impulsevidya:top"))}>Back to top <ArrowUpRight size={15} /></button>
         </div>
       </div>
     </footer>
@@ -293,7 +299,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
     <MotionConfig reducedMotion="user" transition={{ duration: 0.55, ease: gentleEase }}>
       <SmoothScroll />
       <CursorClickFeedback />
-      <a className="dn-skip-link" href="#main-content">Skip to content</a>
+      <a className="iv-skip-link" href="#main-content">Skip to content</a>
       <Header />
       <div id="main-content" tabIndex={-1}>{children}</div>
       <Footer />

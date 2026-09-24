@@ -21,9 +21,9 @@ export function SmoothScroll() {
       virtualScroll: () => document.body.style.overflow !== "hidden",
     });
     const toTop = () => lenis.scrollTo(0, { duration: 1.1 });
-    window.addEventListener("impuseviday:top", toTop);
+    window.addEventListener("impulsevidya:top", toTop);
     return () => {
-      window.removeEventListener("impuseviday:top", toTop);
+      window.removeEventListener("impulsevidya:top", toTop);
       lenis.destroy();
     };
   }, [reduced]);
@@ -44,7 +44,7 @@ export function ScrollScene({
   const progress = useSpring(scrollYProgress, { stiffness: 100, damping: 28 });
   const y = useTransform(progress, [0, 1], [22, -22]);
   return (
-    <div ref={ref} className={`dn-scroll-scene ${className}`}>
+    <div ref={ref} className={`iv-scroll-scene ${className}`}>
       <motion.div style={{ y: reduced ? 0 : y }}>{children}</motion.div>
     </div>
   );
