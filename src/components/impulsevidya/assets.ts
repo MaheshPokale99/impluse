@@ -3,6 +3,7 @@ export const siteImages = {
     mentorPortrait: "/images/impulsevidya/mentor-sarvesh.avif",
     studyPlanning: "/images/impulsevidya/study-plan-checklist.png",
     mentorConversation: "/images/impulsevidya/mentor-student-conversation.png",
+    studentLearning: "/images/learning.webp",
     careerDirection: "/images/impulsevidya/career-direction.png",
     examPreparation: "/images/impulsevidya/exam-preparation.png",
     skillBuilding: "/images/impulsevidya/skill-building.png",

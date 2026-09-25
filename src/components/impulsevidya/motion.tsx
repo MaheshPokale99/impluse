@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
 
 export const gentleEase = [0.22, 1, 0.36, 1] as const;
 
 export function SmoothScroll() {
+    const pathname = usePathname();
     const reduced = useReducedMotion();
 
     useEffect(() => {
@@ -16,17 +18,91 @@ export function SmoothScroll() {
             lerp: 0.1,
             smoothWheel: true,
             syncTouch: false,
-            anchors: true,
+            anchors: false,
             prevent: (node) => node.hasAttribute("data-lenis-prevent"),
             virtualScroll: () => document.body.style.overflow !== "hidden",
         });
+
+        const handleAnchorClick = (event: MouseEvent) => {
+            if (
+                event.defaultPrevented ||
+                event.button !== 0 ||
+                event.metaKey ||
+                event.ctrlKey ||
+                event.shiftKey ||
+                event.altKey ||
+                !(event.target instanceof Element)
+            ) {
+                return;
+            }
+
+            const link = event.target.closest<HTMLAnchorElement>("a[href]");
+            if (
+                !link ||
+                (link.target && link.target !== "_self") ||
+                link.hasAttribute("download") ||
+                link.classList.contains("iv-skip-link")
+            ) {
+                return;
+            }
+
+            const destination = new URL(link.href, window.location.href);
+            const current = new URL(window.location.href);
+            if (
+                destination.origin !== current.origin ||
+                destination.pathname !== current.pathname ||
+                destination.search !== current.search ||
+                !destination.hash
+            ) {
+                return;
+            }
+
+            let targetId: string;
+            try {
+                targetId = decodeURIComponent(destination.hash.slice(1));
+            } catch {
+                return;
+            }
+
+            const target = targetId ? document.getElementById(targetId) : document.documentElement;
+            if (!target) return;
+
+            event.preventDefault();
+            if (destination.hash !== current.hash) {
+                window.history.pushState(null, "", destination.hash);
+            }
+            lenis.scrollTo(target, { offset: -96 });
+        };
+
+        const handlePopState = () => {
+            const hash = window.location.hash;
+            if (!hash) {
+                lenis.scrollTo(0);
+                return;
+            }
+
+            let targetId: string;
+            try {
+                targetId = decodeURIComponent(hash.slice(1));
+            } catch {
+                return;
+            }
+
+            const target = targetId ? document.getElementById(targetId) : document.documentElement;
+            if (target) lenis.scrollTo(target, { offset: -96 });
+        };
+
         const toTop = () => lenis.scrollTo(0, { duration: 1.1 });
+        document.addEventListener("click", handleAnchorClick, true);
+        window.addEventListener("popstate", handlePopState);
         window.addEventListener("impulsevidya:top", toTop);
         return () => {
+            document.removeEventListener("click", handleAnchorClick, true);
+            window.removeEventListener("popstate", handlePopState);
             window.removeEventListener("impulsevidya:top", toTop);
             lenis.destroy();
         };
-    }, [reduced]);
+    }, [pathname, reduced]);
 
     return null;
 }

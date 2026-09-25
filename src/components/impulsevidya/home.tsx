@@ -383,42 +383,48 @@ const guidanceAreas = [
         title: "Academic direction",
         short: "Compare study paths and choose goals that fit.",
         icon: "campus" as const,
-        preview: "pathways",
+        image: siteImages.careerDirection,
+        imageFit: "contain" as const,
         href: "#exams",
     },
     {
         title: "Entrance exam planning",
         short: "Organize preparation around your exam and timeline.",
         icon: "exams" as const,
-        preview: "exams",
+        image: siteImages.examPreparation,
+        imageFit: "contain" as const,
         href: "#exams",
     },
     {
         title: "Skills & projects",
         short: "Build useful skills through focused practice.",
         icon: "assignments" as const,
-        preview: "skills",
+        image: siteImages.skillBuilding,
+        imageFit: "contain" as const,
         href: "#skills",
     },
     {
         title: "Career exploration",
         short: "Learn about roles before deciding where to focus.",
         icon: "insights" as const,
-        preview: "career",
+        image: siteImages.mentorConversation,
+        imageFit: "cover" as const,
         href: "#career",
     },
     {
         title: "Interview preparation",
         short: "Practise explaining your thinking with confidence.",
         icon: "feedback" as const,
-        preview: "interview",
+        image: siteImages.studentLearning,
+        imageFit: "cover" as const,
         href: "#career",
     },
     {
         title: "Regular check-ins",
         short: "Reflect on progress and adjust your next steps.",
         icon: "calendar" as const,
-        preview: "checkins",
+        image: siteImages.studyPlanning,
+        imageFit: "contain" as const,
         href: "#process",
     },
 ];
@@ -541,22 +547,15 @@ function GuidanceCatalog() {
                                 </span>
                                 <ArrowUpRight className="iv-product-arrow" size={20} />
                                 <div
-                                    className={`iv-module-preview preview-${area.preview}`}
+                                    className={`iv-module-preview has-image image-${area.imageFit}`}
                                     aria-hidden="true"
                                 >
-                                    <div className="iv-preview-topline">
-                                        <i />
-                                        <i />
-                                        <i />
-                                        <span />
-                                    </div>
-                                    <div className="iv-guide-visual">
-                                        <span />
-                                        <span />
-                                        <span />
-                                        <i />
-                                        <i />
-                                    </div>
+                                    <Image
+                                        src={area.image}
+                                        alt=""
+                                        fill
+                                        sizes="(max-width: 520px) 86vw, (max-width: 900px) 42vw, 360px"
+                                    />
                                 </div>
                                 <h3>{area.title}</h3>
                                 <p>{area.short}</p>

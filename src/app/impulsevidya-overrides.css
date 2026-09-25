@@ -2754,19 +2754,43 @@ body {
     border: 1px solid #383a40;
     background-color: #1c1e22;
     box-shadow:
-        0 7px 0 #111215,
-        0 30px 58px #00000068,
-        0 5px 16px #00000030,
+        0 4px 0 #0b0c0e,
+        0 18px 32px #00000050,
         inset 0 1px 0 #ffffff0c;
+}
+.iv-ecosystem-visual .iv-ecosystem-caption {
+    box-shadow:
+        0 4px 0 #0b0c0e,
+        0 12px 24px #00000042,
+        inset 0 1px 0 #ffffff0c;
+}
+.iv-ecosystem-visual .iv-ecosystem-caption > span {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    border: 1px solid #3a3c42;
+    border-radius: 11px;
+    color: #ffffff;
+    background: #25272b;
+    box-shadow:
+        0 3px 0 #0b0c0e,
+        0 8px 12px #00000032,
+        inset 0 1px 0 #ffffff20;
 }
 .iv-ecosystem-visual .iv-network .iv-orbit-center {
     border: 1px solid #41434a;
     color: #f4f1ed;
     background: #25272b;
     box-shadow:
-        0 16px 30px #00000050,
-        0 3px 8px #00000025,
-        inset 0 1px 0 #ffffff12;
+        0 4px 0 #0b0c0e,
+        0 14px 24px #00000048,
+        inset 0 1px 0 #ffffff0c;
+}
+.iv-ecosystem-visual .iv-network .iv-brand-mark {
+    box-shadow:
+        0 2px 0 #0b0c0e,
+        0 4px 8px #00000025,
+        inset 0 1px 0 #ffffff;
 }
 .iv-ecosystem-visual .iv-network .iv-orbit-center > span:last-child {
     color: #c0bcb7;
@@ -2776,9 +2800,9 @@ body {
     color: #f2efeb;
     background: #292b30;
     box-shadow:
-        0 2px 0 #17181b,
-        0 12px 24px #00000050,
-        inset 0 1px 0 #ffffff12;
+        0 4px 0 #0b0c0e,
+        0 10px 18px #00000040,
+        inset 0 1px 0 #ffffff0c;
     transition:
         background-color 0.25s,
         border-color 0.25s,
@@ -2787,82 +2811,134 @@ body {
 .iv-ecosystem-visual .iv-network .iv-orbit-node {
     background-color: #292b30 !important;
     box-shadow:
-        0 3px 0 #151619,
-        0 14px 26px #00000058,
-        inset 0 1px 0 #ffffff12 !important;
+        0 4px 0 #0b0c0e,
+        0 10px 18px #00000040,
+        inset 0 1px 0 #ffffff0c !important;
 }
 .iv-ecosystem-visual .iv-network .iv-orbit-node > svg {
     color: #ff8c57;
 }
-.iv-ecosystem-visual .iv-network .iv-orbit-node:hover {
-    border-color: #74472f;
-    background-color: #302a27 !important;
+.iv-ecosystem-options article > a {
     box-shadow:
-        0 3px 0 #17181b,
-        0 17px 28px #00000058,
-        inset 0 1px 0 #ffffff18 !important;
+        0 3px 0 #0b0c0e,
+        0 7px 12px #00000032,
+        inset 0 1px 0 #ffffff0c;
+    transition:
+        transform 0.28s var(--iv-ease),
+        box-shadow 0.28s var(--iv-ease),
+        background-color 0.22s,
+        color 0.22s;
+}
+.iv-ecosystem-options article:hover > a,
+.iv-ecosystem-options article > a:focus-visible {
+    transform: translateY(-2px);
+    box-shadow:
+        0 4px 0 #0b0c0e,
+        0 10px 15px #00000042,
+        inset 0 1px 0 #ffffff0c;
+}
+.iv-ecosystem-visual .iv-network .iv-orbit-node:hover {
+    border-color: #42444a;
+    background-color: #292b30 !important;
+    box-shadow:
+        0 5px 0 #0b0c0e,
+        0 16px 24px #00000050,
+        inset 0 1px 0 #ffffff0c !important;
 }
 .iv-ecosystem-visual .iv-network .iv-orbit-center {
     background-color: #25272b !important;
     box-shadow:
-        0 3px 0 #151619,
-        0 18px 32px #00000058,
-        inset 0 1px 0 #ffffff12 !important;
+        0 4px 0 #0b0c0e,
+        0 14px 24px #00000048,
+        inset 0 1px 0 #ffffff0c !important;
 }
 
 :root[data-theme="light"] .iv-ecosystem-visual {
-    border-color: #e3d9cf;
-    background-color: #f0ece6;
+    border-color: #e3ddd5;
+    background-color: #f1ede7;
     box-shadow:
-        0 5px 0 #e2d9cf,
-        0 28px 56px #47321d24,
-        0 4px 14px #47321d12,
+        0 5px 0 #e3dcd4,
+        0 24px 42px #38291a1c,
+        inset 0 1px 0 #ffffff;
+}
+:root[data-theme="light"] .iv-ecosystem-visual .iv-ecosystem-caption {
+    box-shadow:
+        0 4px 0 #e4ded6,
+        0 16px 28px #38291a18,
+        inset 0 1px 0 #ffffff;
+}
+:root[data-theme="light"] .iv-ecosystem-visual .iv-ecosystem-caption > span {
+    border-color: #eedbce;
+    color: #c65328;
+    background: #f8e8de;
+    box-shadow:
+        0 3px 0 #e8d9cf,
+        0 8px 14px #38291a18,
         inset 0 1px 0 #ffffff;
 }
 :root[data-theme="light"] .iv-ecosystem-visual .iv-network .iv-orbit-center {
-    border-color: #e3d9cf;
+    border-color: #e3ddd5;
     color: #303438;
     background: #fffdfa;
     box-shadow:
-        0 14px 28px #47321d20,
-        0 3px 8px #47321d0b,
+        0 4px 0 #ded8d0,
+        0 16px 28px #38291a1c,
+        inset 0 1px 0 #ffffff;
+}
+:root[data-theme="light"] .iv-ecosystem-visual .iv-network .iv-brand-mark {
+    box-shadow:
+        0 2px 0 #ded8d0,
+        0 5px 9px #38291a14,
         inset 0 1px 0 #ffffff;
 }
 :root[data-theme="light"] .iv-ecosystem-visual .iv-network .iv-orbit-center > span:last-child {
     color: #686763;
 }
 :root[data-theme="light"] .iv-ecosystem-visual .iv-network .iv-orbit-node {
-    border-color: #e3d9cf;
+    border-color: #e3ddd5;
     color: #34373a;
     background: #fffdfa;
     box-shadow:
-        0 2px 0 #e1d8cf,
-        0 12px 25px #47321d1b,
+        0 4px 0 #ded8d0,
+        0 14px 22px #38291a18,
         inset 0 1px 0 #ffffff;
 }
 :root[data-theme="light"] .iv-ecosystem-visual .iv-network .iv-orbit-node {
     background-color: #fffdfa !important;
     box-shadow:
-        0 3px 0 #e1d8cf,
-        0 15px 27px #47321d20,
+        0 4px 0 #ded8d0,
+        0 14px 22px #38291a18,
         inset 0 1px 0 #ffffff !important;
 }
 :root[data-theme="light"] .iv-ecosystem-visual .iv-network .iv-orbit-center {
     background-color: #fffdfa !important;
     box-shadow:
-        0 3px 0 #e1d8cf,
-        0 16px 28px #47321d20,
+        0 4px 0 #ded8d0,
+        0 16px 28px #38291a1c,
         inset 0 1px 0 #ffffff !important;
 }
 :root[data-theme="light"] .iv-ecosystem-visual .iv-network .iv-orbit-node > svg {
     color: #c65328;
 }
-:root[data-theme="light"] .iv-ecosystem-visual .iv-network .iv-orbit-node:hover {
-    border-color: #dfb69e;
-    background-color: #fff8f3 !important;
+:root[data-theme="light"] .iv-ecosystem-options article > a {
     box-shadow:
-        0 3px 0 #e1d8cf,
-        0 17px 29px #47321d24,
+        0 3px 0 #ded8d0,
+        0 8px 14px #38291a14,
+        inset 0 1px 0 #ffffff;
+}
+:root[data-theme="light"] .iv-ecosystem-options article:hover > a,
+:root[data-theme="light"] .iv-ecosystem-options article > a:focus-visible {
+    box-shadow:
+        0 4px 0 #ded8d0,
+        0 12px 18px #38291a18,
+        inset 0 1px 0 #ffffff;
+}
+:root[data-theme="light"] .iv-ecosystem-visual .iv-network .iv-orbit-node:hover {
+    border-color: #e3ddd5;
+    background-color: #fffdfa !important;
+    box-shadow:
+        0 5px 0 #dcd5cd,
+        0 19px 28px #38291a20,
         inset 0 1px 0 #ffffff !important;
 }
 
@@ -2901,5 +2977,402 @@ body {
     .iv-modules-section .iv-product-card small {
         margin-top: 14px;
         font-size: 9px;
+    }
+}
+
+/* Shared raised controls and icon tiles, tuned to the Framer reference. */
+:root {
+    --iv-control-edge: #34363d;
+    --iv-control-shadow: #00000042;
+    --iv-control-shadow-hover: #00000055;
+    --iv-tile-edge: #101114;
+    --iv-tile-shadow: #00000042;
+    --iv-tile-shadow-hover: #00000055;
+    --iv-tile-highlight: #ffffff20;
+    --iv-arrow-edge: #d2c9c1;
+    --iv-arrow-shadow: #0000002b;
+    --iv-scroll-track: #111215;
+    --iv-scroll-thumb: #514d4a;
+    --iv-scroll-thumb-hover: #ff7436;
+}
+:root[data-theme="light"] {
+    --iv-control-edge: #e1d8cf;
+    --iv-control-shadow: #47321d17;
+    --iv-control-shadow-hover: #47321d22;
+    --iv-tile-edge: #e3ddd5;
+    --iv-tile-shadow: #30343816;
+    --iv-tile-shadow-hover: #30343820;
+    --iv-tile-highlight: #ffffff;
+    --iv-arrow-edge: #d9d0c7;
+    --iv-arrow-shadow: #47321d18;
+    --iv-scroll-track: #f1ede7;
+    --iv-scroll-thumb: #c8b5a7;
+    --iv-scroll-thumb-hover: #c65328;
+}
+
+html {
+    scrollbar-color: var(--iv-scroll-thumb) var(--iv-scroll-track);
+    scrollbar-width: thin;
+}
+html::-webkit-scrollbar {
+    width: 12px;
+}
+html::-webkit-scrollbar-track {
+    background: var(--iv-scroll-track);
+}
+html::-webkit-scrollbar-thumb {
+    min-height: 44px;
+    border: 3px solid var(--iv-scroll-track);
+    border-radius: 999px;
+    background-color: var(--iv-scroll-thumb);
+}
+html::-webkit-scrollbar-thumb:hover {
+    background-color: var(--iv-scroll-thumb-hover);
+}
+html::-webkit-scrollbar-corner {
+    background: var(--iv-scroll-track);
+}
+
+.iv-button-dark,
+.iv-button-light {
+    transition:
+        transform 0.28s var(--iv-ease),
+        box-shadow 0.28s var(--iv-ease),
+        background-color 0.24s,
+        border-color 0.24s,
+        color 0.24s;
+}
+.iv-button-dark {
+    box-shadow:
+        0 4px 0 #9d3918,
+        0 12px 20px #0000003d,
+        0 3px 10px #f26b3420,
+        inset 0 1px 0 #ffffff35;
+}
+.iv-button-dark:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 5px 0 #963516,
+        0 17px 26px #0000004b,
+        0 6px 15px #f26b3428,
+        inset 0 1px 0 #ffffff40;
+}
+.iv-button-light {
+    box-shadow:
+        0 4px 0 var(--iv-control-edge),
+        0 11px 20px var(--iv-control-shadow),
+        inset 0 1px 0 #ffffff12;
+}
+.iv-button-light:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 5px 0 var(--iv-control-edge),
+        0 16px 25px var(--iv-control-shadow-hover),
+        inset 0 1px 0 #ffffff18;
+}
+.iv-button-dark:active,
+.iv-button-light:active {
+    transform: translateY(2px) scale(0.99);
+    box-shadow:
+        0 1px 0 var(--iv-control-edge),
+        0 3px 7px var(--iv-control-shadow);
+}
+.iv-button-dark:active {
+    box-shadow:
+        0 1px 0 #9d3918,
+        0 3px 7px #00000035;
+}
+.iv-button svg {
+    box-shadow:
+        0 2px 0 #17181b,
+        0 4px 8px #00000020,
+        inset 0 1px 0 #ffffff1a;
+}
+
+.iv-theme-toggle,
+.iv-mobile-toggle {
+    border: 1px solid #383a40;
+    border-radius: 12px;
+    background: #202226;
+    color: #ff9662;
+    box-shadow:
+        0 4px 0 #34363d,
+        0 10px 17px #00000042,
+        inset 0 1px 0 #ffffff12;
+    transition:
+        transform 0.26s var(--iv-ease),
+        color 0.22s,
+        background-color 0.22s,
+        border-color 0.22s,
+        box-shadow 0.26s var(--iv-ease);
+}
+.iv-theme-toggle:hover,
+.iv-mobile-toggle:hover {
+    transform: translateY(-2px);
+    border-color: #75472f;
+    background: #282327;
+    color: #ffad7f;
+    box-shadow:
+        0 5px 0 #34363d,
+        0 15px 22px #00000050,
+        inset 0 1px 0 #ffffff18;
+}
+.iv-theme-toggle:active,
+.iv-mobile-toggle:active {
+    transform: translateY(2px) scale(0.97);
+    box-shadow:
+        0 1px 0 #34363d,
+        0 3px 6px #00000030;
+}
+.iv-mobile-toggle {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    padding: 0;
+    cursor: pointer;
+}
+
+.iv-home .iv-feature-icon {
+    box-shadow:
+        0 4px 0 var(--iv-tile-edge),
+        0 10px 17px var(--iv-tile-shadow),
+        inset 0 1px 0 var(--iv-tile-highlight);
+    transition:
+        transform 0.32s var(--iv-ease),
+        box-shadow 0.32s var(--iv-ease),
+        color 0.22s,
+        background-color 0.22s,
+        border-color 0.22s;
+}
+.iv-home .iv-principle:hover .iv-feature-icon,
+.iv-home .iv-split-copy:hover .iv-feature-icon {
+    box-shadow:
+        0 5px 0 var(--iv-tile-edge),
+        0 14px 21px var(--iv-tile-shadow-hover),
+        inset 0 1px 0 var(--iv-tile-highlight);
+}
+.iv-home .iv-product-grid .iv-feature-icon {
+    box-shadow:
+        0 4px 0 var(--iv-tile-edge),
+        0 10px 17px var(--iv-tile-shadow),
+        inset 0 1px 0 var(--iv-tile-highlight);
+}
+.iv-home .iv-product-grid .iv-product-card:hover .iv-feature-icon,
+.iv-home .iv-product-grid .iv-product-card:focus-visible .iv-feature-icon {
+    box-shadow:
+        0 5px 0 var(--iv-tile-edge),
+        0 14px 21px var(--iv-tile-shadow-hover),
+        inset 0 1px 0 var(--iv-tile-highlight);
+}
+.iv-brand-mark {
+    box-shadow:
+        0 3px 0 #a83b18,
+        0 7px 12px #0000002c,
+        inset 0 1px 0 #ffffff35;
+    transition:
+        transform 0.25s var(--iv-ease),
+        box-shadow 0.25s var(--iv-ease);
+}
+.iv-header-inner > a:hover .iv-brand-mark,
+.iv-header-inner > a:focus-visible .iv-brand-mark {
+    transform: translateY(-1px);
+    box-shadow:
+        0 4px 0 #a83b18,
+        0 10px 15px #00000035,
+        inset 0 1px 0 #ffffff40;
+}
+.iv-home .iv-product-grid .iv-product-arrow {
+    box-shadow:
+        0 3px 0 var(--iv-arrow-edge),
+        0 7px 11px var(--iv-arrow-shadow),
+        inset 0 1px 0 #ffffff;
+    transition:
+        transform 0.3s var(--iv-ease),
+        box-shadow 0.3s var(--iv-ease),
+        color 0.2s,
+        background-color 0.2s;
+}
+.iv-home .iv-product-card:hover .iv-product-arrow,
+.iv-home .iv-product-card:focus-visible .iv-product-arrow {
+    box-shadow:
+        0 4px 0 var(--iv-arrow-edge),
+        0 10px 15px var(--iv-arrow-shadow),
+        inset 0 1px 0 #ffffff;
+}
+.iv-faq-item h3 > button > span {
+    box-shadow:
+        0 2px 0 var(--iv-control-edge),
+        0 4px 8px var(--iv-control-shadow),
+        inset 0 1px 0 #ffffff16;
+    transition: box-shadow 0.24s var(--iv-ease);
+}
+.iv-faq-item:focus-within h3 > button > span,
+.iv-faq-item:hover h3 > button > span {
+    box-shadow:
+        0 3px 0 var(--iv-control-edge),
+        0 7px 11px var(--iv-control-shadow-hover),
+        inset 0 1px 0 #ffffff1c;
+}
+
+:root[data-theme="light"] .iv-theme-toggle,
+:root[data-theme="light"] .iv-mobile-toggle {
+    border-color: #e2dbd3;
+    background: #fffdfa;
+    color: #bd4e25;
+    box-shadow:
+        0 4px 0 #e1d8cf,
+        0 10px 17px #47321d15,
+        inset 0 1px 0 #ffffff;
+}
+:root[data-theme="light"] .iv-theme-toggle:hover,
+:root[data-theme="light"] .iv-mobile-toggle:hover {
+    border-color: #dfb49e;
+    background: #fff8f3;
+    color: #df5c2b;
+    box-shadow:
+        0 5px 0 #e1d8cf,
+        0 15px 22px #47321d1e,
+        inset 0 1px 0 #ffffff;
+}
+:root[data-theme="light"] .iv-theme-toggle:active,
+:root[data-theme="light"] .iv-mobile-toggle:active {
+    box-shadow:
+        0 1px 0 #e1d8cf,
+        0 3px 6px #47321d10;
+}
+:root[data-theme="light"] .iv-button-dark {
+    box-shadow:
+        0 4px 0 #a84421,
+        0 12px 20px #71341d25,
+        0 3px 10px #e95f2c20,
+        inset 0 1px 0 #ffffff42;
+}
+:root[data-theme="light"] .iv-button-dark:hover {
+    box-shadow:
+        0 5px 0 #a03d1c,
+        0 17px 26px #71341d30,
+        0 6px 15px #e95f2c29,
+        inset 0 1px 0 #ffffff4a;
+}
+:root[data-theme="light"] .iv-button-light {
+    box-shadow:
+        0 4px 0 var(--iv-control-edge),
+        0 11px 20px var(--iv-control-shadow),
+        inset 0 1px 0 #ffffff;
+}
+:root[data-theme="light"] .iv-button-light:hover {
+    box-shadow:
+        0 5px 0 var(--iv-control-edge),
+        0 16px 25px var(--iv-control-shadow-hover),
+        inset 0 1px 0 #ffffff;
+}
+:root[data-theme="light"] .iv-button-dark:active {
+    box-shadow:
+        0 1px 0 #a84421,
+        0 3px 7px #71341d18;
+}
+:root[data-theme="light"] .iv-button-light:active {
+    box-shadow:
+        0 1px 0 var(--iv-control-edge),
+        0 3px 7px var(--iv-control-shadow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .iv-button-dark,
+    .iv-button-light,
+    .iv-button svg,
+    .iv-theme-toggle,
+    .iv-mobile-toggle,
+    .iv-feature-icon,
+    .iv-brand-mark,
+    .iv-product-arrow,
+    .iv-faq-item h3 > button > span {
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Give the light FAQ panels the same quiet, raised edge as the other cards. */
+:root[data-theme="light"] .iv-faq-item {
+    box-shadow:
+        0 4px 0 #ded8d0,
+        0 15px 26px #38291a18,
+        inset 0 1px 0 #ffffff;
+}
+:root[data-theme="light"] .iv-faq-item:hover,
+:root[data-theme="light"] .iv-faq-item:focus-within {
+    box-shadow:
+        0 4px 0 #dcd5cd,
+        0 19px 30px #38291a20,
+        inset 0 1px 0 #ffffff;
+}
+:root[data-theme="light"] .iv-faq-item h3 > button > span {
+    border: 1px solid #eeded2;
+    box-shadow:
+        0 2px 0 #e5d9cf,
+        0 5px 9px #38291a14,
+        inset 0 1px 0 #ffffff;
+    transition:
+        transform 0.24s var(--iv-ease),
+        box-shadow 0.24s var(--iv-ease);
+}
+:root[data-theme="light"] .iv-faq-item h3 > button:hover > span,
+:root[data-theme="light"] .iv-faq-item h3 > button:focus-visible > span {
+    transform: translateY(-1px);
+    box-shadow:
+        0 3px 0 #e1d7ce,
+        0 8px 13px #38291a18,
+        inset 0 1px 0 #ffffff;
+}
+:root[data-theme="light"] .iv-faq-item h3 > button:active > span {
+    transform: translateY(1px);
+    box-shadow:
+        0 1px 0 #e5d9cf,
+        0 3px 6px #38291a12,
+        inset 0 1px 0 #ffffff;
+}
+
+:root:not([data-theme="light"]) .iv-home .iv-principle .iv-feature-icon {
+    border: 1px solid #303238;
+    border-radius: 12px;
+    background: #1c1e22;
+    box-shadow:
+        0 4px 0 var(--iv-tile-edge),
+        0 10px 17px var(--iv-tile-shadow),
+        inset 0 1px 0 #ffffff0c;
+}
+
+.iv-modules-section .iv-module-preview.has-image {
+    height: 156px;
+    padding: 0;
+    border-color: #383a40;
+    border-radius: 16px;
+    background: #242529;
+    box-shadow:
+        0 3px 0 #101114,
+        0 10px 20px #00000028,
+        inset 0 1px 0 #ffffff0c;
+}
+.iv-modules-section .iv-module-preview.has-image img {
+    border-radius: 15px;
+}
+.iv-modules-section .iv-module-preview.has-image.image-contain img {
+    padding: 8px;
+    object-fit: contain;
+}
+.iv-modules-section .iv-module-preview.has-image.image-cover img {
+    object-fit: cover;
+}
+:root[data-theme="light"] .iv-modules-section .iv-module-preview.has-image {
+    border-color: #e3ddd5;
+    background: #ece8e2;
+    box-shadow:
+        0 3px 0 #ded8d0,
+        0 10px 18px #30343812,
+        inset 0 1px 0 #ffffff;
+}
+
+@media (max-width: 520px) {
+    .iv-modules-section .iv-module-preview.has-image {
+        height: 148px;
     }
 }
