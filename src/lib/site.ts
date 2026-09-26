@@ -1,8 +1,7 @@
 export const siteName = "ImpulseVidya";
-// Set NEXT_PUBLIC_SITE_URL to the final custom domain before a production build.
+
 export const siteUrl = new URL(
-    process.env.NEXT_PUBLIC_SITE_URL?.trim() ||
-        "https://impuseviday-guidance.sunny-lake-6464.chatgpt.site",
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://impulsevidya.in",
 );
 export const siteDescription =
     "Explore academic choices, entrance exam planning, practical skill-building, and career guidance with a plan shaped around your goals and pace.";

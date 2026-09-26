@@ -132,19 +132,20 @@ function MentorIntro() {
                         <span className="iv-quote-mark">“</span>
                         <h3>Meet Sarvesh</h3>
                         <p>
-                            I’m Sarvesh, Chief Mentor at ImpulseVidya. My path includes two years of
-                            study at Resonance in Kota and Computer Science at IIIT Nagpur
-                            (2022–26). I bring that student perspective to conversations about
-                            academic choices, exam preparation, skills, and careers.
+                            I’m Sarvesh, Chief Mentor at ImpulseVidya. I completed my Computer
+                            Science degree at IIIT Nagpur after studying at Resonance in Kota. I
+                            later left an MTech program at an IIT before completing it. I bring that
+                            student perspective to conversations about academic choices, exam
+                            preparation, skills, and careers.
                         </p>
                         <div className="iv-mentor-facts">
                             <div>
-                                <span>Computer Science</span>
-                                <strong>IIIT Nagpur · 2022–26</strong>
+                                <span>Degree and branch</span>
+                                <strong>Computer Science · IIIT Nagpur · completed</strong>
                             </div>
                             <div>
-                                <span>Entrance exam preparation</span>
-                                <strong>Resonance · Kota · 2 years</strong>
+                                <span>MTech</span>
+                                <strong>IIT · left before completion</strong>
                             </div>
                         </div>
                         <a className="iv-text-link" href="#process">

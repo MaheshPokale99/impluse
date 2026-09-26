@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Inter, Manrope } from "next/font/google";
 import "lenis/dist/lenis.css";
+import "./theme.css";
 import "./impulsevidya.css";
 import "./impulsevidya-overrides.css";
-import { SiteShell } from "@/components/impulsevidya/shell";
 import { siteDescription, siteName, siteUrl, socialImagePath } from "@/lib/site";
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" });
 const manrope = Manrope({ variable: "--font-manrope", subsets: ["latin"], display: "swap" });
+
 export const metadata: Metadata = {
     metadataBase: siteUrl,
     title: {
@@ -28,7 +29,6 @@ export const metadata: Metadata = {
     creator: siteName,
     publisher: siteName,
     alternates: { canonical: "/" },
-    icons: { icon: [{ url: "/icon.svg", type: "image/svg+xml" }, { url: "/favicon.ico" }] },
     openGraph: {
         type: "website",
         locale: "en_IN",
@@ -63,12 +63,19 @@ export const metadata: Metadata = {
         },
     },
 };
+const themeScript = `(function(){try{var t=localStorage.getItem("impulsevidya-theme");if(t!=="light"&&t!=="dark")t=["dashboard","login","forgot-password","reset-password"].indexOf(location.pathname.split("/")[1])>-1?"light":"dark";document.documentElement.dataset.theme=t}catch(e){}})()`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="en-IN" className={`${inter.variable} ${manrope.variable}`}>
-            <body>
-                <SiteShell>{children}</SiteShell>
-            </body>
+        <html
+            lang="en-IN"
+            className={`${inter.variable} ${manrope.variable}`}
+            suppressHydrationWarning
+        >
+            <head>
+                <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+            </head>
+            <body>{children}</body>
         </html>
     );
 }

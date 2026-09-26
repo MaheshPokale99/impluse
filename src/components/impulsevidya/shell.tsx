@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, MotionConfig, motion, useReducedMotion } from "motion/react";
-import { ArrowRight, ArrowUpRight, BookOpen, Menu, Moon, Sun, X } from "lucide-react";
+import { ArrowRight, ArrowUpRight, BookOpen, Menu, X } from "lucide-react";
 import { gentleEase, SmoothScroll } from "./motion";
+import { ThemeToggle } from "./theme-toggle";
 import { Brand } from "./visuals";
 
 export function Reveal({
@@ -145,43 +146,9 @@ const navLinks = [
     ["FAQ", "#faq"],
 ] as const;
 
-const themeChangeEvent = "impulsevidya-theme-change";
-const subscribeToTheme = (callback: () => void) => {
-    window.addEventListener(themeChangeEvent, callback);
-    return () => window.removeEventListener(themeChangeEvent, callback);
-};
-const getThemeSnapshot = () =>
-    document.documentElement.dataset.theme === "light" ? "light" : "dark";
-const getServerThemeSnapshot = () => "dark";
-
 function Header() {
     const [mobile, setMobile] = useState(false);
-    const theme = useSyncExternalStore(subscribeToTheme, getThemeSnapshot, getServerThemeSnapshot);
     const ref = useRef<HTMLElement>(null);
-    useEffect(() => {
-        let savedTheme: string | null = null;
-        try {
-            savedTheme = window.localStorage.getItem("impulsevidya-theme");
-            if (savedTheme === null) {
-                savedTheme = window.localStorage.getItem("impusevidya-theme");
-                if (savedTheme) window.localStorage.setItem("impulsevidya-theme", savedTheme);
-            }
-        } catch {
-            /* Storage can be disabled by the browser. */
-        }
-        document.documentElement.dataset.theme = savedTheme === "light" ? "light" : "dark";
-        window.dispatchEvent(new Event(themeChangeEvent));
-    }, []);
-    const toggleTheme = () => {
-        const nextTheme = theme === "dark" ? "light" : "dark";
-        document.documentElement.dataset.theme = nextTheme;
-        try {
-            window.localStorage.setItem("impulsevidya-theme", nextTheme);
-        } catch {
-            /* Keep the switch usable without storage. */
-        }
-        window.dispatchEvent(new Event(themeChangeEvent));
-    };
     useEffect(() => {
         const close = (event: PointerEvent) => {
             if (ref.current && !ref.current.contains(event.target as Node)) setMobile(false);
@@ -220,30 +187,9 @@ function Header() {
                     ))}
                 </nav>
                 <div className="iv-header-actions">
-                    <button
-                        type="button"
-                        className="iv-theme-toggle"
-                        onClick={toggleTheme}
-                        aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
-                        aria-pressed={theme === "light"}
-                        title={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
-                    >
-                        <AnimatePresence mode="wait" initial={false}>
-                            <motion.span
-                                key={theme}
-                                className="iv-theme-glyph"
-                                aria-hidden="true"
-                                initial={{ opacity: 0, rotate: -35, scale: 0.72 }}
-                                animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                                exit={{ opacity: 0, rotate: 35, scale: 0.72 }}
-                                transition={{ duration: 0.2, ease: gentleEase }}
-                            >
-                                {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-                            </motion.span>
-                        </AnimatePresence>
-                    </button>
-                    <ButtonLink href="#services" arrow>
-                        Explore guidance
+                    <ThemeToggle />
+                    <ButtonLink href="/login" arrow>
+                        Log in
                     </ButtonLink>
                     <button
                         type="button"
@@ -273,8 +219,8 @@ function Header() {
                                     <ArrowRight size={17} />
                                 </Link>
                             ))}
-                            <Link href="#services" onClick={close}>
-                                Explore guidance
+                            <Link href="/login" onClick={close}>
+                                Log in
                                 <ArrowUpRight size={17} />
                             </Link>
                             <p>

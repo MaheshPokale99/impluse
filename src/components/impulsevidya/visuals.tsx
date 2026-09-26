@@ -68,12 +68,13 @@ export function Icon({
 export function Brand({ small = false }: { small?: boolean }) {
     return (
         <span className={`iv-brand ${small ? "iv-brand-small" : ""}`}>
-            <span className="iv-brand-mark">
-                <BookOpen aria-hidden="true" />
-            </span>
-            <span>
-                IMPULSE<span className="iv-brand-dot">VIDYA.</span>
-            </span>
+            <Image
+                src="/Logo.png"
+                alt=""
+                width={small ? 36 : 72}
+                height={small ? 36 : 72}
+                preload
+            />
         </span>
     );
 }
