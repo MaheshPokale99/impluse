@@ -69,7 +69,7 @@ All live in `.env.local` (git-ignored; **never commit it**). `.env.example` is t
 | ---------------------- | -------------- | ----------------------------------------------------------------------------------------------------------- |
 | `DATABASE_URL`         | Yes            | Postgres connection string (see section 4 for Supabase)                                                     |
 | `SESSION_SECRET`       | Yes            | Signs login cookies. **At least 32 characters**: `openssl rand -base64 32`. Changing it signs everyone out. |
-| `NEXT_PUBLIC_SITE_URL` | Yes            | Public address used in email links, e.g. `https://impulsevidya.in` (`http://localhost:3000` locally)        |
+| `NEXT_PUBLIC_SITE_URL` | Yes            | The website address used in email links, the sitemap and link previews: `https://impulsevidya.in`           |
 | `RESEND_API_KEY`       | For email      | Resend API key. Without it, emails are printed to the server terminal instead of sent.                      |
 | `EMAIL_FROM`           | For email      | Sender, e.g. `ImpulseVidya <no-reply@impulsevidya.in>`. The domain must be verified in Resend.              |
 | `ADMIN_NAME`           | No             | Name for the admin account (default `Admin`)                                                                |
@@ -213,7 +213,13 @@ Deleting a user deletes their profile, daily log, tasks and tokens (cascade).
 
 **Theme.** A small script in `app/layout.tsx` applies the saved theme before the page appears (no flash). The workspace defaults to light, the landing page to dark; the choice is stored in the browser (`impulsevidya-theme`). Workspace colours are tokens in `app/theme.css`.
 
-**Performance.** Workspace links don't prefetch (pages are personal and always rendered fresh), so each click or save is one request. `dashboard/loading.tsx` shows a skeleton while a page loads.
+**Performance.**
+
+- Workspace links don't prefetch (pages are personal and always rendered fresh), so each click or save is one request. `dashboard/loading.tsx` shows a skeleton while a page loads.
+- Each page does at most two database round trips: one to check the session, then its data queries in parallel (`Promise.all`). Writes check permission inside the same query (`WHERE id = … AND owner = …`) instead of reading first.
+- Passwords are hashed with bcrypt cost 10 (~70ms). Older hashes are upgraded after sign-in, in the background (`after()`).
+- **The biggest factor is distance to the database.** Every query travels from the app server to Supabase and back: from India to the current Tokyo project that's ~120ms per query. Keep the app server and the database in the same region (for Indian users: a Supabase project in Mumbai, `ap-south-1`, and the host in Mumbai too, such as Vercel region `bom1`). A Vercel app left in its default US region with a Tokyo database would be slower still.
+- Locally or on your own server, use Supabase's session pooler (port 5432): it opens connections in ~0.8s versus ~2.8s for the transaction pooler.
 
 ## 9. Common tasks
 
