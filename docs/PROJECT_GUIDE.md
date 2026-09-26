@@ -219,7 +219,7 @@ Deleting a user deletes their profile, daily log, tasks and tokens (cascade).
 - Workspace links don't prefetch (pages are personal and always rendered fresh), so each click or save is one request. `dashboard/loading.tsx` shows a skeleton while a page loads.
 - Each page does at most two database round trips: one to check the session, then its data queries in parallel (`Promise.all`). Writes check permission inside the same query (`WHERE id = … AND owner = …`) instead of reading first.
 - Passwords are hashed with bcrypt cost 10 (~70ms). Older hashes are upgraded after sign-in, in the background (`after()`).
-- **The biggest factor is distance to the database.** Every query travels from the app server to Supabase and back: from India to a Tokyo project that was ~120ms per query, to the Mumbai project it's a few milliseconds. Keep the app server and the database in the same region: the Supabase project is in Mumbai (`ap-south-1`) and `vercel.json` pins the Vercel server region to Mumbai (`bom1`). If the database ever moves, change `regions` to match.
+- **The biggest factor is distance to the database.** Every query travels from the app server to Supabase and back: from India to a Tokyo project that was ~120ms per query, from a server in Mumbai to the Mumbai project it's a few milliseconds. Keep the app server and the database in the same region: the Supabase project is in Mumbai (`ap-south-1`) and `vercel.json` pins the Vercel server region to Mumbai (`bom1`). If the database ever moves, change `regions` to match.
 - Locally or on your own server, use Supabase's session pooler (port 5432): it opens connections in ~0.8s versus ~2.8s for the transaction pooler.
 
 ## 9. Common tasks
