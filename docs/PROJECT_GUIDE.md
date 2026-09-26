@@ -56,6 +56,7 @@ Sign in at `http://localhost:3000/login` with `ADMIN_EMAIL` / `ADMIN_PASSWORD` f
 | `npm run dev`                     | Development server with hot reload                          |
 | `npm run build` / `npm start`     | Production build / run it                                   |
 | `npm run lint`                    | ESLint                                                      |
+| `npm run typecheck`               | TypeScript type check (`tsc --noEmit`)                      |
 | `npm run format` / `format:check` | Prettier (4-space indent, double quotes)                    |
 | `npm run db:generate`             | Create a migration from changes in `src/lib/db/schema.ts`   |
 | `npm run db:migrate`              | Apply migrations to the database in `DATABASE_URL`          |
@@ -218,7 +219,7 @@ Deleting a user deletes their profile, daily log, tasks and tokens (cascade).
 - Workspace links don't prefetch (pages are personal and always rendered fresh), so each click or save is one request. `dashboard/loading.tsx` shows a skeleton while a page loads.
 - Each page does at most two database round trips: one to check the session, then its data queries in parallel (`Promise.all`). Writes check permission inside the same query (`WHERE id = … AND owner = …`) instead of reading first.
 - Passwords are hashed with bcrypt cost 10 (~70ms). Older hashes are upgraded after sign-in, in the background (`after()`).
-- **The biggest factor is distance to the database.** Every query travels from the app server to Supabase and back: from India to the current Tokyo project that's ~120ms per query. Keep the app server and the database in the same region (for Indian users: a Supabase project in Mumbai, `ap-south-1`, and the host in Mumbai too, such as Vercel region `bom1`). A Vercel app left in its default US region with a Tokyo database would be slower still.
+- **The biggest factor is distance to the database.** Every query travels from the app server to Supabase and back: from India to a Tokyo project that was ~120ms per query, to the Mumbai project it's a few milliseconds. Keep the app server and the database in the same region: the Supabase project is in Mumbai (`ap-south-1`) and `vercel.json` pins the Vercel server region to Mumbai (`bom1`). If the database ever moves, change `regions` to match.
 - Locally or on your own server, use Supabase's session pooler (port 5432): it opens connections in ~0.8s versus ~2.8s for the transaction pooler.
 
 ## 9. Common tasks
@@ -275,7 +276,7 @@ Edit the tokens in `src/app/theme.css` (`:root` for light, `:root[data-theme="da
 
 1. Set all environment variables from section 3 on the host. Use the production domain for `NEXT_PUBLIC_SITE_URL`, a fresh `SESSION_SECRET`, and the right Supabase pooler (transaction pooler for Vercel).
 2. Run `npm run db:migrate` against the production database (from your machine or CI) whenever there are new migrations.
-3. Build and start (`npm run build`, `npm start`), or let Vercel build it.
+3. Build and start (`npm run build`, `npm start`), or let Vercel build it. On Vercel, keep `regions` in `vercel.json` the same as the Supabase project's region.
 4. Verify your sending domain in Resend and set `EMAIL_FROM` to an address on it.
 5. The admin account is created on the first start from `ADMIN_EMAIL` / `ADMIN_PASSWORD`. After signing in, change the password from Profile.
 
@@ -301,5 +302,5 @@ The app needs a Node.js server (it is not a static export).
 - **Security:** check access with `requireUser()` / `requireAdmin()` in every page and server action. Strip mentor-only data on the server (`entryView`) before it reaches a student. Never commit `.env.local`.
 - **Data:** change the schema only through migrations; keep old migration files.
 - **Forms:** describe fields with `FormFieldDef` and render with `ActionForm`, so validation, placeholders and errors stay consistent.
-- **Code style:** Prettier (4 spaces, double quotes, trailing commas). Run `npm run lint` and `npx tsc --noEmit` before committing.
+- **Code style:** Prettier (4 spaces, double quotes, trailing commas). Run `npm run lint` and `npm run typecheck` before committing.
 - **Mobile:** check pages at phone width (about 390px); wide tables must scroll inside their container, never the whole page.

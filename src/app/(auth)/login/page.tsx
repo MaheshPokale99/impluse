@@ -10,7 +10,9 @@ import { loginFields } from "@/lib/auth/fields";
 export const metadata: Metadata = { title: "Sign in" };
 
 export default async function LoginPage() {
-    if (await getCurrentUser()) redirect("/dashboard");
+    // With the database unreachable, still show the form; sign-in reports the problem itself.
+    const user = await getCurrentUser().catch(() => null);
+    if (user) redirect("/dashboard");
     return (
         <AuthCard title="Welcome back" description="Sign in to your ImpulseVidya workspace.">
             <ActionForm action={login} fields={loginFields} submitLabel="Sign in">

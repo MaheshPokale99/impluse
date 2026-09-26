@@ -2188,6 +2188,10 @@
     color: #869098;
     margin: 23px 0 28px;
 }
+.iv-cta-inner .iv-button-row {
+    flex-wrap: wrap;
+    margin-top: 0;
+}
 .iv-cta-note {
     display: block;
     font-size: 9px;

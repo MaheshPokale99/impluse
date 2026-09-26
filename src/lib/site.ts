@@ -7,3 +7,4 @@ export const siteDescription =
     "Explore academic choices, entrance exam planning, practical skill-building, and career guidance with a plan shaped around your goals and pace.";
 export const socialImagePath = "/images/impulsevidya/mentor-student-conversation.png";
 export const socialImageUrl = new URL(socialImagePath, siteUrl).toString();
+export const whatsappChannelUrl = "https://whatsapp.com/channel/0029Vb7kKTeKAwElY1jEpb2s";

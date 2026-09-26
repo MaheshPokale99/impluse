@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, MotionConfig, motion, useReducedMotion } from "motion/react";
-import { ArrowRight, ArrowUpRight, BookOpen, Menu, X } from "lucide-react";
+import { ArrowRight, ArrowUpRight, BookOpen, Menu, MessageCircle, X } from "lucide-react";
+import { whatsappChannelUrl } from "@/lib/site";
 import { gentleEase, SmoothScroll } from "./motion";
 import { ThemeToggle } from "./theme-toggle";
 import { Brand } from "./visuals";
@@ -120,18 +121,21 @@ export function ButtonLink({
     href = "#contact",
     secondary = false,
     arrow = false,
+    external = false,
     className = "",
 }: {
     children: ReactNode;
     href?: string;
     secondary?: boolean;
     arrow?: boolean;
+    external?: boolean;
     className?: string;
 }) {
     return (
         <Link
             className={`iv-button ${secondary ? "iv-button-light" : "iv-button-dark"} ${className}`}
             href={href}
+            {...(external && { target: "_blank", rel: "noopener noreferrer" })}
         >
             {children}
             {arrow && <ArrowUpRight size={17} />}
@@ -267,9 +271,14 @@ export function ClosingCTA() {
                     Bring the questions you have today.
                     <br className="iv-desktop-break" /> Leave with a next step you can act on.
                 </p>
-                <ButtonLink href="#about" arrow>
-                    Meet your mentor
-                </ButtonLink>
+                <div className="iv-button-row">
+                    <ButtonLink href={whatsappChannelUrl} external>
+                        <MessageCircle size={17} /> Join us on WhatsApp
+                    </ButtonLink>
+                    <ButtonLink href="#about" secondary arrow>
+                        Meet your mentor
+                    </ButtonLink>
+                </div>
                 <span className="iv-cta-note">
                     Start with your goals. We’ll work through the rest together.
                 </span>
@@ -301,6 +310,7 @@ function Footer() {
             items: [
                 ["Common questions", "#faq"],
                 ["About your mentor", "#about"],
+                ["WhatsApp channel", whatsappChannelUrl],
                 ["Back to top", "#top"],
             ],
         },
@@ -326,7 +336,14 @@ function Footer() {
                         <div key={column.title}>
                             <h3>{column.title}</h3>
                             {column.items.map(([label, href]) => (
-                                <Link key={label} href={href}>
+                                <Link
+                                    key={label}
+                                    href={href}
+                                    {...(href.startsWith("http") && {
+                                        target: "_blank",
+                                        rel: "noopener noreferrer",
+                                    })}
+                                >
                                     {label}
                                 </Link>
                             ))}

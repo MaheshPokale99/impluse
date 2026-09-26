@@ -4,6 +4,7 @@ import "lenis/dist/lenis.css";
 import "./theme.css";
 import "./impulsevidya.css";
 import "./impulsevidya-overrides.css";
+import { ThemeScript } from "@/components/theme-script";
 import { siteDescription, siteName, siteUrl, socialImagePath } from "@/lib/site";
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" });
 const manrope = Manrope({ variable: "--font-manrope", subsets: ["latin"], display: "swap" });
@@ -63,8 +64,6 @@ export const metadata: Metadata = {
         },
     },
 };
-const themeScript = `(function(){try{var t=localStorage.getItem("impulsevidya-theme");if(t!=="light"&&t!=="dark")t=["dashboard","login","forgot-password","reset-password"].indexOf(location.pathname.split("/")[1])>-1?"light":"dark";document.documentElement.dataset.theme=t}catch(e){}})()`;
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html
@@ -73,7 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             suppressHydrationWarning
         >
             <head>
-                <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+                <ThemeScript />
             </head>
             <body>{children}</body>
         </html>

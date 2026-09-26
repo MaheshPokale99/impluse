@@ -145,7 +145,7 @@ function MentorIntro() {
                             </div>
                             <div>
                                 <span>MTech</span>
-                                <strong>IIT · left before completion</strong>
+                                <strong>IIT Dropout</strong>
                             </div>
                         </div>
                         <a className="iv-text-link" href="#process">
