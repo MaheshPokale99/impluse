@@ -23,6 +23,12 @@ export default async function LoginPage() {
                     Forgot password?
                 </Link>
             </ActionForm>
+            <p className="mt-6 border-t pt-4 text-center text-sm text-muted-foreground">
+                New student?{" "}
+                <Link href="/signup" className="font-medium text-primary hover:underline">
+                    Request access
+                </Link>
+            </p>
         </AuthCard>
     );
 }

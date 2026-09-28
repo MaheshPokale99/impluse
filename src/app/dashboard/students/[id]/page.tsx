@@ -7,8 +7,10 @@ import { Button } from "@/components/ui/button";
 import { requireAdmin } from "@/lib/auth/dal";
 import { isUuid } from "@/lib/forms";
 import { deleteStudent } from "@/lib/students/actions";
+import { listNotifications } from "@/lib/notifications/queries";
+import { listSectionOptions } from "@/lib/sections/queries";
 import { formatStudentId } from "@/lib/students/fields";
-import { getStudent, listEntries } from "@/lib/students/queries";
+import { getLogColumns, getStudent, listEntries } from "@/lib/students/queries";
 import { getTaskProgress, listTasks } from "@/lib/tasks/queries";
 
 export const metadata: Metadata = { title: "Student" };
@@ -17,12 +19,15 @@ export default async function StudentDetailPage({ params }: PageProps<"/dashboar
     const viewer = await requireAdmin();
     const { id } = await params;
     if (!isUuid(id)) notFound();
-    // All four load at once: one database round trip instead of two.
-    const [student, entries, tasks, [progress]] = await Promise.all([
+    // Everything loads at once: one database round trip instead of several.
+    const [student, entries, columns, tasks, [progress], sections, activity] = await Promise.all([
         getStudent(id),
         listEntries(id),
+        getLogColumns(),
         listTasks(id),
         getTaskProgress(id),
+        listSectionOptions(),
+        listNotifications({ studentId: id, limit: 5 }),
     ]);
     if (!student) notFound();
 
@@ -32,8 +37,11 @@ export default async function StudentDetailPage({ params }: PageProps<"/dashboar
             student={student}
             viewer={viewer}
             entries={entries}
+            columns={columns}
             progress={progress}
             tasks={tasks}
+            sections={sections}
+            activity={activity}
             title={student.name}
             description={`${formatStudentId(student.studentNumber)} · ${student.email}`}
             actions={

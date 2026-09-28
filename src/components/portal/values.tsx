@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import type { FieldType, FormFieldDef } from "@/lib/forms";
+import { optionLabel, optionValue, type FieldType, type FormFieldDef } from "@/lib/forms";
 
 const dateOptions = { day: "numeric", month: "short", year: "numeric" } as const;
 const calendarDate = new Intl.DateTimeFormat("en-IN", { ...dateOptions, timeZone: "UTC" });
@@ -58,9 +58,16 @@ export function ValueBadge({ value }: { value: string }) {
 
 const isEmpty = (value: unknown) => value == null || value === "";
 
+/** A select's stored value shown as its option label (e.g. a section's name, not its ID). */
+const selectLabel = (field: FormFieldDef, value: unknown) => {
+    const option = field.options?.find((candidate) => optionValue(candidate) === String(value));
+    return option ? optionLabel(option) : String(value);
+};
+
 export const displayText = (field: FormFieldDef, value: unknown) => {
     if (isEmpty(value)) return "";
     if (field.type === "date") return formatDate(String(value));
+    if (field.type === "select") return selectLabel(field, value);
     return `${value}${field.unit ?? ""}`;
 };
 
@@ -74,7 +81,7 @@ export function DisplayValue({
     empty?: string;
 }) {
     if (isEmpty(value)) return <span className="text-muted-foreground/70">{empty}</span>;
-    if (field.type === "select") return <ValueBadge value={String(value)} />;
+    if (field.type === "select") return <ValueBadge value={selectLabel(field, value)} />;
     if (field.type === "textarea") {
         return <span className="line-clamp-2 whitespace-pre-line">{String(value)}</span>;
     }

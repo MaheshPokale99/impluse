@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useMemo, useTransition } from "react";
 import { CalendarDays, Check, NotebookPen, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -18,9 +18,10 @@ import { TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/compon
 import { todayInIndia } from "@/lib/dates";
 import type { Role } from "@/lib/db/schema";
 import { addEntry, deleteEntry, updateEntryField } from "@/lib/students/actions";
-import { canEdit, entryDateField, type EntryField, type EntryRecord } from "@/lib/students/fields";
+import { canEdit, entryDateField, type EntryRecord, type LogColumn } from "@/lib/students/fields";
 import { ConfirmAction } from "./dialogs";
 import { EditableValue } from "./editable-value";
+import { Pager, usePages } from "./pager";
 import {
     moveFocus,
     sheetCellClass,
@@ -57,7 +58,10 @@ export function AddTodayButton({ studentId, hasToday }: { studentId: string; has
     );
 }
 
-/** A student's daily log: one row per day, newest first, every cell editable in place. */
+/**
+ * A student's daily log: one row per day, newest first, 30 days per page, every cell editable
+ * in place. `fields` are the columns to show (built-in and the mentor's own, see `LogColumn`).
+ */
 export function DailyLog({
     studentId,
     entries,
@@ -67,13 +71,23 @@ export function DailyLog({
 }: {
     studentId: string;
     entries: EntryRecord[];
-    fields: readonly EntryField[];
+    fields: readonly LogColumn[];
     role: Role;
     viewerId: string;
 }) {
     const admin = role === "admin";
     const isOwn = viewerId === studentId;
-    const { records, save, saving } = useOptimisticEdits(entries, updateEntryField);
+    // Custom column values sit next to the built-in ones, so every cell reads `row[column]`.
+    const rows = useMemo(
+        () =>
+            entries.map((entry): EntryRecord & Record<string, unknown> => ({
+                ...entry.custom,
+                ...entry,
+            })),
+        [entries],
+    );
+    const { records, save, saving } = useOptimisticEdits(rows, updateEntryField);
+    const pages = usePages(records);
     const today = todayInIndia();
 
     if (records.length === 0) {
@@ -139,7 +153,7 @@ export function DailyLog({
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {records.map((entry, rowIndex) => (
+                        {pages.rows.map((entry, rowIndex) => (
                             <TableRow
                                 key={entry.id}
                                 className="group/row border-0 hover:bg-transparent"
@@ -231,6 +245,7 @@ export function DailyLog({
                 </span>
                 <span>{saving ? "Saving…" : "All changes saved"}</span>
             </p>
+            <Pager {...pages} label="Daily log" />
         </div>
     );
 }

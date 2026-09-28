@@ -1,7 +1,16 @@
 "use client";
 
 import { useOptimistic, useState, useTransition } from "react";
-import { CalendarDays, ListChecks, Pencil, Trash2 } from "lucide-react";
+import {
+    CalendarDays,
+    Check,
+    Hourglass,
+    ListChecks,
+    MessageSquareWarning,
+    Pencil,
+    Trash2,
+    Undo2,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,54 +24,78 @@ import {
 } from "@/components/ui/empty";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toFormValues, type FieldOption } from "@/lib/forms";
-import { deleteTask, toggleTask, updateTask } from "@/lib/tasks/actions";
-import { taskFields } from "@/lib/tasks/fields";
+import {
+    approveTask,
+    deleteTask,
+    requestTaskChanges,
+    toggleTask,
+    updateTask,
+} from "@/lib/tasks/actions";
+import { reviewFields, taskFields } from "@/lib/tasks/fields";
 import type { TaskRow } from "@/lib/tasks/queries";
 import { ConfirmAction, FormDialog } from "./dialogs";
 import { FilterSelect } from "./option-select";
 import { todayInIndia } from "@/lib/dates";
 import { formatDate } from "./values";
 
-type Filter = "open" | "done" | "all";
+type Filter = "open" | "review" | "done" | "all";
 
-/** Tasks with filters and one-click completion. Students can edit only tasks they created. */
+/**
+ * Tasks with filters and one-click completion. Students can edit only tasks they created.
+ * With `canReview` (mentors), completed tasks can be approved or sent back with a note.
+ */
 export function TaskBoard({
     tasks,
     showStudent = false,
+    canReview = false,
     students,
 }: {
     tasks: TaskRow[];
     showStudent?: boolean;
+    canReview?: boolean;
     students?: readonly FieldOption[];
 }) {
     const [filter, setFilter] = useState<Filter>("open");
     const [studentId, setStudentId] = useState("");
     const [optimisticTasks, toggleOptimistic] = useOptimistic(tasks, (rows, id: string) =>
-        rows.map((task) =>
-            task.id === id ? { ...task, completedAt: task.completedAt ? null : new Date() } : task,
-        ),
+        rows.map((task) => {
+            if (task.id !== id) return task;
+            const completedAt = task.completedAt ? null : new Date();
+            return {
+                ...task,
+                completedAt,
+                reviewStatus: null,
+                awaitingReview: Boolean(completedAt),
+            };
+        }),
     );
     const [, startTransition] = useTransition();
+    // One dialog for the whole list: the task leaves "To review" once it's sent back, and the
+    // dialog must outlive its row to confirm it.
+    const [reviewing, setReviewing] = useState<{ task: TaskRow; open: boolean }>();
     const today = todayInIndia();
 
     const forStudent = optimisticTasks.filter((task) => !studentId || task.studentId === studentId);
-    const counts = {
-        open: forStudent.filter((task) => !task.completedAt).length,
-        done: forStudent.filter((task) => task.completedAt).length,
-        all: forStudent.length,
+    const matches: Record<Filter, (task: TaskRow) => boolean> = {
+        open: (task) => !task.completedAt,
+        review: (task) => task.awaitingReview,
+        done: (task) => Boolean(task.completedAt),
+        all: () => true,
     };
-    const visible = forStudent.filter(
-        (task) => filter === "all" || (filter === "done") === Boolean(task.completedAt),
-    );
+    const count = (key: Filter) => forStudent.filter(matches[key]).length;
+    const visible = forStudent.filter(matches[filter]);
 
     return (
         <div className="flex flex-col gap-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
                 <Tabs value={filter} onValueChange={(value) => setFilter(value as Filter)}>
                     <TabsList variant="line">
-                        <TabsTrigger value="open">To do ({counts.open})</TabsTrigger>
-                        <TabsTrigger value="done">Completed ({counts.done})</TabsTrigger>
-                        <TabsTrigger value="all">All ({counts.all})</TabsTrigger>
+                        <TabsTrigger value="open">To do ({count("open")})</TabsTrigger>
+                        {canReview && (
+                            <TabsTrigger value="review">To review ({count("review")})</TabsTrigger>
+                        )}
+                        <TabsTrigger value="done">Completed ({count("done")})</TabsTrigger>
+                        <TabsTrigger value="all">All ({count("all")})</TabsTrigger>
                     </TabsList>
                 </Tabs>
                 {students && (
@@ -82,12 +115,18 @@ export function TaskBoard({
                             <ListChecks />
                         </EmptyMedia>
                         <EmptyTitle>
-                            {filter === "done" ? "Nothing completed yet" : "No tasks here"}
+                            {filter === "done"
+                                ? "Nothing completed yet"
+                                : filter === "review"
+                                  ? "Nothing to review"
+                                  : "No tasks here"}
                         </EmptyTitle>
                         <EmptyDescription>
                             {filter === "open"
                                 ? "Everything is done, or no tasks have been added."
-                                : "Tasks will appear here."}
+                                : filter === "review"
+                                  ? "Tasks students complete wait here until you approve them or ask for changes."
+                                  : "Tasks will appear here."}
                         </EmptyDescription>
                     </EmptyHeader>
                 </Empty>
@@ -144,7 +183,35 @@ export function TaskBoard({
                                                 Completed {formatDate(task.completedAt)}
                                             </Badge>
                                         )}
+                                        <ReviewBadge task={task} />
                                     </div>
+                                    {task.reviewNote &&
+                                        task.reviewStatus === "changes_requested" && (
+                                            <p className="rounded-md bg-warning/10 px-2.5 py-1.5 text-sm whitespace-pre-line text-warning">
+                                                <span className="font-medium">Mentor: </span>
+                                                {task.reviewNote}
+                                            </p>
+                                        )}
+                                    {canReview && task.awaitingReview && (
+                                        <div className="flex flex-wrap gap-2 pt-0.5">
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                onClick={() =>
+                                                    startTransition(() => approveTask(task.id))
+                                                }
+                                            >
+                                                <Check /> Approve
+                                            </Button>
+                                            <Button
+                                                size="sm"
+                                                variant="ghost"
+                                                onClick={() => setReviewing({ task, open: true })}
+                                            >
+                                                <Undo2 /> Ask for changes
+                                            </Button>
+                                        </div>
+                                    )}
                                 </div>
                                 {task.canEdit && (
                                     <div className="flex shrink-0 gap-1">
@@ -190,6 +257,43 @@ export function TaskBoard({
                     })}
                 </ul>
             )}
+            {reviewing && (
+                <FormDialog
+                    open={reviewing.open}
+                    onOpenChange={(open) => setReviewing({ ...reviewing, open })}
+                    title="Ask for changes"
+                    description={`"${reviewing.task.title}" goes back to ${reviewing.task.studentName}'s to-do list with your note.`}
+                    action={requestTaskChanges.bind(null, reviewing.task.id)}
+                    fields={reviewFields}
+                    submitLabel="Send back"
+                />
+            )}
         </div>
     );
+}
+
+/** Where a task stands in the mentor's review. */
+function ReviewBadge({ task }: { task: TaskRow }) {
+    if (task.awaitingReview) {
+        return (
+            <Badge variant="outline" className="border-warning/30 text-warning">
+                <Hourglass /> Awaiting review
+            </Badge>
+        );
+    }
+    if (task.reviewStatus === "approved" && task.completedAt) {
+        return (
+            <Badge variant="outline" className="border-success/30 bg-success/10 text-success">
+                <Check /> Approved
+            </Badge>
+        );
+    }
+    if (task.reviewStatus === "changes_requested") {
+        return (
+            <Badge variant="outline" className="border-warning/30 text-warning">
+                <MessageSquareWarning /> Changes requested
+            </Badge>
+        );
+    }
+    return null;
 }

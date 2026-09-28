@@ -21,9 +21,11 @@ import {
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { todayInIndia } from "@/lib/dates";
+import { optionLabel, optionValue, type FieldOption } from "@/lib/forms";
 import { formatStudentId, studentOptions } from "@/lib/students/fields";
 import type { StudentSummary } from "@/lib/students/queries";
 import { FilterSelect } from "./option-select";
+import { Pager, usePages } from "./pager";
 import { formatDate, initials, ValueBadge } from "./values";
 
 const filters = [
@@ -37,16 +39,31 @@ const percent = (value: number | null) => (value == null ? "" : `${value}%`);
 const head = "h-9 px-3 text-xs font-normal text-muted-foreground";
 const cell = "px-3 py-2";
 
-/** The mentor's overview: one line per student with their headline details. */
-export function StudentList({ students }: { students: StudentSummary[] }) {
+const NO_SECTION = "__none__";
+
+/** The mentor's overview: one line per student with their headline details, 30 per page. */
+export function StudentList({
+    students,
+    sections,
+}: {
+    students: StudentSummary[];
+    sections: FieldOption[];
+}) {
     const router = useRouter();
     const [query, setQuery] = useState("");
-    const [selected, setSelected] = useState<Record<FilterKey, string>>({
+    const [selected, setSelected] = useState<Record<FilterKey | "sectionId", string>>({
+        sectionId: "",
         batch: "",
         studentStatus: "",
         priority: "",
     });
     const today = todayInIndia();
+    const sectionNames = useMemo(
+        () => new Map(sections.map((section) => [optionValue(section), optionLabel(section)])),
+        [sections],
+    );
+    const sectionOf = (student: StudentSummary) =>
+        (student.sectionId && sectionNames.get(student.sectionId)) || null;
 
     const visible = useMemo(() => {
         const q = query.trim().toLowerCase();
@@ -57,9 +74,18 @@ export function StudentList({ students }: { students: StudentSummary[] }) {
                         .join(" ")
                         .toLowerCase()
                         .includes(q)) &&
-                filters.every(({ key }) => !selected[key] || student[key] === selected[key]),
+                filters.every(({ key }) => !selected[key] || student[key] === selected[key]) &&
+                (!selected.sectionId ||
+                    (selected.sectionId === NO_SECTION
+                        ? !sectionNames.has(student.sectionId ?? "")
+                        : student.sectionId === selected.sectionId)),
         );
-    }, [students, query, selected]);
+    }, [students, query, selected, sectionNames]);
+    const pages = usePages(visible);
+    const filter = (key: keyof typeof selected, value: string) => {
+        setSelected((current) => ({ ...current, [key]: value }));
+        pages.setPage(0);
+    };
 
     return (
         <div className="flex flex-col gap-3">
@@ -70,7 +96,10 @@ export function StudentList({ students }: { students: StudentSummary[] }) {
                     </InputGroupAddon>
                     <InputGroupInput
                         value={query}
-                        onChange={(event) => setQuery(event.target.value)}
+                        onChange={(event) => {
+                            setQuery(event.target.value);
+                            pages.setPage(0);
+                        }}
                         placeholder="Search"
                         aria-label="Search students by name, email or ID"
                     />
@@ -81,16 +110,23 @@ export function StudentList({ students }: { students: StudentSummary[] }) {
                     </InputGroupAddon>
                 </InputGroup>
                 {/* One row of filters; on narrow screens it scrolls sideways instead of wrapping. */}
-                <div className="-mx-4 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] sm:mx-0 sm:overflow-visible sm:px-0">
-                    {filters.map((filter) => (
+                <div className="-mx-4 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
+                    {sections.length > 0 && (
                         <FilterSelect
-                            key={filter.key}
-                            label={filter.label}
-                            options={filter.options}
-                            value={selected[filter.key]}
-                            onChange={(value) =>
-                                setSelected((current) => ({ ...current, [filter.key]: value }))
-                            }
+                            label="Section"
+                            options={[...sections, { value: NO_SECTION, label: "No section" }]}
+                            value={selected.sectionId}
+                            onChange={(value) => filter("sectionId", value)}
+                            className="shrink-0"
+                        />
+                    )}
+                    {filters.map(({ key, label, options }) => (
+                        <FilterSelect
+                            key={key}
+                            label={label}
+                            options={options}
+                            value={selected[key]}
+                            onChange={(value) => filter(key, value)}
                             className="shrink-0"
                         />
                     ))}
@@ -117,7 +153,7 @@ export function StudentList({ students }: { students: StudentSummary[] }) {
                 <>
                     {/* Phones: a compact list; the full table starts at tablet width. */}
                     <ul className="divide-y border-y md:hidden">
-                        {visible.map((student) => {
+                        {pages.rows.map((student) => {
                             const callDue =
                                 student.nextCallDate !== null && student.nextCallDate <= today;
                             const meta = [
@@ -149,6 +185,7 @@ export function StudentList({ students }: { students: StudentSummary[] }) {
                                             </div>
                                             <div className="flex flex-wrap gap-1">
                                                 {[
+                                                    sectionOf(student),
                                                     student.batch,
                                                     student.studentStatus,
                                                     student.priority,
@@ -182,11 +219,12 @@ export function StudentList({ students }: { students: StudentSummary[] }) {
                         })}
                     </ul>
                     <ScrollArea className="hidden overflow-hidden md:block">
-                        <table className="w-full min-w-225 text-sm">
+                        <table className="w-full min-w-240 text-sm">
                             <TableHeader>
                                 <TableRow className="border-y hover:bg-transparent">
                                     <TableHead className={head}>Name</TableHead>
                                     <TableHead className={head}>ID</TableHead>
+                                    <TableHead className={head}>Section</TableHead>
                                     <TableHead className={head}>Batch</TableHead>
                                     <TableHead className={head}>Status</TableHead>
                                     <TableHead className={head}>Target</TableHead>
@@ -205,7 +243,7 @@ export function StudentList({ students }: { students: StudentSummary[] }) {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {visible.map((student) => {
+                                {pages.rows.map((student) => {
                                     const href = `/dashboard/students/${student.id}`;
                                     const callDue =
                                         student.nextCallDate !== null &&
@@ -244,6 +282,9 @@ export function StudentList({ students }: { students: StudentSummary[] }) {
                                                 className={`${cell} text-muted-foreground tabular-nums`}
                                             >
                                                 {formatStudentId(student.studentNumber)}
+                                            </TableCell>
+                                            <TableCell className={`${cell} max-w-40 truncate`}>
+                                                {sectionOf(student)}
                                             </TableCell>
                                             <TableCell className={cell}>
                                                 {student.batch && (
@@ -306,6 +347,7 @@ export function StudentList({ students }: { students: StudentSummary[] }) {
                         </table>
                         <ScrollBar orientation="horizontal" />
                     </ScrollArea>
+                    <Pager {...pages} label="Students" />
                 </>
             )}
         </div>
