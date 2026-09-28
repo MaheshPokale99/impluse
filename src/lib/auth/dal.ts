@@ -18,11 +18,13 @@ export const getCurrentUser = cache(async () => {
             email: users.email,
             phone: users.phone,
             role: users.role,
+            status: users.status,
             sessionVersion: users.sessionVersion,
         })
         .from(users)
         .where(eq(users.id, session.userId));
-    if (!user || user.sessionVersion !== session.version) return null;
+    // Sign-up requests can't use the workspace until a mentor approves them.
+    if (!user || user.sessionVersion !== session.version || user.status !== "active") return null;
     return { id: user.id, name: user.name, email: user.email, phone: user.phone, role: user.role };
 });
 

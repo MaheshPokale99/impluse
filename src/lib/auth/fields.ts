@@ -1,4 +1,4 @@
-import type { FormFieldDef } from "@/lib/forms";
+import type { FieldOption, FormFieldDef } from "@/lib/forms";
 
 export const MIN_PASSWORD_LENGTH = 8;
 
@@ -48,3 +48,24 @@ export const changePasswordFields: FormFieldDef[] = [
 ];
 
 export const profileFields: FormFieldDef[] = [accountFields.name, accountFields.phone];
+
+export const signupFields: FormFieldDef[] = [
+    accountFields.name,
+    accountFields.email,
+    { ...accountFields.phone, required: true },
+    accountFields.newPassword,
+];
+
+/** Optional details a student can give when signing up; the mentor can change them later. */
+export const signupProfileFields = (targetExams: readonly FieldOption[]): FormFieldDef[] => [
+    { name: "targetExam", label: "Target exam", type: "select", options: targetExams },
+    {
+        name: "targetYear",
+        label: "Target year",
+        type: "number",
+        min: 2020,
+        max: 2040,
+        placeholder: "e.g. 2027",
+    },
+    { name: "schoolCollege", label: "School/College", type: "text", max: 160, wide: true },
+];

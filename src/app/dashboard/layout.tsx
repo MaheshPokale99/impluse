@@ -5,17 +5,36 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { requireUser } from "@/lib/auth/dal";
-import { listStudentOptions } from "@/lib/students/queries";
+import { unreadByStudent, unreadForStudent } from "@/lib/notifications/queries";
+import { listSections, listSidebarStudents } from "@/lib/sections/queries";
 
 export const metadata: Metadata = {
     title: "Dashboard",
     robots: { index: false, follow: false },
 };
 
+async function mentorSidebar() {
+    const [sections, students, unread] = await Promise.all([
+        listSections(),
+        listSidebarStudents(),
+        unreadByStudent(),
+    ]);
+    return {
+        sections: {
+            sections: sections.map(({ id, name, admissions }) => ({ id, name, admissions })),
+            students,
+            unread,
+        },
+        unreadTotal: Object.values(unread).reduce((sum, count) => sum + count, 0),
+    };
+}
+
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
     const user = await requireUser();
-    const [students, cookieStore] = await Promise.all([
-        user.role === "admin" ? listStudentOptions() : undefined,
+    const [sidebar, cookieStore] = await Promise.all([
+        user.role === "admin"
+            ? mentorSidebar()
+            : unreadForStudent().then((unreadTotal) => ({ unreadTotal, sections: undefined })),
         cookies(),
     ]);
     // The sidebar remembers whether it was collapsed.
@@ -24,10 +43,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     return (
         <TooltipProvider>
             <SidebarProvider defaultOpen={defaultOpen} className="bg-sidebar text-foreground">
-                <AppSidebar
-                    user={user}
-                    students={students?.map((s) => ({ id: s.value, name: s.name }))}
-                />
+                <AppSidebar user={user} {...sidebar} />
                 <SidebarInset className="min-w-0">{children}</SidebarInset>
             </SidebarProvider>
             <Toaster position="bottom-right" />

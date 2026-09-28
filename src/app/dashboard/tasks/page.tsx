@@ -1,5 +1,13 @@
 import type { Metadata } from "next";
-import { AlarmClock, CalendarCheck, CircleCheck, ListChecks, ListTodo, Plus } from "lucide-react";
+import {
+    AlarmClock,
+    CalendarCheck,
+    CircleCheck,
+    Hourglass,
+    ListChecks,
+    ListTodo,
+    Plus,
+} from "lucide-react";
 import { FormDialog } from "@/components/portal/dialogs";
 import { TaskBoard } from "@/components/portal/task-board";
 import { completionRate, TaskProgressTable } from "@/components/portal/task-progress-table";
@@ -27,8 +35,9 @@ export default async function TasksPage() {
             done: sum.done + row.done,
             overdue: sum.overdue + row.overdue,
             doneThisWeek: sum.doneThisWeek + row.doneThisWeek,
+            toReview: sum.toReview + row.toReview,
         }),
-        { total: 0, done: 0, overdue: 0, doneThisWeek: 0 },
+        { total: 0, done: 0, overdue: 0, doneThisWeek: 0, toReview: 0 },
     );
 
     return (
@@ -70,6 +79,11 @@ export default async function TasksPage() {
                         tone: total.overdue ? "bad" : undefined,
                     },
                     { icon: CalendarCheck, label: "Done this week", value: total.doneThisWeek },
+                    {
+                        icon: Hourglass,
+                        label: admin ? "To review" : "Awaiting review",
+                        value: total.toReview,
+                    },
                 ]}
             />
             {admin && (
@@ -78,7 +92,12 @@ export default async function TasksPage() {
                 </Section>
             )}
             <Section title={admin ? "All tasks" : "Tasks"}>
-                <TaskBoard tasks={tasks} showStudent={admin} students={students} />
+                <TaskBoard
+                    tasks={tasks}
+                    showStudent={admin}
+                    canReview={admin}
+                    students={students}
+                />
             </Section>
         </PortalPage>
     );

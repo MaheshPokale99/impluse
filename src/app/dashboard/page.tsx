@@ -8,7 +8,8 @@ import { requireUser, type CurrentUser } from "@/lib/auth/dal";
 import { todayInIndia } from "@/lib/dates";
 import { createStudent } from "@/lib/students/actions";
 import { createStudentSections, formatStudentId } from "@/lib/students/fields";
-import { getStudent, listEntries, listStudents } from "@/lib/students/queries";
+import { listSectionOptions } from "@/lib/sections/queries";
+import { getLogColumns, getStudent, listEntries, listStudents } from "@/lib/students/queries";
 import { getTaskProgress } from "@/lib/tasks/queries";
 
 export default async function DashboardPage() {
@@ -17,7 +18,7 @@ export default async function DashboardPage() {
 }
 
 async function AdminOverview() {
-    const students = await listStudents();
+    const [students, sections] = await Promise.all([listStudents(), listSectionOptions()]);
     const today = todayInIndia();
     const count = (predicate: (s: (typeof students)[number]) => boolean) =>
         students.filter(predicate).length;
@@ -39,7 +40,7 @@ async function AdminOverview() {
                         </Button>
                     }
                     action={createStudent}
-                    sections={createStudentSections}
+                    sections={createStudentSections(sections)}
                     columns={2}
                     values={{ studentStatus: "Active", joiningDate: today }}
                     submitLabel="Create student"
@@ -71,15 +72,16 @@ async function AdminOverview() {
                     },
                 ]}
             />
-            <StudentList students={students} />
+            <StudentList students={students} sections={sections} />
         </PortalPage>
     );
 }
 
 async function StudentOverview({ user }: { user: CurrentUser }) {
-    const [student, entries, [progress]] = await Promise.all([
+    const [student, entries, columns, [progress]] = await Promise.all([
         getStudent(user.id),
         listEntries(user.id),
+        getLogColumns(),
         getTaskProgress(),
     ]);
     if (!student) {
@@ -100,6 +102,7 @@ async function StudentOverview({ user }: { user: CurrentUser }) {
             crumbs={[{ label: "My progress" }]}
             student={student}
             entries={entries}
+            columns={columns}
             viewer={user}
             progress={progress}
             title={student.name}

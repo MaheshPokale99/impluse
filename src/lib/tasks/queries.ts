@@ -1,5 +1,5 @@
 import "server-only";
-import { count, desc, eq, getTableColumns, sql } from "drizzle-orm";
+import { and, count, desc, eq, getTableColumns, sql } from "drizzle-orm";
 import { requireUser, type CurrentUser } from "@/lib/auth/dal";
 import { db } from "@/lib/db";
 import { studentProfiles, tasks, users, type Task } from "@/lib/db/schema";
@@ -15,7 +15,7 @@ export async function listTasks(studentId?: string) {
         .select({ ...getTableColumns(tasks), studentName: users.name })
         .from(tasks)
         .innerJoin(users, eq(users.id, tasks.studentId))
-        .where(owner ? eq(tasks.studentId, owner) : undefined)
+        .where(and(eq(users.status, "active"), owner ? eq(tasks.studentId, owner) : undefined))
         .orderBy(
             sql`${tasks.completedAt} is not null`,
             sql`${tasks.dueDate} asc nulls last`,
@@ -25,6 +25,7 @@ export async function listTasks(studentId?: string) {
         ...task,
         assignedByMentor: task.createdById !== task.studentId,
         canEdit: canEditTask(viewer, task),
+        awaitingReview: task.completedAt !== null && task.reviewStatus === null,
     }));
 }
 
@@ -46,11 +47,14 @@ export async function getTaskProgress(studentId?: string) {
             doneThisWeek: count(
                 sql`case when ${tasks.completedAt} >= now() - interval '7 days' then 1 end`,
             ),
+            toReview: count(
+                sql`case when ${tasks.completedAt} is not null and ${tasks.reviewStatus} is null then 1 end`,
+            ),
         })
         .from(users)
         .innerJoin(studentProfiles, eq(studentProfiles.userId, users.id))
         .leftJoin(tasks, eq(tasks.studentId, users.id))
-        .where(owner ? eq(users.id, owner) : undefined)
+        .where(and(eq(users.status, "active"), owner ? eq(users.id, owner) : undefined))
         .groupBy(users.id, studentProfiles.studentNumber)
         .orderBy(users.name);
 }

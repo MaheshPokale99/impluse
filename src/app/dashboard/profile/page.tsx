@@ -33,8 +33,8 @@ export default async function ProfilePage() {
                         />
                     ) : (
                         <p className="text-sm text-muted-foreground">
-                            Your name and email are managed by your mentor. Update your phone and
-                            other details on{" "}
+                            Your name, contact and study details are managed by your mentor. See
+                            them on{" "}
                             <Link
                                 prefetch={false}
                                 href="/dashboard"
@@ -42,7 +42,7 @@ export default async function ProfilePage() {
                             >
                                 My progress
                             </Link>
-                            .
+                            , and ask your mentor if something needs changing.
                         </p>
                     )}
                 </Section>

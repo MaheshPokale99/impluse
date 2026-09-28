@@ -73,3 +73,19 @@ export function sendPasswordResetEmail(to: { name: string; email: string }, toke
         text: `Hi ${to.name},\n\nReset your password using this link (expires in 1 hour):\n${url}\n\nIf you didn't ask for this, ignore this email.`,
     });
 }
+
+export function sendApprovalEmail(to: { name: string; email: string }) {
+    const url = appUrl("/login");
+    return sendEmail({
+        to: to.email,
+        subject: `Your ${siteName} account is ready`,
+        html: layout(
+            `Welcome, ${escapeHtml(to.name)}`,
+            [
+                `Your mentor approved your registration. Sign in with your email (${escapeHtml(to.email)}) and the password you chose when you signed up.`,
+            ],
+            { label: "Sign in", url },
+        ),
+        text: `Welcome, ${to.name}.\n\nYour mentor approved your registration. Sign in with your email (${to.email}) and the password you chose when you signed up:\n${url}`,
+    });
+}

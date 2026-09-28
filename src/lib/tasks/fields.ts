@@ -35,3 +35,14 @@ export const taskFields = (students?: readonly FieldOption[]): FormFieldDef[] =>
               ...baseFields,
           ]
         : baseFields;
+
+export const reviewFields: FormFieldDef[] = [
+    {
+        name: "reviewNote",
+        label: "What needs to change?",
+        type: "textarea",
+        required: true,
+        max: 1000,
+        placeholder: "e.g. Solve questions 11–20 as well and show your working.",
+    },
+];

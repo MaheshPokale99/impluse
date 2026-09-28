@@ -4,6 +4,7 @@ import { useTransition } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+    Bell,
     ChevronsUpDown,
     ListChecks,
     LogOut,
@@ -28,25 +29,31 @@ import {
     SidebarFooter,
     SidebarGroup,
     SidebarGroupContent,
-    SidebarGroupLabel,
     SidebarHeader,
     SidebarMenu,
+    SidebarMenuBadge,
     SidebarMenuButton,
     SidebarMenuItem,
     SidebarRail,
 } from "@/components/ui/sidebar";
 import { useTheme } from "@/components/impulsevidya/theme-toggle";
 import { logout } from "@/lib/auth/actions";
+import { SidebarSections } from "./sidebar-sections";
 import { Logo } from "./ui";
 import { initials } from "./values";
 
-/** The workspace sidebar: navigation, the student list (for mentors) and the account menu. */
+/**
+ * The workspace sidebar: navigation (with the unread notification count), the mentor's
+ * student sections, and the account menu.
+ */
 export function AppSidebar({
     user,
-    students,
+    unreadTotal,
+    sections,
 }: {
     user: { name: string; email: string; role: string };
-    students?: { id: string; name: string }[];
+    unreadTotal: number;
+    sections?: React.ComponentProps<typeof SidebarSections>;
 }) {
     const pathname = usePathname();
     const { theme, toggleTheme } = useTheme("light");
@@ -59,6 +66,12 @@ export function AppSidebar({
             icon: admin ? Users : TrendingUp,
         },
         { href: "/dashboard/tasks", label: admin ? "Tasks" : "My tasks", icon: ListChecks },
+        {
+            href: "/dashboard/notifications",
+            label: "Notifications",
+            icon: Bell,
+            badge: unreadTotal,
+        },
     ];
 
     return (
@@ -86,7 +99,7 @@ export function AppSidebar({
                 <SidebarGroup>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            {nav.map(({ href, label, icon: Icon }) => (
+                            {nav.map(({ href, label, icon: Icon, badge }) => (
                                 <SidebarMenuItem key={href}>
                                     <SidebarMenuButton asChild isActive={pathname === href}>
                                         <Link prefetch={false} href={href}>
@@ -94,37 +107,18 @@ export function AppSidebar({
                                             <span>{label}</span>
                                         </Link>
                                     </SidebarMenuButton>
+                                    {badge ? (
+                                        <SidebarMenuBadge className="bg-primary text-primary-foreground peer-hover/menu-button:text-primary-foreground peer-data-active/menu-button:text-primary-foreground">
+                                            <span className="sr-only">Unread: </span>
+                                            {badge}
+                                        </SidebarMenuBadge>
+                                    ) : null}
                                 </SidebarMenuItem>
                             ))}
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
-                {students && students.length > 0 && (
-                    <SidebarGroup>
-                        <SidebarGroupLabel>Students</SidebarGroupLabel>
-                        <SidebarGroupContent>
-                            <SidebarMenu>
-                                {students.map((student) => {
-                                    const href = `/dashboard/students/${student.id}`;
-                                    return (
-                                        <SidebarMenuItem key={student.id}>
-                                            <SidebarMenuButton asChild isActive={pathname === href}>
-                                                <Link prefetch={false} href={href}>
-                                                    <Avatar className="size-5">
-                                                        <AvatarFallback className="text-[10px]">
-                                                            {initials(student.name)}
-                                                        </AvatarFallback>
-                                                    </Avatar>
-                                                    <span>{student.name}</span>
-                                                </Link>
-                                            </SidebarMenuButton>
-                                        </SidebarMenuItem>
-                                    );
-                                })}
-                            </SidebarMenu>
-                        </SidebarGroupContent>
-                    </SidebarGroup>
-                )}
+                {sections && <SidebarSections {...sections} />}
             </SidebarContent>
             <SidebarFooter>
                 <SidebarMenu>

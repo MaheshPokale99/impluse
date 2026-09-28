@@ -39,13 +39,16 @@ Emails go through [Resend](https://resend.com). When a mentor creates a student,
 
 ## Roles
 
-- **Mentor (admin)** sees an overview of all students (name, batch, status, target, and the latest day's priority, scores and next call), with search and filters. Selecting a student opens their page:
-    - **Daily log**: one row per day, newest first. "Add today's row" creates a row dated today that starts from the previous day's values, so only what changed needs editing. Every cell is edited in place (text and numbers inline, options in a select, dates in a calendar, notes in a popover). A chart plots scores by day.
-    - **Profile**: contact, enrolment and background details, edited in place.
-    - **Tasks**: the student's tasks.
-- **Student** sees the same page for themselves, without the mentor-only columns (priority, subject levels, mentor notes). They can update their study hours in the log, a few profile details (phone, target exam and year, parent name, school), and their own tasks.
+- **Mentor (admin)** sees an overview of all students (name, section, batch, status, target, and the latest day's priority, scores and next call), with search, filters and 30 students per page. The sidebar groups students into **sections** the mentor creates and names (for example "Class 12 · Batch A"); each section is a collapsible list, with a search box to find a student quickly. A number after a student's name counts their unread activity. Selecting a student opens their page:
+    - **Recent activity**: what the student changed lately (marked as read when the page opens).
+    - **Profile**: contact, section, enrolment and background details, edited in place. Only the mentor edits them.
+    - **Daily log**: one row per day, newest first, 30 days per page. "New day" creates a row dated today that starts from the previous day's values, so only what changed needs editing. Every cell is edited in place (text and numbers inline, options in a select, dates in a calendar, notes in a popover). **Columns** lets the mentor rename or hide any column (hidden columns keep their values) and add their own columns (text, number, date or long text; shared with the student or mentor-only). A chart plots scores by day.
+    - **Tasks**: the student's tasks. Completed tasks can be reviewed: approve them, or send them back with a note.
+- **Student** sees the same page for themselves, read-only apart from their study hours in the log, without mentor-only columns. They manage their own tasks and tick off any task.
+- **Notifications** go both ways: when the mentor changes a student's profile, log or tasks, the student is notified; when a student updates their log or tasks, the mentor is notified (also shown next to the student's name in the sidebar).
+- **Sign-up**: new students can request an account at `/signup`. The request waits in the **New admissions** section (the mentor can rename it) and the mentor is notified. The mentor approves it, choosing the student's section, or declines it. Until then the account can't sign in.
 
-Profile fields and daily-log columns, and who can see and edit them, are defined in `src/lib/students/fields.ts`. The tables, forms, and validation are generated from those lists. Daily rows live in the `student_entries` table (one row per student per date).
+Profile fields and daily-log columns, and who can see and edit them, are defined in `src/lib/students/fields.ts`. The tables, forms, and validation are generated from those lists; the mentor's column settings are stored in the `log_columns` table. Daily rows live in the `student_entries` table (one row per student per date).
 
 ## Database changes
 

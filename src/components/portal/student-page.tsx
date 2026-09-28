@@ -4,17 +4,23 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import type { CurrentUser } from "@/lib/auth/dal";
 import { todayInIndia } from "@/lib/dates";
+import type { FieldOption } from "@/lib/forms";
+import type { NotificationRow } from "@/lib/notifications/queries";
 import {
+    sectionField,
     studentFields,
-    visibleEntryFields,
+    visibleColumns,
     type EntryRecord,
+    type LogColumn,
     type StudentRecord,
 } from "@/lib/students/fields";
 import { createTask } from "@/lib/tasks/actions";
 import { taskFields } from "@/lib/tasks/fields";
 import type { TaskProgress, TaskRow } from "@/lib/tasks/queries";
+import { ActivityList } from "./activity-list";
 import { AddTodayButton, DailyLog } from "./daily-log";
 import { FormDialog } from "./dialogs";
+import { LogColumnsButton } from "./log-columns";
 import { ProgressChart } from "./progress-chart";
 import { StudentProperties } from "./student-properties";
 import { TaskBoard } from "./task-board";
@@ -29,9 +35,12 @@ export function StudentPage({
     crumbs,
     student,
     entries,
+    columns,
     viewer,
     progress,
     tasks,
+    sections,
+    activity,
     title,
     description,
     actions,
@@ -39,9 +48,15 @@ export function StudentPage({
     crumbs: Crumb[];
     student: StudentRecord;
     entries: EntryRecord[];
+    /** Every daily-log column, including hidden ones (the mentor manages them here). */
+    columns: LogColumn[];
     viewer: CurrentUser;
     progress?: TaskProgress;
     tasks?: TaskRow[];
+    /** Mentor only: sections the student can be moved to. */
+    sections?: FieldOption[];
+    /** Mentor only: the student's latest activity. */
+    activity?: NotificationRow[];
     title: string;
     description: ReactNode;
     actions?: ReactNode;
@@ -97,9 +112,22 @@ export function StudentPage({
                 ]}
             />
 
+            {activity && activity.length > 0 && (
+                <Section
+                    title="Recent activity"
+                    description={`What ${student.name} changed lately.`}
+                >
+                    <ActivityList
+                        items={activity}
+                        studentId={student.id}
+                        emptyText="No activity yet."
+                    />
+                </Section>
+            )}
+
             <StudentProperties
                 student={student}
-                fields={studentFields}
+                fields={sections ? [sectionField(sections), ...studentFields] : studentFields}
                 role={viewer.role}
                 viewerId={viewer.id}
             />
@@ -112,15 +140,23 @@ export function StudentPage({
                         : "Your progress day by day. You can fill in your study hours."
                 }
                 action={
-                    admin && entries.length > 0 ? (
-                        <AddTodayButton studentId={student.id} hasToday={latest?.date === today} />
+                    admin ? (
+                        <div className="flex flex-wrap gap-2">
+                            <LogColumnsButton columns={columns} />
+                            {entries.length > 0 && (
+                                <AddTodayButton
+                                    studentId={student.id}
+                                    hasToday={latest?.date === today}
+                                />
+                            )}
+                        </div>
                     ) : undefined
                 }
             >
                 <DailyLog
                     studentId={student.id}
                     entries={entries}
-                    fields={visibleEntryFields(viewer.role)}
+                    fields={visibleColumns(columns, viewer.role)}
                     role={viewer.role}
                     viewerId={viewer.id}
                 />
@@ -156,7 +192,7 @@ export function StudentPage({
                         />
                     }
                 >
-                    <TaskBoard tasks={tasks} />
+                    <TaskBoard tasks={tasks} canReview={admin} />
                 </Section>
             )}
         </PortalPage>
