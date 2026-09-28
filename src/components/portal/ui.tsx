@@ -14,6 +14,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { HeaderNotifications } from "./unread-context";
 
 /** The ImpulseVidya logo (public/Logo.png). Decorative: it always sits next to the name. */
 export function Logo({ className }: { className?: string }) {
@@ -54,12 +55,12 @@ export function PortalPage({
                     orientation="vertical"
                     className="mr-1 data-vertical:h-4 data-vertical:self-center"
                 />
-                <Breadcrumb>
-                    <BreadcrumbList>
+                <Breadcrumb className="min-w-0 flex-1">
+                    <BreadcrumbList className="flex-nowrap">
                         {crumbs.map((crumb, index) => (
                             <Fragment key={crumb.label}>
                                 {index > 0 && <BreadcrumbSeparator />}
-                                <BreadcrumbItem>
+                                <BreadcrumbItem className="min-w-0">
                                     {crumb.href ? (
                                         <BreadcrumbLink asChild>
                                             <Link prefetch={false} href={crumb.href}>
@@ -67,24 +68,29 @@ export function PortalPage({
                                             </Link>
                                         </BreadcrumbLink>
                                     ) : (
-                                        <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
+                                        <BreadcrumbPage className="truncate">
+                                            {crumb.label}
+                                        </BreadcrumbPage>
                                     )}
                                 </BreadcrumbItem>
                             </Fragment>
                         ))}
                     </BreadcrumbList>
                 </Breadcrumb>
+                <HeaderNotifications />
             </header>
             <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-5 sm:px-6 sm:py-7 lg:px-8">
-                <div className="flex flex-wrap items-end justify-between gap-3">
-                    <div className="flex min-w-0 flex-col gap-2 sm:gap-3">
+                <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
+                    <div className="flex min-w-0 items-center gap-3 sm:flex-col sm:items-start">
                         {icon}
-                        <div className="flex flex-col gap-1">
-                            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+                        <div className="flex min-w-0 flex-col gap-0.5 sm:gap-1">
+                            <h1 className="text-xl font-bold tracking-tight break-words sm:text-3xl">
                                 {title}
                             </h1>
                             {description && (
-                                <div className="text-sm text-muted-foreground">{description}</div>
+                                <div className="text-sm break-words text-muted-foreground">
+                                    {description}
+                                </div>
                             )}
                         </div>
                     </div>
@@ -99,7 +105,7 @@ export function PortalPage({
 /** A page icon block, like the icon above a document title. */
 export function PageIcon({ icon: Icon }: { icon: LucideIcon }) {
     return (
-        <span className="grid size-9 place-items-center rounded-lg bg-muted text-muted-foreground sm:size-11">
+        <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-muted text-muted-foreground sm:size-11">
             <Icon className="size-4 sm:size-5" aria-hidden />
         </span>
     );
@@ -138,14 +144,17 @@ export function Summary({
     items: { icon: LucideIcon; label: string; value: ReactNode; tone?: "bad" }[];
 }) {
     return (
-        <dl className="grid grid-cols-2 gap-x-4 gap-y-2.5 border-y py-2.5 text-sm sm:flex sm:flex-wrap sm:gap-x-8">
+        <dl className="grid grid-cols-2 gap-x-3 gap-y-2.5 border-y py-2.5 text-sm min-[360px]:grid-cols-3 sm:flex sm:flex-wrap sm:gap-x-8">
             {items.map(({ icon: Icon, label, value, tone }) => (
-                <div key={label} className="grid grid-cols-[auto_1fr] items-center gap-x-2 sm:flex">
+                <div
+                    key={label}
+                    className="grid min-w-0 grid-cols-[auto_1fr] items-center gap-x-2 sm:flex"
+                >
                     <Icon
                         className="row-span-2 size-4 text-muted-foreground sm:row-span-1"
                         aria-hidden
                     />
-                    <dt className="text-xs text-muted-foreground sm:text-sm">{label}</dt>
+                    <dt className="truncate text-xs text-muted-foreground sm:text-sm">{label}</dt>
                     <dd
                         className={cn(
                             "font-medium tabular-nums",

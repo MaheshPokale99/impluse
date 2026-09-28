@@ -36,13 +36,22 @@ export const taskFields = (students?: readonly FieldOption[]): FormFieldDef[] =>
           ]
         : baseFields;
 
+export type ReviewDecision = "approved" | "changes_requested" | "note";
+
+export const reviewDecisions: { value: ReviewDecision; label: string }[] = [
+    { value: "approved", label: "Approve" },
+    { value: "changes_requested", label: "Ask for changes" },
+    { value: "note", label: "Just add a note" },
+];
+
 export const reviewFields: FormFieldDef[] = [
+    { name: "decision", label: "Review", type: "select", options: reviewDecisions, required: true },
     {
         name: "reviewNote",
-        label: "What needs to change?",
+        label: "Note for the student",
         type: "textarea",
-        required: true,
         max: 1000,
-        placeholder: "e.g. Solve questions 11–20 as well and show your working.",
+        wide: true,
+        placeholder: "e.g. Good work. Next, solve questions 11–20 and show your working.",
     },
 ];

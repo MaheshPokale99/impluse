@@ -6,12 +6,14 @@ import { usePathname } from "next/navigation";
 import {
     ChevronRight,
     Folder,
+    FolderInput,
     FolderOpen,
     Inbox,
     MoreHorizontal,
     Pencil,
     Plus,
     Trash2,
+    UserRound,
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -20,6 +22,9 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -37,10 +42,17 @@ import {
     SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import type { Section } from "@/lib/db/schema";
-import { createSection, deleteSection, renameSection } from "@/lib/sections/actions";
+import type { FieldOption } from "@/lib/forms";
+import {
+    createSection,
+    deleteSection,
+    nameUnsortedStudents,
+    renameSection,
+} from "@/lib/sections/actions";
 import { ADMISSIONS_FALLBACK_NAME, sectionFields } from "@/lib/sections/fields";
 import type { SidebarStudent } from "@/lib/sections/queries";
 import { ConfirmAction, FormDialog } from "./dialogs";
+import { NewSectionForStudent, SectionMoveItems, useMoveStudent } from "./move-to-section";
 import { initials } from "./values";
 
 // Which sections the mentor left open, remembered in this browser only.
@@ -94,10 +106,14 @@ export function SidebarSections({
     unread: Record<string, number>;
 }) {
     const [query, setQuery] = useState("");
+    const [creatingSection, setCreatingSection] = useState(false);
+    const [namingUnsorted, setNamingUnsorted] = useState(false);
+    const [creatingFor, setCreatingFor] = useState<SidebarStudent | null>(null);
     const q = query.trim().toLowerCase();
     const admissions = sections.find((section) => section.admissions);
     const custom = sections.filter((section) => !section.admissions);
     const known = new Set(custom.map((section) => section.id));
+    const sectionOptions = custom.map((section) => ({ value: section.id, label: section.name }));
     const active = students.filter((student) => student.status === "active");
 
     const groups: Group[] = [
@@ -125,6 +141,7 @@ export function SidebarSections({
         },
     ];
 
+    const unsorted = groups[groups.length - 1];
     const shown = groups
         .filter((group) => group.kind !== "none" || group.students.length > 0)
         .map((group) =>
@@ -142,18 +159,34 @@ export function SidebarSections({
     return (
         <SidebarGroup>
             <SidebarGroupLabel>Sections</SidebarGroupLabel>
+            <SidebarGroupAction title="New section" onClick={() => setCreatingSection(true)}>
+                <Plus /> <span className="sr-only">New section</span>
+            </SidebarGroupAction>
             <FormDialog
+                open={creatingSection}
+                onOpenChange={setCreatingSection}
                 title="New section"
                 description="Group students the way you work, e.g. by batch or class. You can rename it later."
-                trigger={
-                    <SidebarGroupAction title="New section">
-                        <Plus /> <span className="sr-only">New section</span>
-                    </SidebarGroupAction>
-                }
                 action={createSection}
                 fields={sectionFields}
                 submitLabel="Add section"
             />
+            <FormDialog
+                open={namingUnsorted}
+                onOpenChange={setNamingUnsorted}
+                title="Name this section"
+                description={`“No section” becomes a section with this name, and its ${countLabel(unsorted)} move into it.`}
+                action={nameUnsortedStudents}
+                fields={sectionFields}
+                submitLabel="Save name"
+            />
+            {creatingFor && (
+                <NewSectionForStudent
+                    student={creatingFor}
+                    open
+                    onOpenChange={(open) => !open && setCreatingFor(null)}
+                />
+            )}
             <SidebarGroupContent className="flex flex-col gap-1">
                 {students.length > 0 && (
                     <SidebarInput
@@ -171,12 +204,25 @@ export function SidebarSections({
                             group={group}
                             unread={unread}
                             searching={Boolean(q)}
+                            sectionOptions={sectionOptions}
+                            onNameUnsorted={() => setNamingUnsorted(true)}
+                            onNewSectionFor={setCreatingFor}
                         />
                     ))}
                     {q && shown.length === 0 && (
                         <li className="px-2 py-1.5 text-xs text-muted-foreground">
                             No student matches “{query.trim()}”.
                         </li>
+                    )}
+                    {!q && (
+                        <SidebarMenuItem>
+                            <SidebarMenuButton
+                                className="text-muted-foreground"
+                                onClick={() => setCreatingSection(true)}
+                            >
+                                <Plus aria-hidden /> New section
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
                     )}
                 </SidebarMenu>
             </SidebarGroupContent>
@@ -188,16 +234,21 @@ function SectionItem({
     group,
     unread,
     searching,
+    sectionOptions,
+    onNameUnsorted,
+    onNewSectionFor,
 }: {
     group: Group;
     unread: Record<string, number>;
     searching: boolean;
+    sectionOptions: FieldOption[];
+    onNameUnsorted: () => void;
+    onNewSectionFor: (student: SidebarStudent) => void;
 }) {
     const pathname = usePathname();
     const hrefFor = (id: string) =>
         group.kind === "admissions" ? "/dashboard/admissions" : `/dashboard/students/${id}`;
     const unreadTotal = group.students.reduce((sum, student) => sum + (unread[student.id] ?? 0), 0);
-    // Sections with news, requests or the open student start open; others as last left.
     const needsAttention =
         unreadTotal > 0 ||
         (group.kind === "admissions" && group.students.length > 0) ||
@@ -208,7 +259,7 @@ function SectionItem({
         () => undefined,
     );
     const [clicked, setClicked] = useState<boolean>();
-    const open = clicked ?? (needsAttention || stored === true);
+    const open = clicked ?? (needsAttention || stored !== false);
     const toggle = (next: boolean) => {
         setClicked(next);
         storeOpenSection(group.key, next);
@@ -246,21 +297,30 @@ function SectionItem({
                     <>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <SidebarMenuAction showOnHover aria-label={`${group.name} options`}>
+                                <SidebarMenuAction aria-label={`${group.name} options`}>
                                     <MoreHorizontal />
                                 </SidebarMenuAction>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent side="right" align="start">
+                            <DropdownMenuContent side="right" align="start" className="min-w-44">
                                 <DropdownMenuItem onSelect={() => setDialog("rename")}>
                                     <Pencil /> Rename
                                 </DropdownMenuItem>
                                 {group.kind === "custom" && (
-                                    <DropdownMenuItem
-                                        variant="destructive"
-                                        onSelect={() => setDialog("delete")}
-                                    >
-                                        <Trash2 /> Delete section
-                                    </DropdownMenuItem>
+                                    <>
+                                        <DropdownMenuItem
+                                            variant="destructive"
+                                            disabled={group.students.length > 0}
+                                            onSelect={() => setDialog("delete")}
+                                        >
+                                            <Trash2 /> Delete section
+                                        </DropdownMenuItem>
+                                        {group.students.length > 0 && (
+                                            <p className="max-w-52 px-2 pb-1.5 text-xs text-muted-foreground">
+                                                Move its {countLabel(group)} to another section
+                                                first.
+                                            </p>
+                                        )}
+                                    </>
                                 )}
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -278,16 +338,26 @@ function SectionItem({
                                 open={dialog === "delete"}
                                 onOpenChange={(next) => setDialog(next ? "delete" : null)}
                                 title={`Delete “${section.name}”?`}
-                                description={
-                                    group.students.length > 0
-                                        ? `Its ${group.students.length} ${group.students.length === 1 ? "student stays" : "students stay"} in the workspace and move to “No section”.`
-                                        : "The section is empty; nothing else changes."
-                                }
+                                description="The empty section is removed from the sidebar."
                                 confirmLabel="Delete section"
                                 action={deleteSection.bind(null, section.id)}
                             />
                         )}
                     </>
+                )}
+                {group.kind === "none" && (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <SidebarMenuAction aria-label={`${group.name} options`}>
+                                <MoreHorizontal />
+                            </SidebarMenuAction>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent side="right" align="start" className="min-w-44">
+                            <DropdownMenuItem onSelect={onNameUnsorted}>
+                                <Pencil /> Rename
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 )}
                 <CollapsibleContent>
                     <SidebarMenuSub>
@@ -295,8 +365,15 @@ function SectionItem({
                             const href = hrefFor(student.id);
                             const count = unread[student.id] ?? 0;
                             return (
-                                <SidebarMenuSubItem key={student.id}>
-                                    <SidebarMenuSubButton asChild isActive={pathname === href}>
+                                <SidebarMenuSubItem
+                                    key={student.id}
+                                    className="group/student relative"
+                                >
+                                    <SidebarMenuSubButton
+                                        asChild
+                                        isActive={pathname === href}
+                                        className={group.kind === "admissions" ? undefined : "pr-7"}
+                                    >
                                         <Link prefetch={false} href={href}>
                                             <Avatar className="size-5">
                                                 <AvatarFallback className="text-[10px]">
@@ -314,6 +391,14 @@ function SectionItem({
                                             )}
                                         </Link>
                                     </SidebarMenuSubButton>
+                                    {group.kind !== "admissions" && (
+                                        <StudentMenu
+                                            student={student}
+                                            href={href}
+                                            sectionOptions={sectionOptions}
+                                            onNewSection={() => onNewSectionFor(student)}
+                                        />
+                                    )}
                                 </SidebarMenuSubItem>
                             );
                         })}
@@ -340,5 +425,54 @@ function SectionItem({
                 </CollapsibleContent>
             </SidebarMenuItem>
         </Collapsible>
+    );
+}
+
+function StudentMenu({
+    student,
+    href,
+    sectionOptions,
+    onNewSection,
+}: {
+    student: SidebarStudent;
+    href: string;
+    sectionOptions: FieldOption[];
+    onNewSection: () => void;
+}) {
+    const { move } = useMoveStudent();
+    return (
+        <>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <button
+                        type="button"
+                        aria-label={`${student.name} options`}
+                        className="absolute top-1/2 right-1 flex size-5 -translate-y-1/2 items-center justify-center rounded-md text-sidebar-foreground outline-hidden after:absolute after:-inset-2 hover:bg-sidebar-accent md:after:hidden focus-visible:ring-2 focus-visible:ring-sidebar-ring data-[state=open]:bg-sidebar-accent md:opacity-0 md:group-focus-within/student:opacity-100 md:group-hover/student:opacity-100 md:data-[state=open]:opacity-100 [&>svg]:size-4"
+                    >
+                        <MoreHorizontal />
+                    </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent side="right" align="start" className="min-w-48">
+                    <DropdownMenuItem asChild>
+                        <Link prefetch={false} href={href}>
+                            <UserRound /> Open
+                        </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSub>
+                        <DropdownMenuSubTrigger>
+                            <FolderInput /> Move to section
+                        </DropdownMenuSubTrigger>
+                        <DropdownMenuSubContent className="min-w-48">
+                            <SectionMoveItems
+                                student={student}
+                                sections={sectionOptions}
+                                onMove={move}
+                                onNewSection={onNewSection}
+                            />
+                        </DropdownMenuSubContent>
+                    </DropdownMenuSub>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </>
     );
 }

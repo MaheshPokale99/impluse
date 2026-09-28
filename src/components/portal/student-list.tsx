@@ -24,6 +24,7 @@ import { todayInIndia } from "@/lib/dates";
 import { optionLabel, optionValue, type FieldOption } from "@/lib/forms";
 import { formatStudentId, studentOptions } from "@/lib/students/fields";
 import type { StudentSummary } from "@/lib/students/queries";
+import { SectionPicker } from "./move-to-section";
 import { FilterSelect } from "./option-select";
 import { Pager, usePages } from "./pager";
 import { formatDate, initials, ValueBadge } from "./values";
@@ -283,8 +284,14 @@ export function StudentList({
                                             >
                                                 {formatStudentId(student.studentNumber)}
                                             </TableCell>
-                                            <TableCell className={`${cell} max-w-40 truncate`}>
-                                                {sectionOf(student)}
+                                            <TableCell
+                                                className={`${cell} max-w-44`}
+                                                onClick={(event) => event.stopPropagation()}
+                                            >
+                                                <SectionPicker
+                                                    student={student}
+                                                    sections={sections}
+                                                />
                                             </TableCell>
                                             <TableCell className={cell}>
                                                 {student.batch && (

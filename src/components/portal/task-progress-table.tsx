@@ -29,11 +29,13 @@ export function TaskProgressTable({ rows }: { rows: TaskProgress[] }) {
                         <TableHead className={`${head} hidden text-right sm:table-cell`}>
                             Open
                         </TableHead>
-                        <TableHead className={`${head} text-right`}>Overdue</TableHead>
+                        <TableHead className={`${head} hidden text-right sm:table-cell`}>
+                            Overdue
+                        </TableHead>
                         <TableHead className={`${head} hidden text-right sm:table-cell`}>
                             Last 7 days
                         </TableHead>
-                        <TableHead className={`${head} w-32 sm:w-48`}>Completion</TableHead>
+                        <TableHead className={`${head} w-28 sm:w-48`}>Completion</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -41,7 +43,7 @@ export function TaskProgressTable({ rows }: { rows: TaskProgress[] }) {
                         const rate = completionRate(row);
                         return (
                             <TableRow key={row.studentId}>
-                                <TableCell className="px-3 font-medium">
+                                <TableCell className="px-3 font-medium whitespace-normal">
                                     <Link
                                         prefetch={false}
                                         href={`/dashboard/students/${row.studentId}`}
@@ -49,6 +51,11 @@ export function TaskProgressTable({ rows }: { rows: TaskProgress[] }) {
                                     >
                                         {row.name}
                                     </Link>
+                                    {row.overdue > 0 && (
+                                        <span className="block text-xs font-normal text-destructive sm:hidden">
+                                            {row.overdue} overdue
+                                        </span>
+                                    )}
                                 </TableCell>
                                 <TableCell className="hidden px-3 text-muted-foreground tabular-nums sm:table-cell">
                                     {formatStudentId(row.studentNumber)}
@@ -59,7 +66,7 @@ export function TaskProgressTable({ rows }: { rows: TaskProgress[] }) {
                                 <TableCell className="hidden px-3 text-right tabular-nums sm:table-cell">
                                     {row.total - row.done}
                                 </TableCell>
-                                <TableCell className="px-3 text-right tabular-nums">
+                                <TableCell className="hidden px-3 text-right tabular-nums sm:table-cell">
                                     <span
                                         className={
                                             row.overdue

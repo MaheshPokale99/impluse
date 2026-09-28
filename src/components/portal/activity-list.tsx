@@ -29,12 +29,13 @@ export function ActivityList({
     studentId?: string;
     emptyText: string;
 }) {
-    const [fresh] = useState(
-        () => new Set(items.filter((item) => !item.readAt).map((item) => item.id)),
-    );
+    const unread = items.filter((item) => !item.readAt).map((item) => item.id);
+    const unreadKey = unread.join(",");
+    const [fresh, setFresh] = useState(() => new Set(unread));
+    if (unread.some((id) => !fresh.has(id))) setFresh(new Set([...fresh, ...unread]));
     useEffect(() => {
-        if (fresh.size > 0) void markNotificationsRead(studentId);
-    }, [fresh, studentId]);
+        if (unreadKey) void markNotificationsRead(studentId);
+    }, [unreadKey, studentId]);
 
     if (items.length === 0) {
         return (

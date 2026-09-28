@@ -178,7 +178,7 @@ export function ActionForm({
                 </p>
             )}
             <div className="flex flex-wrap items-center justify-between gap-3">
-                <Button type="submit" disabled={pending}>
+                <Button type="submit" disabled={pending} className="w-full sm:w-auto">
                     {pending && <Loader2 className="animate-spin" />}
                     {submitLabel}
                 </Button>

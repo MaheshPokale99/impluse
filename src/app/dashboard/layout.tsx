@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { AppSidebar } from "@/components/portal/app-sidebar";
+import { LiveRefresh } from "@/components/portal/live-refresh";
+import { UnreadProvider } from "@/components/portal/unread-context";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -44,9 +46,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <TooltipProvider>
             <SidebarProvider defaultOpen={defaultOpen} className="bg-sidebar text-foreground">
                 <AppSidebar user={user} {...sidebar} />
-                <SidebarInset className="min-w-0">{children}</SidebarInset>
+                <SidebarInset className="min-w-0">
+                    <UnreadProvider count={sidebar.unreadTotal}>{children}</UnreadProvider>
+                </SidebarInset>
             </SidebarProvider>
             <Toaster position="bottom-right" />
+            <LiveRefresh />
         </TooltipProvider>
     );
 }

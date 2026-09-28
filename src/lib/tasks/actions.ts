@@ -2,13 +2,14 @@
 
 import { refresh } from "next/cache";
 import { and, eq, isNotNull, sql } from "drizzle-orm";
+import type { PgUpdateSetSource } from "drizzle-orm/pg-core";
 import { requireAdmin, requireUser, type CurrentUser } from "@/lib/auth/dal";
 import { db } from "@/lib/db";
 import { tasks } from "@/lib/db/schema";
-import { errorState, isUuid, parseForm, type ActionState } from "@/lib/forms";
+import { echoValues, errorState, isUuid, parseForm, type ActionState } from "@/lib/forms";
 import { notifyChange } from "@/lib/notifications/notify";
 import { listStudentOptions } from "@/lib/students/queries";
-import { reviewFields, taskFields } from "./fields";
+import { reviewFields, taskFields, type ReviewDecision } from "./fields";
 
 type TaskInput = {
     studentId?: string;
@@ -134,34 +135,60 @@ export async function approveTask(id: string) {
     refresh();
 }
 
-/** The mentor sends a completed task back with a note; it returns to the student's to-do list. */
-export async function requestTaskChanges(
+export async function reviewTask(
     id: string,
     _: ActionState,
     formData: FormData,
 ): Promise<ActionState> {
     const viewer = await requireAdmin();
-    const parsed = parseForm<{ reviewNote: string }>(reviewFields, formData);
+    const parsed = parseForm<{ decision: ReviewDecision; reviewNote: string | null }>(
+        reviewFields,
+        formData,
+    );
     if (parsed.state) return parsed.state;
     if (!isUuid(id)) return errorState("Task not found.");
+    const { decision, reviewNote } = parsed.data;
+    if (decision !== "approved" && !reviewNote) {
+        return errorState(
+            "Please fix the highlighted fields.",
+            { reviewNote: ["Write a note for the student."] },
+            echoValues(reviewFields, formData),
+        );
+    }
 
+    const reviewedAt = new Date();
+    const change: PgUpdateSetSource<typeof tasks> =
+        decision === "note"
+            ? { reviewNote, reviewedAt }
+            : decision === "approved"
+              ? {
+                    reviewStatus: "approved",
+                    reviewNote,
+                    reviewedAt,
+                    completedAt: sql`coalesce(${tasks.completedAt}, now())`,
+                }
+              : { reviewStatus: "changes_requested", reviewNote, reviewedAt, completedAt: null };
     const [reviewed] = await db()
         .update(tasks)
-        .set({
-            reviewStatus: "changes_requested",
-            reviewNote: parsed.data.reviewNote,
-            reviewedAt: new Date(),
-            completedAt: null,
-        })
+        .set(change)
         .where(eq(tasks.id, id))
         .returning(changed);
     if (!reviewed) return errorState("Task not found.");
-    notifyChange(
-        viewer,
-        reviewed.studentId,
-        `asked for changes on "${reviewed.title}": ${parsed.data.reviewNote}`,
-        { area: "tasks", groupKey: `task:${id}` },
-    );
+
+    const title = `"${reviewed.title}"`;
+    const action = {
+        approved: `approved your task ${title}${reviewNote ? `: ${reviewNote}` : ""}`,
+        changes_requested: `asked for changes on ${title}: ${reviewNote}`,
+        note: `left a note on ${title}: ${reviewNote}`,
+    }[decision];
+    notifyChange(viewer, reviewed.studentId, action, { area: "tasks", groupKey: `task:${id}` });
     refresh();
-    return { status: "success", message: "Sent back to the student." };
+    return {
+        status: "success",
+        message: {
+            approved: "Task approved.",
+            changes_requested: "Sent back to the student.",
+            note: "Note added.",
+        }[decision],
+    };
 }

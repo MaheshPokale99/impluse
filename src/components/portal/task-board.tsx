@@ -6,6 +6,7 @@ import {
     Check,
     Hourglass,
     ListChecks,
+    MessageSquarePlus,
     MessageSquareWarning,
     Pencil,
     Trash2,
@@ -24,14 +25,8 @@ import {
 } from "@/components/ui/empty";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toFormValues, type FieldOption } from "@/lib/forms";
-import {
-    approveTask,
-    deleteTask,
-    requestTaskChanges,
-    toggleTask,
-    updateTask,
-} from "@/lib/tasks/actions";
-import { reviewFields, taskFields } from "@/lib/tasks/fields";
+import { approveTask, deleteTask, reviewTask, toggleTask, updateTask } from "@/lib/tasks/actions";
+import { reviewFields, taskFields, type ReviewDecision } from "@/lib/tasks/fields";
 import type { TaskRow } from "@/lib/tasks/queries";
 import { ConfirmAction, FormDialog } from "./dialogs";
 import { FilterSelect } from "./option-select";
@@ -42,7 +37,6 @@ type Filter = "open" | "review" | "done" | "all";
 
 /**
  * Tasks with filters and one-click completion. Students can edit only tasks they created.
- * With `canReview` (mentors), completed tasks can be approved or sent back with a note.
  */
 export function TaskBoard({
     tasks,
@@ -72,7 +66,13 @@ export function TaskBoard({
     const [, startTransition] = useTransition();
     // One dialog for the whole list: the task leaves "To review" once it's sent back, and the
     // dialog must outlive its row to confirm it.
-    const [reviewing, setReviewing] = useState<{ task: TaskRow; open: boolean }>();
+    const [reviewing, setReviewing] = useState<{
+        task: TaskRow;
+        decision: ReviewDecision;
+        open: boolean;
+    }>();
+    const review = (task: TaskRow, decision: ReviewDecision) =>
+        setReviewing({ task, decision, open: true });
     const today = todayInIndia();
 
     const forStudent = optimisticTasks.filter((task) => !studentId || task.studentId === studentId);
@@ -185,13 +185,21 @@ export function TaskBoard({
                                         )}
                                         <ReviewBadge task={task} />
                                     </div>
-                                    {task.reviewNote &&
-                                        task.reviewStatus === "changes_requested" && (
-                                            <p className="rounded-md bg-warning/10 px-2.5 py-1.5 text-sm whitespace-pre-line text-warning">
-                                                <span className="font-medium">Mentor: </span>
-                                                {task.reviewNote}
-                                            </p>
-                                        )}
+                                    {task.reviewNote && (
+                                        <p
+                                            className={cn(
+                                                "rounded-md px-2.5 py-1.5 text-sm whitespace-pre-line",
+                                                task.reviewStatus === "changes_requested"
+                                                    ? "bg-warning/10 text-warning"
+                                                    : task.reviewStatus === "approved"
+                                                      ? "bg-success/10 text-success"
+                                                      : "bg-muted text-foreground",
+                                            )}
+                                        >
+                                            <span className="font-medium">Mentor: </span>
+                                            {task.reviewNote}
+                                        </p>
+                                    )}
                                     {canReview && task.awaitingReview && (
                                         <div className="flex flex-wrap gap-2 pt-0.5">
                                             <Button
@@ -206,7 +214,7 @@ export function TaskBoard({
                                             <Button
                                                 size="sm"
                                                 variant="ghost"
-                                                onClick={() => setReviewing({ task, open: true })}
+                                                onClick={() => review(task, "changes_requested")}
                                             >
                                                 <Undo2 /> Ask for changes
                                             </Button>
@@ -215,6 +223,22 @@ export function TaskBoard({
                                 </div>
                                 {task.canEdit && (
                                     <div className="flex shrink-0 gap-1">
+                                        {canReview && (
+                                            <Button
+                                                variant="ghost"
+                                                size="icon-sm"
+                                                aria-label={`Review "${task.title}"`}
+                                                title="Review: approve, ask for changes or add a note"
+                                                onClick={() =>
+                                                    review(
+                                                        task,
+                                                        task.awaitingReview ? "approved" : "note",
+                                                    )
+                                                }
+                                            >
+                                                <MessageSquarePlus />
+                                            </Button>
+                                        )}
                                         <FormDialog
                                             title="Edit task"
                                             trigger={
@@ -259,13 +283,18 @@ export function TaskBoard({
             )}
             {reviewing && (
                 <FormDialog
+                    key={`${reviewing.task.id}:${reviewing.decision}`}
                     open={reviewing.open}
                     onOpenChange={(open) => setReviewing({ ...reviewing, open })}
-                    title="Ask for changes"
-                    description={`"${reviewing.task.title}" goes back to ${reviewing.task.studentName}'s to-do list with your note.`}
-                    action={requestTaskChanges.bind(null, reviewing.task.id)}
+                    title="Review task"
+                    description={`"${reviewing.task.title}" · ${reviewing.task.studentName}. Approving marks it done; asking for changes moves it back to their to-do list. They see your note on the task.`}
+                    action={reviewTask.bind(null, reviewing.task.id)}
                     fields={reviewFields}
-                    submitLabel="Send back"
+                    values={{
+                        decision: reviewing.decision,
+                        reviewNote: reviewing.task.reviewNote ?? "",
+                    }}
+                    submitLabel="Save review"
                 />
             )}
         </div>

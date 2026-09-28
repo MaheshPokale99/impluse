@@ -101,7 +101,8 @@ export function EditableValue({
     };
     if (field.type === "select") return <OptionEditor {...props} />;
     if (field.type === "date") return <DateEditor {...props} />;
-    if (field.type === "textarea") return <LongTextEditor {...props} />;
+    if (field.type === "textarea") return <TextEditor {...props} multiline />;
+    if (field.type === "text" && variant === "cell") return <TextEditor {...props} />;
     return <InlineInput {...props} />;
 }
 
@@ -221,13 +222,22 @@ function InlineInput({ field, current, onSave, variant, label, content }: Editor
     );
 }
 
-function LongTextEditor({ field, current, onSave, variant, label, content }: EditorProps) {
+function TextEditor({
+    field,
+    current,
+    onSave,
+    variant,
+    label,
+    content,
+    multiline = false,
+}: EditorProps & { multiline?: boolean }) {
     const [open, setOpen] = useState(false);
     const [draft, setDraft] = useState(current);
     const close = (save: boolean) => {
         if (save) onSave(draft);
         setOpen(false);
     };
+    const placeholder = field.placeholder ?? placeholderFor({ ...field, type: "textarea" });
 
     return (
         <Popover
@@ -251,23 +261,40 @@ function LongTextEditor({ field, current, onSave, variant, label, content }: Edi
                     close(false);
                 }}
             >
-                <Textarea
-                    autoFocus
-                    rows={6}
-                    value={draft}
-                    placeholder={placeholderFor(field)}
-                    maxLength={field.max}
-                    aria-label={field.label}
-                    onChange={(event) => setDraft(event.target.value)}
-                    onKeyDown={(event) => {
-                        if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
-                            event.preventDefault();
-                            close(true);
-                        }
-                    }}
-                />
+                {multiline ? (
+                    <Textarea
+                        autoFocus
+                        rows={6}
+                        value={draft}
+                        placeholder={placeholder}
+                        maxLength={field.max}
+                        aria-label={field.label}
+                        onChange={(event) => setDraft(event.target.value)}
+                        onKeyDown={(event) => {
+                            if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
+                                event.preventDefault();
+                                close(true);
+                            }
+                        }}
+                    />
+                ) : (
+                    <Input
+                        autoFocus
+                        value={draft}
+                        placeholder={placeholder}
+                        maxLength={field.max}
+                        aria-label={field.label}
+                        onChange={(event) => setDraft(event.target.value)}
+                        onKeyDown={(event) => {
+                            if (event.key === "Enter") {
+                                event.preventDefault();
+                                close(true);
+                            }
+                        }}
+                    />
+                )}
                 <p className="text-xs text-muted-foreground">
-                    Ctrl + Enter to save · Esc to cancel
+                    {multiline ? "Ctrl + Enter" : "Enter"} to save · Esc to cancel
                 </p>
             </PopoverContent>
         </Popover>

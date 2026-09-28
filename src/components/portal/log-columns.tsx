@@ -41,7 +41,10 @@ export function LogColumnsButton({ columns }: { columns: LogColumn[] }) {
                     {hidden > 0 && <span className="text-muted-foreground">({hidden} hidden)</span>}
                 </Button>
             </DialogTrigger>
-            <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-xl">
+            <DialogContent
+                className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-xl"
+                onOpenAutoFocus={(event) => event.preventDefault()}
+            >
                 <DialogHeader>
                     <DialogTitle>Daily log columns</DialogTitle>
                     <DialogDescription>
