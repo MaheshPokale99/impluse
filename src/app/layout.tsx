@@ -4,6 +4,7 @@ import "lenis/dist/lenis.css";
 import "./theme.css";
 import "./impulsevidya.css";
 import "./impulsevidya-overrides.css";
+import "./impulsevidya-testimonials.css";
 import { ThemeScript } from "@/components/theme-script";
 import { siteDescription, siteName, siteUrl, socialImagePath } from "@/lib/site";
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" });

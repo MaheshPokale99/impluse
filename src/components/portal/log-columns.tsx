@@ -1,7 +1,7 @@
 "use client";
 
 import { useOptimistic, useTransition } from "react";
-import { Columns3, Eye, EyeOff, Lock, Trash2, Users } from "lucide-react";
+import { Columns3, Eye, EyeOff, Lock, Pencil, PencilOff, Trash2, Users } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -50,6 +50,7 @@ export function LogColumnsButton({ columns }: { columns: LogColumn[] }) {
                     <DialogDescription>
                         Changes apply to every student&apos;s log. Hiding a column keeps its values;
                         show it again any time. Clear a built-in column&apos;s name to restore it.
+                        Choose which columns students can fill in themselves.
                     </DialogDescription>
                 </DialogHeader>
                 <ul className="divide-y border-y">
@@ -83,7 +84,13 @@ function ColumnRow({ column }: { column: LogColumn }) {
                 label: change.label.trim() || current.defaultLabel || current.label,
             }),
             ...(change.hidden !== undefined && { hidden: change.hidden }),
-            ...(change.studentVisible !== undefined && { adminOnly: !change.studentVisible }),
+            ...(change.studentVisible !== undefined && {
+                adminOnly: !change.studentVisible,
+                studentEditable: change.studentVisible && current.studentEditable,
+            }),
+            ...(change.studentEditable !== undefined && {
+                studentEditable: change.studentEditable,
+            }),
         }),
     );
     const [, startTransition] = useTransition();
@@ -136,6 +143,19 @@ function ColumnRow({ column }: { column: LogColumn }) {
                             <Lock /> Mentor only
                         </Badge>
                     )
+                )}
+                {!state.adminOnly && (
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-xs text-muted-foreground"
+                        aria-pressed={state.studentEditable}
+                        title="Choose whether students can fill in this column"
+                        onClick={() => save({ studentEditable: !state.studentEditable })}
+                    >
+                        {state.studentEditable ? <Pencil /> : <PencilOff />}
+                        {state.studentEditable ? "Student edits" : "View only"}
+                    </Button>
                 )}
                 <Button
                     variant="ghost"

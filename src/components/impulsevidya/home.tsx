@@ -25,6 +25,8 @@ import {
 } from "lucide-react";
 import { ButtonLink, ClosingCTA, Reveal, SectionHeading } from "./shell";
 import { siteImages } from "./assets";
+import type { PublicTestimonial } from "@/lib/testimonials/queries";
+import { Testimonials } from "./testimonials";
 import { Dashboard, Icon, ModuleOrbit, type DashboardTab } from "./visuals";
 
 function Hero() {
@@ -970,7 +972,7 @@ export function FAQSection({
     );
 }
 
-export function HomePage() {
+export function HomePage({ testimonials = [] }: { testimonials?: PublicTestimonial[] }) {
     return (
         <main className="iv-home" id="main">
             <Hero />
@@ -983,6 +985,7 @@ export function HomePage() {
             <People />
             <Principles />
             <Outcomes />
+            <Testimonials testimonials={testimonials} />
             <section className="iv-section iv-resources iv-container">
                 <div className="iv-heading-row">
                     <SectionHeading

@@ -77,6 +77,7 @@ export function DailyLog({
 }) {
     const admin = role === "admin";
     const isOwn = viewerId === studentId;
+    const canAdd = admin || isOwn;
     // Custom column values sit next to the built-in ones, so every cell reads `row[column]`.
     const rows = useMemo(
         () =>
@@ -101,10 +102,10 @@ export function DailyLog({
                     <EmptyDescription>
                         {admin
                             ? "Select New day to start tracking scores, levels and calls day by day."
-                            : "Your mentor will add your progress here day by day."}
+                            : "Select New day to log today's progress. Your mentor can see it too."}
                     </EmptyDescription>
                 </EmptyHeader>
-                {admin && (
+                {canAdd && (
                     <EmptyContent>
                         <AddTodayButton studentId={studentId} hasToday={false} />
                     </EmptyContent>

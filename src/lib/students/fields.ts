@@ -89,7 +89,14 @@ export const studentFields: readonly StudentField[] = [
     },
 ];
 
-const percent = { type: "number", min: 0, max: 100, step: 0.1, unit: "%" } as const;
+const percent = {
+    type: "number",
+    min: 0,
+    max: 100,
+    step: 0.1,
+    unit: "%",
+    studentEditable: true,
+} as const;
 const level = (name: EntryKey, label: string): EntryField => ({
     name,
     label,
@@ -129,12 +136,20 @@ export const entryFields: readonly EntryField[] = [
         step: 0.5,
         studentEditable: true,
     },
-    { name: "backlogChapters", label: "Backlog Chapters", type: "number", min: 0, max: 500 },
+    {
+        name: "backlogChapters",
+        label: "Backlog Chapters",
+        type: "number",
+        min: 0,
+        max: 500,
+        studentEditable: true,
+    },
     {
         name: "performanceTrend",
         label: "Performance Trend",
         type: "select",
         options: studentOptions.performanceTrend,
+        studentEditable: true,
     },
     { name: "callCount", label: "Call Count", type: "number", min: 0, max: 10000 },
     { name: "lastCallDate", label: "Last Call Date", type: "date" },
@@ -213,11 +228,12 @@ export const newColumnFields: FormFieldDef[] = [
     { name: "type", label: "Type", type: "select", options: customColumnTypes, required: true },
     {
         name: "visibility",
-        label: "Who can see it",
+        label: "Student access",
         type: "select",
         required: true,
         options: [
-            { value: "everyone", label: "Mentor and student" },
+            { value: "everyone", label: "Student can see and edit" },
+            { value: "view", label: "Student can only see" },
             { value: "mentor", label: "Mentor only" },
         ],
     },
@@ -228,14 +244,15 @@ export function resolveLogColumns(rows: readonly LogColumnRow[]): LogColumn[] {
     const settings = new Map(rows.map((row) => [row.key, row]));
     const builtIn = entryFields.map((field): LogColumn => {
         const row = settings.get(field.name);
+        const adminOnly = Boolean(field.adminOnly);
         return {
             ...field,
             label: row?.label || field.label,
             defaultLabel: field.label,
             custom: false,
             hidden: row?.hidden ?? false,
-            adminOnly: Boolean(field.adminOnly),
-            studentEditable: Boolean(field.studentEditable),
+            adminOnly,
+            studentEditable: !adminOnly && (row?.studentEditable ?? Boolean(field.studentEditable)),
         };
     });
     const custom = rows
@@ -251,7 +268,7 @@ export function resolveLogColumns(rows: readonly LogColumnRow[]): LogColumn[] {
                 custom: true,
                 hidden: row.hidden,
                 adminOnly: !row.studentVisible,
-                studentEditable: false,
+                studentEditable: row.studentVisible && (row.studentEditable ?? true),
             };
         });
     return [...builtIn, ...custom];

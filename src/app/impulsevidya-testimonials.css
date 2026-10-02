@@ -1,0 +1,466 @@
+.iv-testimonials {
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(60% 45% at 12% 18%, var(--iv-depth-accent), transparent 70%), #141518;
+}
+:root[data-theme="light"] .iv-testimonials {
+    background:
+        radial-gradient(60% 45% at 12% 18%, var(--iv-depth-accent), transparent 70%), #fffdfa;
+}
+.iv-testimonial-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+    gap: 22px;
+    align-items: stretch;
+}
+.iv-testimonial-stage.is-single {
+    grid-template-columns: minmax(0, 820px);
+    justify-content: center;
+}
+.iv-testimonial-spotlight {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 430px;
+    padding: 46px 48px 30px;
+    border: 1px solid var(--iv-border);
+    border-radius: 28px;
+    background:
+        radial-gradient(90% 70% at 100% 0%, var(--iv-depth-accent), transparent 65%), var(--iv-card);
+    box-shadow:
+        inset 0 1px 0 var(--iv-depth-highlight),
+        0 24px 60px var(--iv-depth-shadow);
+    overflow: hidden;
+    isolation: isolate;
+}
+:root[data-theme="light"] .iv-testimonial-spotlight {
+    background: radial-gradient(90% 70% at 100% 0%, var(--iv-depth-accent), transparent 65%), #fff;
+}
+.iv-testimonial-stage.is-single .iv-testimonial-spotlight {
+    min-height: 0;
+    padding-bottom: 42px;
+}
+.iv-testimonial-glyph {
+    position: absolute;
+    top: 32px;
+    right: 36px;
+    z-index: -1;
+    display: grid;
+    width: 46px;
+    height: 46px;
+    place-items: center;
+    border-radius: 15px;
+    color: var(--iv-orange);
+    background: var(--iv-accent-soft);
+    transform: rotate(-6deg);
+}
+.iv-testimonial-glyph svg {
+    fill: currentColor;
+    stroke-width: 0;
+}
+.iv-testimonial-viewport {
+    display: flex;
+    flex: 1;
+}
+.iv-testimonial-figure {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 24px;
+    margin: 0;
+    cursor: grab;
+    touch-action: pan-y;
+}
+.iv-testimonial-figure:active {
+    cursor: grabbing;
+}
+.iv-testimonial-stage.is-single .iv-testimonial-figure {
+    cursor: auto;
+}
+.iv-testimonial-stars {
+    display: inline-flex;
+    gap: 3px;
+    color: var(--iv-border);
+}
+.iv-testimonial-stars svg {
+    fill: currentColor;
+    stroke-width: 0;
+}
+.iv-testimonial-stars .is-filled {
+    color: #f5a524;
+}
+.iv-testimonial-figure blockquote {
+    margin: 0;
+    flex: 1;
+    max-width: 640px;
+}
+.iv-testimonial-figure blockquote p {
+    color: var(--iv-ink);
+    font-size: clamp(19px, 1.85vw, 25px);
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: -0.35px;
+    overflow-wrap: anywhere;
+    white-space: pre-line;
+}
+.iv-testimonial-figure blockquote p::before {
+    content: "“";
+    color: var(--iv-orange);
+}
+.iv-testimonial-figure blockquote p::after {
+    content: "”";
+    color: var(--iv-orange);
+}
+.iv-testimonial-figure figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+}
+.iv-testimonial-avatar {
+    display: grid;
+    flex: 0 0 auto;
+    width: 50px;
+    height: 50px;
+    place-items: center;
+    border-radius: 50%;
+    color: #fff;
+    background: linear-gradient(140deg, var(--iv-orange), #f7a46d);
+    box-shadow:
+        0 0 0 3px var(--iv-card),
+        0 0 0 4px var(--iv-border);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+.iv-testimonial-author {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    line-height: 1.35;
+}
+.iv-testimonial-author strong {
+    color: var(--iv-ink);
+    font-size: 16px;
+    font-weight: 650;
+}
+.iv-testimonial-author small {
+    color: var(--iv-muted);
+    font-size: 13.5px;
+}
+.iv-testimonial-highlight {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-left: auto;
+    padding: 7px 13px;
+    border: 1px solid color-mix(in srgb, var(--iv-orange) 28%, transparent);
+    border-radius: 999px;
+    color: var(--iv-orange);
+    background: var(--iv-accent-soft);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+}
+.iv-testimonial-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 30px;
+    padding-top: 22px;
+    border-top: 1px solid var(--iv-border);
+}
+.iv-testimonial-count {
+    color: var(--iv-muted);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+.iv-testimonial-count b {
+    color: var(--iv-ink);
+    font-weight: 650;
+}
+.iv-testimonial-progress {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    gap: 6px;
+}
+.iv-testimonial-progress button {
+    display: flex;
+    flex: 1;
+    max-width: 64px;
+    height: 24px;
+    align-items: center;
+    padding: 0;
+    border: 0;
+    background: none;
+}
+.iv-testimonial-progress button > span {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 4px;
+    border-radius: 99px;
+    background: var(--iv-border);
+    overflow: hidden;
+    transition: background-color 0.2s ease;
+}
+.iv-testimonial-progress button:hover > span {
+    background: color-mix(in srgb, var(--iv-orange) 40%, var(--iv-border));
+}
+.iv-testimonial-progress i {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--iv-orange);
+    transform-origin: left center;
+    animation: iv-testimonial-progress 7s linear forwards;
+}
+.iv-testimonial-spotlight.is-paused .iv-testimonial-progress i {
+    animation-play-state: paused;
+}
+@keyframes iv-testimonial-progress {
+    from {
+        transform: scaleX(0);
+    }
+    to {
+        transform: scaleX(1);
+    }
+}
+.iv-testimonial-arrows {
+    display: flex;
+    gap: 8px;
+}
+.iv-testimonial-arrows button {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    border: 1px solid var(--iv-border);
+    border-radius: 50%;
+    color: var(--iv-ink);
+    background: var(--iv-surface);
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s var(--iv-ease);
+}
+.iv-testimonial-arrows button:hover {
+    color: #fff;
+    border-color: var(--iv-orange);
+    background: var(--iv-orange);
+}
+.iv-testimonial-arrows button:active {
+    transform: scale(0.94);
+}
+.iv-testimonial-rail {
+    position: relative;
+    min-height: 0;
+    border: 1px solid var(--iv-border);
+    border-radius: 28px;
+    background: var(--iv-surface);
+    box-shadow: inset 0 1px 0 var(--iv-depth-highlight);
+}
+:root[data-theme="light"] .iv-testimonial-rail {
+    background: #f7f3ee;
+}
+.iv-testimonial-rail ul {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 10px;
+    list-style: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--iv-border) transparent;
+}
+.iv-testimonial-rail button {
+    position: relative;
+    display: grid;
+    width: 100%;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: 13px;
+    padding: 14px 15px;
+    border: 1px solid transparent;
+    border-radius: 19px;
+    text-align: left;
+    background: transparent;
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+.iv-testimonial-rail button:hover {
+    background: color-mix(in srgb, var(--iv-card) 70%, transparent);
+}
+.iv-testimonial-rail button.is-active {
+    border-color: var(--iv-border);
+    background: var(--iv-card);
+    box-shadow: 0 10px 26px var(--iv-depth-shadow);
+}
+:root[data-theme="light"] .iv-testimonial-rail button.is-active {
+    background: #fff;
+}
+.iv-testimonial-rail button.is-active::before {
+    content: "";
+    position: absolute;
+    top: 18px;
+    bottom: 18px;
+    left: -1px;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: var(--iv-orange);
+}
+.iv-testimonial-rail .iv-testimonial-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 13px;
+    box-shadow: none;
+    filter: saturate(0.55);
+    opacity: 0.8;
+    transition:
+        filter 0.2s ease,
+        opacity 0.2s ease;
+}
+.iv-testimonial-rail button.is-active .iv-testimonial-avatar,
+.iv-testimonial-rail button:hover .iv-testimonial-avatar {
+    filter: none;
+    opacity: 1;
+}
+.iv-testimonial-rail-copy {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    line-height: 1.35;
+}
+.iv-testimonial-rail-copy strong {
+    color: var(--iv-ink);
+    font-size: 14.5px;
+    font-weight: 650;
+}
+.iv-testimonial-rail-copy small {
+    color: var(--iv-muted);
+    font-size: 12.5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.iv-testimonial-rail-copy > span {
+    display: -webkit-box;
+    margin-top: 6px;
+    color: var(--iv-copy);
+    font-size: 13px;
+    line-height: 1.5;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+}
+@media (max-width: 1100px) {
+    .iv-testimonial-spotlight {
+        padding: 40px 36px 26px;
+    }
+}
+@media (max-width: 900px) {
+    .iv-testimonial-stage {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    .iv-testimonial-spotlight {
+        min-height: 380px;
+    }
+    .iv-testimonial-rail {
+        border: 0;
+        background: none;
+        box-shadow: none;
+    }
+    :root[data-theme="light"] .iv-testimonial-rail {
+        background: none;
+    }
+    .iv-testimonial-rail ul {
+        position: static;
+        flex-direction: row;
+        gap: 10px;
+        padding: 2px 2px 10px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+    }
+    .iv-testimonial-rail li {
+        flex: 0 0 min(280px, 78%);
+        scroll-snap-align: start;
+    }
+    .iv-testimonial-rail button {
+        height: 100%;
+        border-color: var(--iv-border);
+        background: var(--iv-surface);
+    }
+    :root[data-theme="light"] .iv-testimonial-rail button:not(.is-active) {
+        background: #f7f3ee;
+    }
+    .iv-testimonial-rail button.is-active {
+        border-color: color-mix(in srgb, var(--iv-orange) 55%, var(--iv-border));
+    }
+    .iv-testimonial-rail button.is-active::before {
+        display: none;
+    }
+}
+@media (max-width: 680px) {
+    .iv-testimonial-spotlight {
+        min-height: 0;
+        padding: 30px 22px 20px;
+        border-radius: 22px;
+    }
+    .iv-testimonial-glyph {
+        top: 20px;
+        right: 20px;
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+    }
+    .iv-testimonial-glyph svg {
+        width: 17px;
+        height: 17px;
+    }
+    .iv-testimonial-figure {
+        gap: 20px;
+    }
+    .iv-testimonial-figure blockquote p {
+        font-size: 18px;
+    }
+    .iv-testimonial-avatar {
+        width: 44px;
+        height: 44px;
+        font-size: 14px;
+    }
+    .iv-testimonial-highlight {
+        margin-left: 0;
+        flex-basis: 100%;
+        justify-content: center;
+    }
+    .iv-testimonial-controls {
+        gap: 14px;
+        margin-top: 24px;
+        padding-top: 18px;
+    }
+    .iv-testimonial-count {
+        display: none;
+    }
+    .iv-testimonial-arrows button {
+        width: 40px;
+        height: 40px;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .iv-testimonial-progress i {
+        animation: none;
+        transform: none;
+    }
+}

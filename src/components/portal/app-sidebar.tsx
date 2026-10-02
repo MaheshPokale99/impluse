@@ -8,6 +8,7 @@ import {
     ChevronsUpDown,
     ListChecks,
     LogOut,
+    MessageSquareQuote,
     Moon,
     Sun,
     TrendingUp,
@@ -72,6 +73,16 @@ export function AppSidebar({
             icon: Bell,
             badge: unreadTotal,
         },
+        ...(admin
+            ? [
+                  {
+                      href: "/dashboard/testimonials",
+                      label: "Testimonials",
+                      icon: MessageSquareQuote,
+                      badge: 0,
+                  },
+              ]
+            : []),
     ];
 
     return (

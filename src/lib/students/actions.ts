@@ -3,7 +3,7 @@
 import { randomUUID } from "node:crypto";
 import { refresh, revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, gt, sql, type SQL } from "drizzle-orm";
 import type { PgUpdateSetSource } from "drizzle-orm/pg-core";
 import { requireAdmin, requireUser } from "@/lib/auth/dal";
 import { profileFields } from "@/lib/auth/fields";
@@ -140,8 +140,11 @@ export async function updateStudentField(
 }
 
 export async function addEntry(studentId: string): Promise<FieldUpdateResult> {
-    const viewer = await requireAdmin();
-    if (!isUuid(studentId)) return { ok: false, error: "Student not found." };
+    const viewer = await requireUser();
+    const admin = viewer.role === "admin";
+    if (!isUuid(studentId) || (!admin && viewer.id !== studentId)) {
+        return { ok: false, error: "Student not found." };
+    }
     const [[previous], columns] = await Promise.all([
         db()
             .select()
@@ -171,9 +174,12 @@ export async function addEntry(studentId: string): Promise<FieldUpdateResult> {
         if (isUniqueViolation(error)) return { ok: false, error: "Today's row already exists." };
         throw error;
     }
-    notifyChange(viewer, studentId, `added your daily log for ${formatDay(date)}`, {
-        area: "log",
-    });
+    notifyChange(
+        viewer,
+        studentId,
+        `added ${admin ? "your" : "their"} daily log for ${formatDay(date)}`,
+        { area: "log" },
+    );
     refresh();
     return { ok: true };
 }
@@ -191,10 +197,20 @@ export async function updateEntryField(
             ? entryDateField
             : (await getLogColumns()).find((candidate) => candidate.name === key);
     // Students may only change fields marked editable, and only on their own rows.
-    if (!column || !isUuid(entryId) || !canEdit(viewer.role, true, column)) return notAllowed;
+    if (
+        !column ||
+        !isUuid(entryId) ||
+        !canEdit(viewer.role, true, column) ||
+        (!admin && "hidden" in column && column.hidden)
+    ) {
+        return notAllowed;
+    }
 
     const parsed = parseValue(column, raw);
     if (!parsed.ok) return parsed;
+    const ownRow = admin
+        ? eq(studentEntries.id, entryId)
+        : and(eq(studentEntries.id, entryId), eq(studentEntries.studentId, viewer.id));
     const change: PgUpdateSetSource<typeof studentEntries> =
         "custom" in column && column.custom
             ? {
@@ -203,16 +219,16 @@ export async function updateEntryField(
             : { [key]: parsed.value };
     let updated: { studentId: string; date: string } | undefined;
     try {
-        // Ownership is checked in the WHERE clause: one database round trip.
-        [updated] = await db()
-            .update(studentEntries)
-            .set(change)
-            .where(
-                admin
-                    ? eq(studentEntries.id, entryId)
-                    : and(eq(studentEntries.id, entryId), eq(studentEntries.studentId, viewer.id)),
-            )
-            .returning({ studentId: studentEntries.studentId, date: studentEntries.date });
+        if (key === "lastCallDate") {
+            updated = await logCallDate(ownRow, parsed.value as string | null);
+        } else {
+            // Ownership is checked in the WHERE clause: one database round trip.
+            [updated] = await db()
+                .update(studentEntries)
+                .set(change)
+                .where(ownRow)
+                .returning({ studentId: studentEntries.studentId, date: studentEntries.date });
+        }
         if (!updated) return notAllowed;
     } catch (error) {
         if (isUniqueViolation(error)) {
@@ -231,6 +247,38 @@ export async function updateEntryField(
     }
     refresh();
     return { ok: true };
+}
+
+async function logCallDate(ownRow: SQL | undefined, lastCallDate: string | null) {
+    return db().transaction(async (tx) => {
+        const [before] = await tx
+            .select({ lastCallDate: studentEntries.lastCallDate })
+            .from(studentEntries)
+            .where(ownRow)
+            .for("update");
+        if (!before) return undefined;
+        const newCall =
+            lastCallDate !== null &&
+            (before.lastCallDate === null || lastCallDate > before.lastCallDate);
+        const addCall = sql`coalesce(${studentEntries.callCount}, 0) + 1`;
+        const [row] = await tx
+            .update(studentEntries)
+            .set(newCall ? { lastCallDate, callCount: addCall } : { lastCallDate })
+            .where(ownRow)
+            .returning({ studentId: studentEntries.studentId, date: studentEntries.date });
+        if (newCall) {
+            await tx
+                .update(studentEntries)
+                .set({ callCount: addCall })
+                .where(
+                    and(
+                        eq(studentEntries.studentId, row.studentId),
+                        gt(studentEntries.date, row.date),
+                    ),
+                );
+        }
+        return row;
+    });
 }
 
 export async function deleteEntry(entryId: string) {
@@ -343,10 +391,11 @@ export async function declineStudent(id: string) {
 
 export async function addLogColumn(_: ActionState, formData: FormData): Promise<ActionState> {
     await requireAdmin();
-    const parsed = parseForm<{ label: string; type: CustomColumnType; visibility: string }>(
-        newColumnFields,
-        formData,
-    );
+    const parsed = parseForm<{
+        label: string;
+        type: CustomColumnType;
+        visibility: "everyone" | "view" | "mentor";
+    }>(newColumnFields, formData);
     if (parsed.state) return parsed.state;
     const { label, type, visibility } = parsed.data;
     await db()
@@ -356,13 +405,19 @@ export async function addLogColumn(_: ActionState, formData: FormData): Promise<
             label,
             type,
             custom: true,
-            studentVisible: visibility === "everyone",
+            studentVisible: visibility !== "mentor",
+            studentEditable: visibility === "everyone",
         });
     refresh();
     return { status: "success", message: `Column "${label}" added.` };
 }
 
-export type ColumnChange = { label?: string; hidden?: boolean; studentVisible?: boolean };
+export type ColumnChange = {
+    label?: string;
+    hidden?: boolean;
+    studentVisible?: boolean;
+    studentEditable?: boolean;
+};
 
 /**
  * Renames, hides or shows a column. Hiding only removes it from the table; its values stay
@@ -388,6 +443,9 @@ export async function updateLogColumn(
     if (typeof change.hidden === "boolean") values.hidden = change.hidden;
     if (typeof change.studentVisible === "boolean" && column.custom) {
         values.studentVisible = change.studentVisible;
+    }
+    if (typeof change.studentEditable === "boolean" && (column.custom || !column.adminOnly)) {
+        values.studentEditable = change.studentEditable;
     }
     if (Object.keys(values).length === 0) return { ok: true };
 

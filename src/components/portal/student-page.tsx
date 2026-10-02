@@ -136,21 +136,19 @@ export function StudentPage({
                 title="Daily log"
                 description={
                     admin
-                        ? "One row per day. A new day starts from the previous day's values."
-                        : "Your progress day by day. You can fill in your study hours."
+                        ? "One row per day. A new day starts from the previous day's values. Call Count goes up by one each time a newer Last Call Date is set."
+                        : "Your progress day by day. Add a row for today, then fill in your scores, DPP and study hours."
                 }
                 action={
-                    admin ? (
-                        <div className="flex flex-wrap gap-2">
-                            <LogColumnsButton columns={columns} />
-                            {entries.length > 0 && (
-                                <AddTodayButton
-                                    studentId={student.id}
-                                    hasToday={latest?.date === today}
-                                />
-                            )}
-                        </div>
-                    ) : undefined
+                    <div className="flex flex-wrap gap-2">
+                        {admin && <LogColumnsButton columns={columns} />}
+                        {entries.length > 0 && (
+                            <AddTodayButton
+                                studentId={student.id}
+                                hasToday={latest?.date === today}
+                            />
+                        )}
+                    </div>
                 }
             >
                 <DailyLog

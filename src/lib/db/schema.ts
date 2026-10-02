@@ -137,6 +137,7 @@ export const logColumns = pgTable("log_columns", {
     custom: boolean().notNull().default(false),
     hidden: boolean().notNull().default(false),
     studentVisible: boolean().notNull().default(true),
+    studentEditable: boolean(),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 }).enableRLS();
 
@@ -163,6 +164,26 @@ export const notifications = pgTable(
     (table) => [index().on(table.audience, table.studentId, table.readAt)],
 ).enableRLS();
 
+export const testimonials = pgTable(
+    "testimonials",
+    {
+        id: uuid().primaryKey().defaultRandom(),
+        name: text().notNull(),
+        role: text(),
+        quote: text().notNull(),
+        highlight: text(),
+        rating: integer().notNull().default(5),
+        published: boolean().notNull().default(true),
+        position: integer().notNull().default(0),
+        createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+        updatedAt: timestamp({ withTimezone: true })
+            .notNull()
+            .defaultNow()
+            .$onUpdate(() => new Date()),
+    },
+    (table) => [index().on(table.published, table.position)],
+).enableRLS();
+
 export const passwordResetTokens = pgTable("password_reset_tokens", {
     tokenHash: text().primaryKey(),
     userId: uuid()
@@ -178,3 +199,4 @@ export type Task = typeof tasks.$inferSelect;
 export type Section = typeof sections.$inferSelect;
 export type LogColumnRow = typeof logColumns.$inferSelect;
 export type Notification = typeof notifications.$inferSelect;
+export type Testimonial = typeof testimonials.$inferSelect;

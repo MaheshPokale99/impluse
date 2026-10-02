@@ -1,0 +1,1 @@
+ALTER TABLE "log_columns" ADD COLUMN "student_editable" boolean;
